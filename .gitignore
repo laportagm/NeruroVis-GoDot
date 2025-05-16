@@ -1,2 +1,53 @@
-# Godot 4+ specific ignores
+# Godot-specific ignores
 .godot/
+.import/
+export.cfg
+export_presets.cfg
+*.translation
+
+# Godot 4.0+ specific ignores
+.godot/
+
+# Imports
+*.import
+
+# Resource cache
+.import/
+
+# Builds and executables
+builds/
+*.exe
+*.app
+*.pck
+*.x86_64
+*.x86
+*.arm64
+
+# Temporary files
+**/__pycache__/
+**/.pytest_cache/
+**/*.pyc
+
+# IDE specific files
+.idea/
+.vscode/
+*.code-workspace
+.vs/
+
+# Version control
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Crash reports
+*.dump
+
+# Backup files
+*.bak
+*.tmp
+*~
+*.swp
