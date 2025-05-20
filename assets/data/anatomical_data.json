@@ -1,0 +1,90 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-05-20",
+  "structures": [
+    {
+      "id": "Thalamus_PlaceholderID",
+      "displayName": "Thalamus",
+      "shortDescription": "A large, egg-shaped structure of gray matter located in the diencephalon, near the center of the brain. It acts as a major relay station for sensory and motor information between the body and the cerebral cortex, and plays a role in consciousness, sleep, and alertness.",
+      "functions": [
+        "Relaying sensory information (except smell) to the cerebral cortex",
+        "Relaying motor information from the cerebellum and basal ganglia to the cerebral cortex",
+        "Playing a role in regulating consciousness, sleep, and wakefulness",
+        "Involvement in learning and memory, particularly episodic memory",
+        "Processing and modulating information received from other thalamic nuclei"
+      ]
+    },
+    {
+      "id": "Hippocampus_PlaceholderID",
+      "displayName": "Hippocampus",
+      "shortDescription": "A complex C-shaped structure embedded deep in the temporal lobe, playing a major role in learning and memory. It is crucial for the formation of new declarative memories (facts and events) and for spatial navigation.",
+      "functions": [
+        "Consolidation of new memories (converting short-term to long-term memory)",
+        "Spatial memory and navigation",
+        "Learning new information",
+        "Emotional behavior and regulation (working with amygdala)",
+        "Formation of explicit (declarative) memories"
+      ]
+    },
+    {
+      "id": "Amygdala_PlaceholderID",
+      "displayName": "Amygdala",
+      "shortDescription": "An almond-shaped set of neurons located deep in the brain's medial temporal lobe. It is a key component of the limbic system and is primarily involved in processing emotions such as fear, anxiety, and pleasure, as well as emotional memory.",
+      "functions": [
+        "Processing emotions, especially fear and anxiety",
+        "Formation and storage of memories associated with emotional events (emotional memory)",
+        "Role in fear conditioning and learning",
+        "Regulating aggression and social cognition",
+        "Activating the 'fight-or-flight' response"
+      ]
+    },
+    {
+      "id": "Midbrain_PlaceholderID",
+      "displayName": "Midbrain (Mesencephalon)",
+      "shortDescription": "The most superior part of the brainstem, connecting the forebrain (cerebrum and diencephalon) to the hindbrain (pons and medulla). It is involved in motor control, eye movement, and processing auditory and visual information.",
+      "functions": [
+        "Controlling eye movements and visual reflexes",
+        "Processing auditory information and auditory reflexes",
+        "Motor control and coordination",
+        "Relaying sensory and motor signals",
+        "Regulation of consciousness and sleep-wake cycles (via reticular formation)"
+      ]
+    },
+    {
+      "id": "Pons_PlaceholderID",
+      "displayName": "Pons",
+      "shortDescription": "A part of the brainstem situated above the medulla oblongata and below the midbrain. It serves as a major relay station for signals between the cerebrum and the cerebellum and is involved in functions like sleep, respiration, swallowing, bladder control, hearing, equilibrium, taste, eye movement, facial expressions, and posture.",
+      "functions": [
+        "Relaying signals between the forebrain and the cerebellum",
+        "Influencing sleep-wake cycles and REM sleep",
+        "Playing a role in regulating breathing",
+        "Involved in control of facial movements and sensations",
+        "Processing sensory information related to hearing and balance"
+      ]
+    },
+    {
+      "id": "MedullaOblongata_PlaceholderID",
+      "displayName": "Medulla Oblongata",
+      "shortDescription": "The lowest part of the brainstem, connecting the brain to the spinal cord. It controls vital autonomic functions such as heartbeat, breathing, and blood pressure, as well as reflexes like vomiting, coughing, sneezing, and swallowing.",
+      "functions": [
+        "Regulating vital autonomic functions (heartbeat, respiration, blood pressure)",
+        "Controlling reflexes such as coughing, sneezing, swallowing, and vomiting",
+        "Relaying nerve signals between the brain and spinal cord",
+        "Housing cranial nerve nuclei (IX, X, XI, XII)",
+        "Site of decussation (crossing over) of major motor pathways"
+      ]
+    },
+    {
+      "id": "CorpusCallosum_PlaceholderID",
+      "displayName": "Corpus Callosum",
+      "shortDescription": "A large bundle of nerve fibers (white matter) connecting the left and right cerebral hemispheres, facilitating communication between them. It is crucial for integrating sensory, motor, and cognitive information processed by the two hemispheres.",
+      "functions": [
+        "Connecting the left and right cerebral hemispheres",
+        "Facilitating interhemispheric communication",
+        "Integrating sensory, motor, and cognitive information from both hemispheres",
+        "Playing a role in coordinating movement and higher cognitive functions",
+        "Transfer of visual, auditory, and somatosensory information between hemispheres"
+      ]
+    }
+  ]
+}

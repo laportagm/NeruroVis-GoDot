@@ -1,14 +1,49 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmhgi3od0a05a"]
+[gd_scene load_steps=5 format=3 uid="uid://dmhgi3od0a05a"]
+
+[ext_resource type="Script" path="res://scenes/node_3d.gd" id="1_v11ko"]
+[ext_resource type="PackedScene" uid="uid://74ufaq2ngu4j" path="res://scenes/ui_info_panel.tscn" id="2_txj6v"]
 
 [sub_resource type="Environment" id="Environment_frnmf"]
 ssr_enabled = true
 ssao_enabled = true
 
+[sub_resource type="LabelSettings" id="LabelSettings_h6tdg"]
+font_size = 20
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.392157)
+
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_v11ko")
+highlight_color = Color(0.988235, 0.788235, 0, 1)
 
 [node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.927184, 0.374607, 0, -0.374607, 0.927184, 0, 2, 5)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 0, 0)
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_frnmf")
+
+[node name="UI_Layer" type="CanvasLayer" parent="."]
+
+[node name="ObjectNameLabel" type="Label" parent="UI_Layer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 60.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+text = "Selected: None"
+label_settings = SubResource("LabelSettings_h6tdg")
+horizontal_alignment = 1
+
+[node name="StructureInfoPanel" parent="UI_Layer" instance=ExtResource("2_txj6v")]
+
+[node name="BrainModel" type="Node3D" parent="."]

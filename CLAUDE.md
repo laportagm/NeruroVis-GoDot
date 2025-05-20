@@ -51,15 +51,20 @@ NeuroVis is an AI-Enhanced Brain Anatomy Visualizer desktop application built wi
 ## Project Structure
 
 - **`/assets/`**: Contains all project assets
-  - **`/data/`**: Data files for the brain anatomy information
+  - **`/data/`**: Data files for the brain anatomy information (anatomical_data.json)
   - **`/icons/`**: Application icons and UI icons
-  - **`/models/`**: 3D models of brain anatomy
+  - **`/models/`**: 3D models of brain anatomy (Brainstem, Half_Brain, Internal_Structures)
   - **`/textures/`**: Textures for 3D models
 
 - **`/scenes/`**: Godot scene files (.tscn)
   - Currently contains a basic `node_3d.tscn` which is the starting point for the 3D visualization
+  - `node_3d.gd` contains the scene's script functionality
+  - `ui_info_panel.tscn`: Scene for the detailed anatomical information panel
 
 - **`/scripts/`**: Contains GDScript files for application logic
+  - `KnowledgeBase.gd`: Manages loading and accessing anatomical data
+  - `NeuralNet.gd`: Handles 3D visualization of neural structures
+  - `ui_info_panel.gd`: Script for the `ui_info_panel.tscn`, handles displaying structure data
 
 - **`/docs/`**: Contains comprehensive project documentation
   - **`/Setup_Documentation/`**: Initial project setup files
@@ -77,12 +82,37 @@ The project follows Godot's scene and node-based architecture:
    - Selection system for anatomical structures
 
 2. **Information Display**:
-   - Local knowledge base in JSON format
-   - UI panels to display structure information
+   - Local knowledge base (`anatomical_data.json`) managed by `KnowledgeBase.gd` (Autoload: `KB`).
+   - A dedicated UI panel (`StructureInfoPanel` from `ui_info_panel.tscn`) displays detailed structure information.
 
 3. **AI Assistant Integration**:
    - Online API calls to third-party LLM service 
    - Prompts for neuroanatomy Q&A and explanations
+
+## Key Classes and Resources
+
+1. **KnowledgeBase (KnowledgeBase.gd)**:
+   - Loads anatomical data from JSON
+   - Provides methods to access structure information
+   - Handles errors and status tracking for data loading
+
+2. **NeuralNet (NeuralNet.gd)**:
+   - Manages 3D visualization of neural structures
+   - Core class for brain visualization functionality
+
+3. **Main Scene (node_3d.tscn)**:
+   - Entry point for the application
+   - Contains the 3D visualization environment
+
+4. **Anatomical Data (res://assets/data/anatomical_data.json)**:
+   - JSON file storing anatomical information.
+   - Root object contains: `version` (String), `lastUpdated` (String), and `structures` (Array).
+   - Each object in the `structures` array contains: `id` (String, ideally matches 3D mesh NodeName), `displayName` (String), `shortDescription` (String), and `functions` (Array of Strings).
+
+5. **Structure Information Panel (ui_info_panel.tscn & ui_info_panel.gd)**:
+   - Scene: `res://scenes/ui_info_panel.tscn` (instantiated in `node_3d.tscn` as `StructureInfoPanel`).
+   - Script: `res://scripts/ui_info_panel.gd` (class_name: `StructureInfoPanel`).
+   - Role: Displays detailed information (name, description, functions) for a selected anatomical structure. Interacts with `node_3d.gd`.
 
 ## Development Guidelines
 
