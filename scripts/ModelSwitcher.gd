@@ -78,12 +78,12 @@ func show_only_model(model_name: String) -> void:
 		return
 		
 	# Hide all models first
-	for name in models.keys():
-		var model_info = models[name]
-		model_info.node.visible = (name == model_name)
-		model_info.visible = (name == model_name)
+	for model_key in models.keys():
+		var model_info = models[model_key]
+		model_info.node.visible = (model_key == model_name)
+		model_info.visible = (model_key == model_name)
 		
 		# Emit signal for each changed model
-		emit_signal("model_visibility_changed", name, model_info.visible)
+		emit_signal("model_visibility_changed", model_key, model_info.visible)
 		
 	print("ModelSwitcher: Now showing only '" + model_name + "'")

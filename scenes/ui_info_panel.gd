@@ -11,8 +11,17 @@ extends PanelContainer
 signal panel_closed
 
 func _ready() -> void:
-	# Connect close button signal
-	close_button.pressed.connect(_on_close_button_pressed)
+	# Connect close button signal - check if it's already connected first
+	var signal_connections = close_button.get_signal_connection_list("pressed")
+	var already_connected = false
+	
+	for connection in signal_connections:
+		if connection.callable.get_object() == self and connection.callable.get_method() == "_on_close_button_pressed":
+			already_connected = true
+			break
+	
+	if not already_connected:
+		close_button.pressed.connect(_on_close_button_pressed)
 	
 	# Initialize with empty data
 	clear_data()
@@ -123,11 +132,3 @@ func _on_close_button_pressed() -> void:
 	print("INFO PANEL: Close button pressed")
 	visible = false
 	emit_signal("panel_closed")
-
-
-func _on_panel_closed() -> void:
-	pass # Replace with function body.
-
-
-func _on_close_button_toggled(_toggled_on: bool) -> void:
-	pass # Replace with function body.

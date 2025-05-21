@@ -50,17 +50,28 @@ func update_button_state(model_name: String, is_checked: bool) -> void:
 	if not model_buttons.has(model_name):
 		return
 		
-	# Disconnect signal temporarily to avoid recursion
+	# Get button reference
 	var button = model_buttons[model_name]
+	
+	# Store current connections to the toggled signal for this specific callback
+	var has_signal_connection = false
 	var connections = button.get_signal_connection_list("toggled")
 	for connection in connections:
-		button.toggled.disconnect(connection.callable)
+		if connection.callable.get_object() == self && connection.callable.get_method() == "_on_model_button_toggled":
+			has_signal_connection = true
+			# Temporarily block the signal to avoid recursion
+			button.set_block_signals(true)
+			break
 	
-	# Set button state
+	# Set button state without triggering signal
 	button.button_pressed = is_checked
 	
-	# Reconnect signal
-	button.toggled.connect(_on_model_button_toggled.bind(model_name))
+	# Unblock signals
+	button.set_block_signals(false)
+	
+	# Ensure connection exists if it was disconnected
+	if has_signal_connection == false:
+		button.toggled.connect(_on_model_button_toggled.bind(model_name))
 
 # Signal handler when a model button is toggled
 func _on_model_button_toggled(is_checked: bool, model_name: String) -> void:
@@ -71,7 +82,17 @@ func _on_model_button_toggled(is_checked: bool, model_name: String) -> void:
 func _on_show_all_pressed() -> void:
 	print("Show all models pressed")
 	
-	# Set all buttons to checked
+	# Get list of models that need to be shown (currently hidden)
+	var models_to_show = []
+	for model_name in model_buttons.keys():
+		var button = model_buttons[model_name]
+		if not button.button_pressed:
+			models_to_show.append(model_name)
+	
+	# Update UI for all models (set all buttons to checked)
 	for model_name in model_buttons.keys():
 		update_button_state(model_name, true)
+	
+	# Only emit signals for models that were actually hidden
+	for model_name in models_to_show:
 		emit_signal("model_selected", model_name)
