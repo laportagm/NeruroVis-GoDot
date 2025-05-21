@@ -1,12 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dmhgi3od0a05a"]
+[gd_scene load_steps=4 format=3 uid="uid://dmhgi3od0a05a"]
 
 [ext_resource type="PackedScene" uid="uid://c2l5q4krykpop" path="res://assets/models/Half_Brain.glb" id="2_ns6u7"]
 [ext_resource type="PackedScene" uid="uid://bb0duplw4xsbv" path="res://assets/models/Brainstem(Solid).glb" id="4_oqwcg"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ns6u7"]
+
 [node name="Brainstem(Solid)" instance=ExtResource("4_oqwcg")]
 
 [node name="Brainstem (good) 1" parent="." index="0"]
-transform = Transform3D(386.096, 0, 0, 0, 386.096, 0, 0, 0, 386.096, 0, 0, 0)
+transform = Transform3D(364.387, 0, 0, 0, 364.387, 0, 0, 0, 364.387, 0, 0, 0)
+cast_shadow = 0
+surface_material_override/0 = SubResource("ShaderMaterial_ns6u7")
 
 [node name="Half_Brain2" parent="." index="1" instance=ExtResource("2_ns6u7")]
 visible = false
