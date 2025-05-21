@@ -14,3 +14,13 @@ config/name="NeuroVis"
 run/main_scene="res://scenes/node_3d.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+KB="*res://scripts/KnowledgeBase.gd"
+ModelSwitcherGlobal="*res://scripts/ModelSwitcher.gd"
+DebugCmd="*res://scripts/DebugCommands.gd"
+
+[debug]
+
+settings/gdscript/include_language_server=true

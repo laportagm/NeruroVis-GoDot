@@ -38,12 +38,29 @@ Currently, the project structure is in its early stages. The primary scenes plan
         -   Sliders/input fields for visualization parameters (e.g., connection strength threshold, neuron size/color mapping).
         -   Information panels or labels.
 
+## Autoloads / Singletons
+
+The project uses several Autoload singletons for global state management and cross-scene functionality:
+
+-   **`KB` (`res://scripts/KnowledgeBase.gd`)**:
+    -   **Purpose:** Manages the local anatomical knowledge base loaded from JSON data.
+    -   **Global Access:** Available throughout the project as `KB` for accessing structure information and anatomical data.
+
+-   **`ModelSwitcherGlobal` (`res://scripts/ModelSwitcher.gd`)**:
+    -   **Purpose:** Manages the visibility state of different 3D brain models globally.
+    -   **Global Access:** Available as `ModelSwitcherGlobal` for toggling model visibility, registering models, and handling model-related signals from any scene.
+
+-   **`DebugCmd` (`res://scripts/DebugCommands.gd`)**:
+    -   **Purpose:** Provides a debug command system for development and testing (conditionally loaded in debug builds only).
+    -   **Global Access:** Available as `DebugCmd` in debug builds for registering and executing debug commands throughout the application.
+    -   **Note:** This autoload is excluded from release builds using `OS.is_debug_build()` checks and can be entirely excluded via export settings.
+
 ## Scene Instancing and Communication Strategy (To be refined):
 
 -   **Instancing:** Child scenes (like `NeuralNet.tscn` and `UI.tscn`) will typically be instanced as children of `Main.tscn` either directly in the editor or via script in `Main.gd`.
 -   **Communication:**
     -   **Signals:** For decoupled communication between major scene components (e.g., a UI button click needing to affect the `NeuralNet` visualization), custom signals defined in relevant scripts or via an Autoload (Singleton) script are preferred.
     -   **Direct Script Calls:** May be used for tightly coupled components, particularly within a single complex scene, or from a parent scene to its direct children.
-    -   **Autoloads (Singletons):** Global state or globally accessible functionality (e.g., `GlobalState.gd`, `DataManager.gd`) can be managed via Autoloads.
+    -   **Autoloads (Singletons):** Global state and functionality are managed via the Autoloads listed above, providing consistent access across all scenes.
 
 *(This document should be updated as the project evolves and these scenes are implemented and refined.)*

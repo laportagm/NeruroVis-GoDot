@@ -45,11 +45,11 @@ func _run_tests() -> void:
 		return
 	
 	print("Test 1: Checking for model switcher reference")
-	model_switcher = main_scene.model_switcher
+	model_switcher = ModelSwitcherGlobal
 	if not model_switcher:
-		_report_failure("Failed to find model_switcher in main scene")
+		_report_failure("Failed to access ModelSwitcherGlobal")
 		return
-	print("✓ Model switcher found")
+	print("✓ Model switcher global reference found")
 	
 	print("Test 2: Checking for model control panel")
 	model_control_panel = main_scene.model_control_panel

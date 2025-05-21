@@ -89,30 +89,54 @@ The project follows Godot's scene and node-based architecture:
    - Online API calls to third-party LLM service 
    - Prompts for neuroanatomy Q&A and explanations
 
+## Autoloads
+
+The project uses the following Autoload singletons for global functionality:
+
+1. **`KB` (`res://scripts/KnowledgeBase.gd`)**:
+   - Manages loading and accessing anatomical data from JSON files globally.
+
+2. **`ModelSwitcherGlobal` (`res://scripts/ModelSwitcher.gd`)**:
+   - Manages the visibility state of different 3D brain models globally across all scenes.
+
+3. **`DebugCmd` (`res://scripts/DebugCommands.gd`)**:
+   - Provides a debug command system for development builds (conditionally loaded based on `OS.is_debug_build()`).
+
 ## Key Classes and Resources
 
 1. **KnowledgeBase (KnowledgeBase.gd)**:
    - Loads anatomical data from JSON
    - Provides methods to access structure information
    - Handles errors and status tracking for data loading
+   - **Autoload Access:** Available globally as `KB`
 
-2. **NeuralNet (NeuralNet.gd)**:
+2. **ModelSwitcher (ModelSwitcher.gd)**:
+   - Manages 3D brain model visibility and registration
+   - Handles model switching functionality with signals for UI updates
+   - **Autoload Access:** Available globally as `ModelSwitcherGlobal`
+
+3. **NeuralNet (NeuralNet.gd)**:
    - Manages 3D visualization of neural structures
    - Core class for brain visualization functionality
 
-3. **Main Scene (node_3d.tscn)**:
+4. **Main Scene (node_3d.tscn)**:
    - Entry point for the application
    - Contains the 3D visualization environment
 
-4. **Anatomical Data (res://assets/data/anatomical_data.json)**:
+5. **Anatomical Data (res://assets/data/anatomical_data.json)**:
    - JSON file storing anatomical information.
    - Root object contains: `version` (String), `lastUpdated` (String), and `structures` (Array).
    - Each object in the `structures` array contains: `id` (String, ideally matches 3D mesh NodeName), `displayName` (String), `shortDescription` (String), and `functions` (Array of Strings).
 
-5. **Structure Information Panel (ui_info_panel.tscn & ui_info_panel.gd)**:
+6. **Structure Information Panel (ui_info_panel.tscn & ui_info_panel.gd)**:
    - Scene: `res://scenes/ui_info_panel.tscn` (instantiated in `node_3d.tscn` as `StructureInfoPanel`).
    - Script: `res://scripts/ui_info_panel.gd` (class_name: `StructureInfoPanel`).
    - Role: Displays detailed information (name, description, functions) for a selected anatomical structure. Interacts with `node_3d.gd`.
+
+7. **Debug Commands (DebugCommands.gd)**:
+   - Provides debug command registration and execution system
+   - Available in debug builds for development and testing functionality
+   - **Conditional Autoload Access:** Available as `DebugCmd` when `OS.is_debug_build()` is true
 
 ## Development Guidelines
 

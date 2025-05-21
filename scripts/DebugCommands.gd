@@ -18,12 +18,12 @@ var history_index = -1
 var command_buffer = ""
 
 # Register a command with the debug system
-func register_command(name: String, callback: Callable, description: String = "") -> void:
-	registered_commands[name] = {
+func register_command(command_id: String, callback: Callable, description: String = "") -> void:
+	registered_commands[command_id] = {
 		"callback": callback,
 		"description": description
 	}
-	print_debug("Registered command: " + name)
+	print_debug("Registered command: " + command_id)
 
 # Run a debug command
 func run_command(command_string: String) -> void:
@@ -35,7 +35,7 @@ func run_command(command_string: String) -> void:
 	# Split command and args
 	var parts = command_string.split(" ", false, 1)
 	var command_name = parts[0].to_lower()
-	var args = parts.size() > 1 ? parts[1] : ""
+	var args = parts[1] if parts.size() > 1 else ""
 	
 	# Skip empty commands
 	if command_name.strip_edges() == "":
@@ -140,7 +140,7 @@ func _ready() -> void:
 	register_command("debug_toggle", func(): 
 		if has_node("/root/VisualDebugger"):
 			VisualDebugger.toggle()
-			log_info("Debug mode " + ("enabled" if VisualDebugger._enabled else "disabled"))
+			log_info("Debug mode " + ("enabled" if VisualDebugger.is_debugger_active else "disabled"))
 		else:
 			log_error("VisualDebugger not found"),
 		"Toggle debug visualization mode")

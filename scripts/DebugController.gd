@@ -97,7 +97,7 @@ func _run_test(test_script: String) -> void:
 	
 	# Connect test completed signal
 	if test_instance.has_signal("test_completed"):
-		test_instance.test_completed.connect(func(success, message): 
+		test_instance.test_completed.connect(func(success, message):
 			_log_test_result(test_name, success, message)
 		)
 	
@@ -361,7 +361,7 @@ func _run_direct_script_test(test_name: String) -> void:
 	
 	# Connect to the test completed signal
 	if test_instance.has_signal("test_completed"):
-		test_instance.test_completed.connect(func(success, message): 
+		test_instance.test_completed.connect(func(success, message):
 			_log_test_result(test_name, success, message)
 		)
 	
@@ -375,7 +375,7 @@ func _run_direct_script_test(test_name: String) -> void:
 	# Set a timeout to remove the test instance
 	var cleanup_timer = Timer.new()
 	add_child(cleanup_timer)
-	cleanup_timer.wait_time = 5.0  # Allow up to 5 seconds for test to complete
+	cleanup_timer.wait_time = 5.0 # Allow up to 5 seconds for test to complete
 	cleanup_timer.one_shot = true
 	cleanup_timer.timeout.connect(func():
 		if test_instance and is_instance_valid(test_instance):
