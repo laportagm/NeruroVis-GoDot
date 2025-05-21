@@ -1,9 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://74ufaq2ngu4j"]
+[gd_scene load_steps=5 format=3 uid="uid://74ufaq2ngu4j"]
 
-[ext_resource type="Script" path="res://scenes/ui_info_panel.gd" id="1_jcpvk"]
+[ext_resource type="PackedScene" uid="uid://c2l5q4krykpop" path="res://assets/models/Half_Brain.glb" id="2_0e6ry"]
+[ext_resource type="PackedScene" uid="uid://cboa3wer31o8i" path="res://scenes/model_control_panel.tscn" id="2_ja4yd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urk3s"]
-bg_color = Color(0.156863, 0.192157, 0.25098, 0.92549)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -31,7 +31,6 @@ offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_urk3s")
-script = ExtResource("1_jcpvk")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -111,3 +110,11 @@ layout_mode = 2
 [node name="FunctionsList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection"]
 layout_mode = 2
 theme_override_constants/separation = 8
+
+[node name="Half_Brain" parent="." instance=ExtResource("2_0e6ry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 91.8019, 0, 6.39331)
+
+[node name="ModelControlPanel" parent="." instance=ExtResource("2_ja4yd")]
+layout_mode = 2
+
+[connection signal="toggled" from="MarginContainer/VBoxContainer/TitleBar/CloseButton" to="." method="_on_close_button_toggled"]

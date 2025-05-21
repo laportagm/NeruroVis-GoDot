@@ -1,9 +1,33 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "lastUpdated": "2025-05-20",
   "structures": [
     {
-      "id": "Thalamus_PlaceholderID",
+      "id": "Striatum",
+      "displayName": "Striatum",
+      "shortDescription": "A subcortical part of the forebrain and a critical component of the basal ganglia. It consists of the caudate nucleus and putamen, and receives input from the cerebral cortex. The striatum plays a key role in motor planning, decision-making, motivation, and reward perception.",
+      "functions": [
+        "Coordinating multiple aspects of cognition, including motor and action planning",
+        "Regulating movement execution and inhibiting unwanted movements",
+        "Processing reward-related information and reinforcement learning",
+        "Contributing to decision-making processes and habit formation",
+        "Working with other basal ganglia structures to maintain movement control"
+      ]
+    },
+    {
+      "id": "Ventricles",
+      "displayName": "Ventricles",
+      "shortDescription": "Cavities within the brain that are filled with cerebrospinal fluid (CSF). There are four ventricles: two lateral ventricles (one in each cerebral hemisphere), the third ventricle in the diencephalon, and the fourth ventricle in the hindbrain.",
+      "functions": [
+        "Containing and circulating cerebrospinal fluid (CSF)",
+        "Providing physical protection to the brain by acting as a fluid cushion",
+        "Contributing to waste clearance from the brain",
+        "Helping maintain homeostasis of the brain environment",
+        "Serving as landmarks for neuroanatomical orientation"
+      ]
+    },
+    {
+      "id": "Thalamus",
       "displayName": "Thalamus",
       "shortDescription": "A large, egg-shaped structure of gray matter located in the diencephalon, near the center of the brain. It acts as a major relay station for sensory and motor information between the body and the cerebral cortex, and plays a role in consciousness, sleep, and alertness.",
       "functions": [
@@ -15,7 +39,7 @@
       ]
     },
     {
-      "id": "Hippocampus_PlaceholderID",
+      "id": "Hippocampus",
       "displayName": "Hippocampus",
       "shortDescription": "A complex C-shaped structure embedded deep in the temporal lobe, playing a major role in learning and memory. It is crucial for the formation of new declarative memories (facts and events) and for spatial navigation.",
       "functions": [
@@ -27,7 +51,7 @@
       ]
     },
     {
-      "id": "Amygdala_PlaceholderID",
+      "id": "Amygdala",
       "displayName": "Amygdala",
       "shortDescription": "An almond-shaped set of neurons located deep in the brain's medial temporal lobe. It is a key component of the limbic system and is primarily involved in processing emotions such as fear, anxiety, and pleasure, as well as emotional memory.",
       "functions": [
@@ -39,7 +63,7 @@
       ]
     },
     {
-      "id": "Midbrain_PlaceholderID",
+      "id": "Midbrain",
       "displayName": "Midbrain (Mesencephalon)",
       "shortDescription": "The most superior part of the brainstem, connecting the forebrain (cerebrum and diencephalon) to the hindbrain (pons and medulla). It is involved in motor control, eye movement, and processing auditory and visual information.",
       "functions": [
@@ -51,7 +75,7 @@
       ]
     },
     {
-      "id": "Pons_PlaceholderID",
+      "id": "Pons",
       "displayName": "Pons",
       "shortDescription": "A part of the brainstem situated above the medulla oblongata and below the midbrain. It serves as a major relay station for signals between the cerebrum and the cerebellum and is involved in functions like sleep, respiration, swallowing, bladder control, hearing, equilibrium, taste, eye movement, facial expressions, and posture.",
       "functions": [
@@ -63,7 +87,7 @@
       ]
     },
     {
-      "id": "MedullaOblongata_PlaceholderID",
+      "id": "Medulla",
       "displayName": "Medulla Oblongata",
       "shortDescription": "The lowest part of the brainstem, connecting the brain to the spinal cord. It controls vital autonomic functions such as heartbeat, breathing, and blood pressure, as well as reflexes like vomiting, coughing, sneezing, and swallowing.",
       "functions": [
@@ -75,7 +99,7 @@
       ]
     },
     {
-      "id": "CorpusCallosum_PlaceholderID",
+      "id": "Corpus_Callosum",
       "displayName": "Corpus Callosum",
       "shortDescription": "A large bundle of nerve fibers (white matter) connecting the left and right cerebral hemispheres, facilitating communication between them. It is crucial for integrating sensory, motor, and cognitive information processed by the two hemispheres.",
       "functions": [
@@ -84,6 +108,78 @@
         "Integrating sensory, motor, and cognitive information from both hemispheres",
         "Playing a role in coordinating movement and higher cognitive functions",
         "Transfer of visual, auditory, and somatosensory information between hemispheres"
+      ]
+    },
+    {
+      "id": "Brainstem",
+      "displayName": "Brainstem",
+      "shortDescription": "The stem-like part of the brain connecting the cerebral hemispheres with the spinal cord. It consists of the midbrain, pons, and medulla oblongata and controls autonomic functions essential for survival.",
+      "functions": [
+        "Regulating vital autonomic functions (heartbeat, breathing, blood pressure)",
+        "Conveying sensory and motor signals between brain and body",
+        "Controlling wakefulness and consciousness levels",
+        "Coordinating posture and balance",
+        "Processing information from cranial nerves"
+      ]
+    },
+    {
+      "id": "Cerebellum",
+      "displayName": "Cerebellum",
+      "shortDescription": "Located at the back of the brain beneath the occipital and temporal lobes, the cerebellum is a distinct structure with a heavily folded surface. It contains more neurons than the rest of the brain combined and plays a key role in motor control and coordination.",
+      "functions": [
+        "Coordinating voluntary movements and fine motor skills",
+        "Maintaining balance and posture",
+        "Motor learning and skill acquisition",
+        "Timing and sequencing of movements",
+        "Contribution to certain cognitive functions like attention and language"
+      ]
+    },
+    {
+      "id": "Frontal_Lobe",
+      "displayName": "Frontal Lobe",
+      "shortDescription": "The largest lobe of the brain, located at the front of each cerebral hemisphere and responsible for executive functions such as decision-making, problem-solving, planning, and self-control. It houses the primary motor cortex that controls voluntary movements.",
+      "functions": [
+        "Executive functions (decision-making, planning, problem-solving)",
+        "Impulse control and inhibition of inappropriate behaviors",
+        "Working memory and attention",
+        "Motor function and movement planning",
+        "Speech production (Broca's area)"
+      ]
+    },
+    {
+      "id": "Temporal_Lobe",
+      "displayName": "Temporal Lobe",
+      "shortDescription": "Located on the sides of the brain, beneath the lateral fissure, the temporal lobes are involved in processing auditory information, understanding language, and forming and retrieving memories. They also play a role in emotion and visual perception.",
+      "functions": [
+        "Auditory processing and language comprehension",
+        "Visual memory and object recognition",
+        "Long-term memory formation and retrieval",
+        "Emotion processing (with limbic system)",
+        "Music appreciation and face recognition"
+      ]
+    },
+    {
+      "id": "Parietal_Lobe",
+      "displayName": "Parietal Lobe",
+      "shortDescription": "Located behind the frontal lobe and above the temporal lobe, the parietal lobe processes sensory information from various parts of the body. It is involved in spatial navigation, attention, and integrating different sensory inputs.",
+      "functions": [
+        "Processing sensory information from the skin (touch, temperature, pain)",
+        "Spatial awareness and navigation",
+        "Attention and visuospatial processing",
+        "Manipulation of objects and hand-eye coordination",
+        "Integration of multiple sensory inputs"
+      ]
+    },
+    {
+      "id": "Occipital_Lobe",
+      "displayName": "Occipital Lobe",
+      "shortDescription": "The smallest lobe of the brain, located at the back of each cerebral hemisphere. It is primarily responsible for visual processing, including color recognition, motion perception, and depth perception.",
+      "functions": [
+        "Processing visual information from the eyes",
+        "Color recognition and discrimination",
+        "Motion detection and perception",
+        "Depth perception and spatial relationships",
+        "Visual pattern and face recognition"
       ]
     }
   ]

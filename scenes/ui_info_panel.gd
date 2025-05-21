@@ -16,6 +16,8 @@ func _ready() -> void:
 	
 	# Initialize with empty data
 	clear_data()
+	
+	print("StructureInfoPanel initialized!")
 
 # Display data for a brain structure
 func display_structure_data(structure_data: Dictionary) -> void:
@@ -24,27 +26,54 @@ func display_structure_data(structure_data: Dictionary) -> void:
 		print("Warning: Attempted to display empty structure data")
 		clear_data()
 		return
+	
+	print("INFO PANEL: Displaying structure data for " + structure_data.get("id", "unknown"))
 		
 	# Update structure name
 	if structure_data.has("displayName"):
 		structure_name_label.text = structure_data.displayName
+		print("INFO PANEL: Set name to: " + structure_data.displayName)
 	else:
 		structure_name_label.text = "Unknown Structure"
 	
 	# Update description
 	if structure_data.has("shortDescription"):
 		description_text.text = structure_data.shortDescription
+		print("INFO PANEL: Set description of " + str(structure_data.shortDescription.length()) + " characters")
 	else:
 		description_text.text = "No description available."
 	
 	# Update functions list
 	_populate_functions_list(structure_data.get("functions", []))
 	
-	# Make panel visible
-	visible = true
+	# Make panel visible and bring to front
+	if not visible:
+		print("INFO PANEL: Setting panel to visible")
+		# Make sure parent CanvasLayer is visible too
+		var parent_layer = get_parent()
+		if parent_layer is CanvasLayer and not parent_layer.visible:
+			print("INFO PANEL: Parent CanvasLayer was invisible! Setting to visible.")
+			parent_layer.visible = true
+			
+		visible = true
+		print("INFO PANEL: Panel visibility now: " + str(visible))
+	
+	# Force layout update and redraw
+	size_flags_horizontal = SIZE_EXPAND_FILL
+	size_flags_vertical = SIZE_EXPAND_FILL
+	queue_redraw()
+	
+	# Delay a frame and check visibility again (to catch any issues)
+	get_tree().create_timer(0.05).timeout.connect(func(): 
+		if not visible:
+			print("INFO PANEL: Panel still invisible after timeout! Forcing visible.")
+			visible = true
+	)
 
 # Populate the functions list with the structure's functions
 func _populate_functions_list(functions_array: Array) -> void:
+	print("INFO PANEL: Populating " + str(functions_array.size()) + " functions")
+	
 	# Clear existing items first
 	for child in functions_list.get_children():
 		functions_list.remove_child(child)
@@ -91,5 +120,14 @@ func clear_data() -> void:
 
 # Close button pressed handler
 func _on_close_button_pressed() -> void:
+	print("INFO PANEL: Close button pressed")
 	visible = false
 	emit_signal("panel_closed")
+
+
+func _on_panel_closed() -> void:
+	pass # Replace with function body.
+
+
+func _on_close_button_toggled(_toggled_on: bool) -> void:
+	pass # Replace with function body.

@@ -20,3 +20,53 @@ This is a simple initial diagnostic feature. It will help confirm that the `Neur
 -   When the project is run and the `NeuralNet` scene (or the scene associated with `NeuralNet.gd`) is instanced and becomes ready:
     -   The specified message (e.g., "NeuralNet scene is ready and initialized.") appears clearly in the Godot Output panel.
     -   No errors related to this script modification occur during project startup or scene loading.
+
+## 6. Implementation Notes
+
+### Neural Network Mesh Structure Logs
+
+This section contains logs of the mesh structure names found in the 3D models used in the NeuroVis application. This information is helpful for debugging and improving the mapping between mesh names and structure IDs in the knowledge base.
+
+### Known Mesh Names
+
+These names have been observed in the 3D models:
+
+- Thalamus
+- Hippocampus
+- Amygdala
+- Midbrain
+- Pons
+- Medulla
+- Corpus_Callosum
+- Brainstem
+- Cerebellum
+- Frontal_Lobe
+- Temporal_Lobe
+- Parietal_Lobe
+- Occipital_Lobe
+
+### Potential Naming Variations
+
+Different 3D modeling software and artists may use different naming conventions:
+
+- Using spaces: "Frontal Lobe" vs "Frontal_Lobe"
+- Using CamelCase: "FrontalLobe" vs "Frontal_Lobe"
+- Using underscores: "Frontal_Lobe"
+- Lowercase: "frontal_lobe" vs "Frontal_Lobe"
+- Abbreviated: "FC" (Frontal Cortex) vs "Frontal_Lobe"
+- Full anatomical: "Medulla Oblongata" vs "Medulla"
+
+### Debugging Steps
+
+If you're having trouble with structure identification:
+
+1. Enable DEBUG_MODE in node_3d.gd
+2. Click on structures and check the console output
+3. Look for "Selected structure:" log entries
+4. Add any new mesh names to the NeuralNet.gd structure_map
+5. Update this log file with newly discovered mesh names
+
+### Last Updated
+
+- Date: 2025-05-20
+- Current app version: 1.1
