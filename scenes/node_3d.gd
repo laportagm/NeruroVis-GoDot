@@ -74,16 +74,6 @@ func _ready() -> void:
 	add_child(model_switcher)
 	print("Model switcher initialized.")
 	
-	# Initialize selection manager
-	selection_manager = SelectionManager.new()
-	add_child(selection_manager)
-	print("Selection manager initialized.")
-	
-	# Initialize camera controller
-	camera_controller = CameraController.new()
-	add_child(camera_controller)
-	print("Camera controller initialized.")
-	
 	# Setup UI layer
 	$UI_Layer.visible = true # Ensure UI layer is visible
 	print("DEBUG: UI_Layer visibility set to: " + str($UI_Layer.visible))
@@ -100,7 +90,7 @@ func _ready() -> void:
 	print("DEBUG: Object name label reference valid: " + str(object_name_label != null))
 	
 	# Initialize model coordinator
-	model_coordinator = ModelCoordinator.new()
+	model_coordinator = ModelCoordinatorScene.new()
 	add_child(model_coordinator)
 	
 	# Setup and load 3D brain models using ModelCoordinator
