@@ -32,7 +32,7 @@ func run_test() -> void:
 
 func _run_tests() -> void:
 	# Get required references
-	var main_scene = get_tree().current_scene
+	main_scene = get_tree().current_scene
 	if main_scene.get_class() == "Control" and main_scene.name == "DebugScene":
 		for child in main_scene.get_children():
 			if child.get_class() == "Node3D" and child.name == "MainScene":
@@ -144,7 +144,7 @@ func _run_tests() -> void:
 	var previously_selected_mesh = current_selected_mesh
 	
 	# Simulate a click on empty space (using far corner of screen likely to miss any object)
-	var corner_pos = Vector2(10, 10)  # Top-left corner
+	var corner_pos = Vector2(10, 10) # Top-left corner
 	main_scene._handle_selection(corner_pos)
 	
 	# Give a frame to process
@@ -161,13 +161,12 @@ func _run_tests() -> void:
 	
 	print("Test 7: Testing structure selected signal")
 	# Hook up to the signal
-	var signal_received = false
-	var selected_structure_name = ""
+	var signal_data = {"received": false, "name": ""}
 	
 	if main_scene.has_signal("structure_selected"):
 		main_scene.structure_selected.connect(func(structure_name):
-			signal_received = true
-			selected_structure_name = structure_name
+			signal_data.received = true
+			signal_data.name = structure_name
 		)
 		
 		# Perform a selection at center screen again
@@ -176,10 +175,10 @@ func _run_tests() -> void:
 		# Wait a bit for signal to process
 		await get_tree().create_timer(0.1).timeout
 		
-		if not signal_received:
+		if not signal_data.received:
 			print("  - Warning: structure_selected signal not emitted")
 		else:
-			print("  - Received structure_selected signal with name: " + selected_structure_name)
+			print("  - Received structure_selected signal with name: " + signal_data.name)
 	else:
 		print("  - Warning: structure_selected signal not defined")
 	
@@ -208,13 +207,13 @@ func _test_raycast(screen_pos: Vector2, position_desc: String) -> bool:
 	var original_handle_selection = main_scene._handle_selection
 	
 	# Replace with our instrumented version
-	var hit_something = false
+	var hit_something_ref = {"value": false} # Use a dictionary to pass by reference
 	main_scene._handle_selection = func(click_position):
 		# Forward to original method
 		original_handle_selection.call(click_position)
 		
 		# Check if selection was successful
-		hit_something = (main_scene.current_selected_mesh != null)
+		hit_something_ref.value = (main_scene.current_selected_mesh != null)
 	
 	# Perform the selection
 	main_scene._handle_selection(screen_pos)
@@ -222,12 +221,12 @@ func _test_raycast(screen_pos: Vector2, position_desc: String) -> bool:
 	# Restore original method
 	main_scene._handle_selection = original_handle_selection
 	
-	if hit_something:
+	if hit_something_ref.value:
 		print("  - Raycast hit object: " + main_scene.current_selected_mesh.name)
 	else:
 		print("  - Raycast did not hit any object")
 	
-	return hit_something
+	return hit_something_ref.value
 
 # Recursively find all mesh instances in a node
 func _find_mesh_instances(node: Node, mesh_instances: Array) -> void:

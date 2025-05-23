@@ -33,7 +33,7 @@ func run_test() -> void:
 
 func _run_tests() -> void:
 	# Get required references
-	var main_scene = get_tree().current_scene
+	main_scene = get_tree().current_scene
 	if main_scene.get_class() == "Control" and main_scene.name == "DebugScene":
 		for child in main_scene.get_children():
 			if child.get_class() == "Node3D" and child.name == "MainScene":
@@ -123,7 +123,7 @@ func _run_tests() -> void:
 	info_panel.display_structure_data(structure_data)
 	
 	# Panel should now be visible
-	await get_tree().create_timer(0.1).timeout  # Wait for visibility change
+	await get_tree().create_timer(0.1).timeout # Wait for visibility change
 	if not info_panel.visible:
 		_report_failure("Panel did not become visible after displaying structure data")
 		return
@@ -131,7 +131,7 @@ func _run_tests() -> void:
 	# Check if the structure name is displayed
 	var structure_name_label = info_panel.get_node("MarginContainer/VBoxContainer/TitleBar/StructureName")
 	if structure_name_label.text != structure_data.displayName:
-		_report_failure("Structure name not correctly displayed. Expected: " 
+		_report_failure("Structure name not correctly displayed. Expected: "
 			+ structure_data.displayName + ", Got: " + structure_name_label.text)
 		return
 	

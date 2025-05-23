@@ -36,9 +36,9 @@ func run_test() -> void:
 
 func _run_tests() -> void:
 	# Get required references
-	var main_scene = get_tree().current_scene
-	if main_scene.get_class() == "Control" and main_scene.name == "DebugScene":
-		for child in main_scene.get_children():
+	var current_scene = get_tree().current_scene
+	if current_scene.get_class() == "Control" and current_scene.name == "DebugScene":
+		for child in current_scene.get_children():
 			if child.get_class() == "Node3D" and child.name == "MainScene":
 				main_scene = child
 				break
@@ -66,7 +66,7 @@ func _run_tests() -> void:
 	
 	# Store initial values for comparison
 	var initial_position = camera.global_position
-	var initial_rotation = camera.rotation
+	var _initial_rotation = camera.rotation # Prefixed with _ as it's not used
 	
 	print("✓ Camera has valid initial position")
 	
@@ -87,9 +87,9 @@ func _run_tests() -> void:
 	
 	# Set new values
 	print("  - Modifying camera parameters")
-	main_scene.camera_distance = original_distance * 0.8  # Move closer
-	main_scene.camera_rotation_x = original_rotation_x + 0.2  # Rotate down
-	main_scene.camera_rotation_y = original_rotation_y + 0.3  # Rotate right
+	main_scene.camera_distance = original_distance * 0.8 # Move closer
+	main_scene.camera_rotation_x = original_rotation_x + 0.2 # Rotate down
+	main_scene.camera_rotation_y = original_rotation_y + 0.3 # Rotate right
 	
 	# Update camera
 	main_scene._update_camera_transform()
@@ -163,9 +163,9 @@ func _run_tests() -> void:
 		
 		print("  - Simulating: " + desc)
 		
-		# Store camera state before event
-		var before_position = camera.global_position
-		var before_rotation = camera.rotation
+		# Store camera state before event (not used, but kept for potential debugging)
+		var _before_position = camera.global_position
+		var _before_rotation = camera.rotation
 		
 		# Process the event
 		main_scene._input(event)
@@ -190,11 +190,11 @@ func _run_tests() -> void:
 	var direction_to_target = (brain_model_parent.global_position - camera.global_position).normalized()
 	
 	# Get camera forward vector (-Z axis in local space)
-	var camera_forward = -camera.global_transform.basis.z.normalized()
+	var camera_forward = - camera.global_transform.basis.z.normalized()
 	
 	# Check if vectors are approximately aligned
 	var dot_product = direction_to_target.dot(camera_forward)
-	if dot_product < 0.9:  # Allow for some tolerance, should be close to 1.0
+	if dot_product < 0.9: # Allow for some tolerance, should be close to 1.0
 		_report_failure("Camera is not looking at brain model. Dot product: " + str(dot_product))
 		return
 	

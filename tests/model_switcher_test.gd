@@ -1,4 +1,4 @@
-class_name ModelSwitcherTest
+class_name ModelSwitcherSceneTest
 extends Node
 
 # Signal to report test results
@@ -33,7 +33,7 @@ func run_test() -> void:
 
 func _run_tests() -> void:
 	# Get required references
-	var main_scene = get_tree().current_scene
+	main_scene = get_tree().current_scene
 	if main_scene.get_class() == "Control" and main_scene.name == "DebugScene":
 		for child in main_scene.get_children():
 			if child.get_class() == "Node3D" and child.name == "MainScene":
@@ -93,7 +93,7 @@ func _run_tests() -> void:
 	
 	print("Test 5: Testing UI control connection")
 	if model_names.size() > 0:
-		var test_model_name = model_names[0]
+		var _test_model_name = model_names[0]
 		
 		# Check if model control panel has method to update button state
 		if not model_control_panel.has_method("update_button_state"):
