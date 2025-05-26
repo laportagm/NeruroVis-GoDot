@@ -35,7 +35,7 @@ func run_test() -> bool:
 	
 	# Test 3: Knowledge Base Loading
 	framework.start_test("Knowledge Base Loading")
-	var kb = preload("res://scripts/KnowledgeBase.gd").new()
+	var kb = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd").new()
 	framework.assert_not_null(kb, "KnowledgeBase should instantiate")
 	
 	# Call load function directly

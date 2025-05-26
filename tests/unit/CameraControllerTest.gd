@@ -9,7 +9,7 @@ func run_test() -> bool:
 	
 	# Test 1: CameraController Instantiation
 	framework.start_test("CameraController Instantiation")
-	var camera_controller = preload("res://scripts/CameraController.gd").new()
+	var camera_controller = preload("res://scripts/interaction/CameraBehaviorController.gd").new()
 	framework.assert_not_null(camera_controller, "CameraController should instantiate")
 	var test1_result = framework.end_test()
 	

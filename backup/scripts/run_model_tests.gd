@@ -8,7 +8,7 @@ func _run() -> void:
 	print("\n=== STARTING MODEL SWITCHER TESTS ===")
 	
 	# Get the current scene
-	var edited_scene = get_editor_interface().get_edited_scene_root()
+	var edited_scene = EditorInterface.get_edited_scene_root()
 	if not edited_scene:
 		printerr("No scene is currently open in the editor")
 		return
@@ -27,7 +27,7 @@ func _run() -> void:
 			break
 	
 	# Add the test node
-	var TestClass = load("res://scripts/ModelSwitcherTest.gd")
+	var TestClass = load("res://scripts/tests/ModelSwitcherTest.gd")
 	if TestClass:
 		var test_node = TestClass.new()
 		test_node.name = "ModelSwitcherTest"

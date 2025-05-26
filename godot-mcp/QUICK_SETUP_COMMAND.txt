@@ -1,0 +1,1 @@
+cd /Users/gagelaporta/11A-NeuroVis/godot-mcp && chmod +x *.sh && ./final-setup-verify.sh

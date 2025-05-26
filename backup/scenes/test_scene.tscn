@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://qitviwyk0b6r"]
 
-[ext_resource type="Script" uid="uid://tsvk6qmypuph" path="res://scripts/ModelSwitcherTest.gd" id="1_36j8o"]
+[ext_resource type="Script" uid="uid://tsvk6qmypuph" path="res://scripts/tests/ModelSwitcherTest.gd" id="1_36j8o"]
 
 [node name="TestScene" type="Control"]
 layout_mode = 3

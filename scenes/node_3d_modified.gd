@@ -3,20 +3,20 @@ extends Node3D
 
 # Constants
 const RAY_LENGTH: float = 1000.0
-const CAMERA_ROTATION_SPEED: float = 0.01  # Speed of rotation with middle mouse button
-const CAMERA_ZOOM_SPEED: float = 0.5  # Increased for better responsiveness
-const CAMERA_MIN_DISTANCE: float = 2.0  # Closer minimum zoom
-const CAMERA_MAX_DISTANCE: float = 25.0  # Further maximum zoom
-const DEBUG_MODE: bool = true  # Set to true to enable debugging features
+const CAMERA_ROTATION_SPEED: float = 0.01 # Speed of rotation with middle mouse button
+const CAMERA_ZOOM_SPEED: float = 0.5 # Increased for better responsiveness
+const CAMERA_MIN_DISTANCE: float = 2.0 # Closer minimum zoom
+const CAMERA_MAX_DISTANCE: float = 25.0 # Further maximum zoom
+const DEBUG_MODE: bool = true # Set to true to enable debugging features
 
 # Export variables for customizing highlight appearance
-@export var highlight_color: Color = Color(0.0, 1.0, 0.0, 1.0)  # Green highlight
+@export var highlight_color: Color = Color(0.0, 1.0, 0.0, 1.0) # Green highlight
 @export var emission_energy: float = 0.5
 
 # Camera control variables
 var camera_distance: float = 10.0
-var camera_rotation_x: float = 0.3  # Initial vertical angle
-var camera_rotation_y: float = 0.0  # Initial horizontal angle
+var camera_rotation_x: float = 0.3 # Initial vertical angle
+var camera_rotation_y: float = 0.0 # Initial horizontal angle
 var is_rotating: bool = false
 var last_mouse_position: Vector2 = Vector2.ZERO
 
@@ -28,13 +28,13 @@ var continuous_movement_active = false
 # Node references
 @onready var camera: Camera3D = $Camera3D
 @onready var object_name_label: Label = $UI_Layer/ObjectNameLabel
-@onready var info_panel = $UI_Layer/StructureInfoPanel  # Removed type annotation
+@onready var info_panel = $UI_Layer/StructureInfoPanel # Removed type annotation
 @onready var brain_model_parent = $BrainModel
 
 # System references
-var knowledge_base: KnowledgeBase = null
-var neural_net: NeuralNet = null
-var model_switcher: ModelSwitcher = null
+var knowledge_base = null
+var neural_net = null
+var model_switcher = null
 var model_control_panel = null
 
 # Selection tracking variables
@@ -52,23 +52,23 @@ func _ready() -> void:
 	print("Main scene initialized.")
 	
 	# Initialize knowledge base
-	knowledge_base = KnowledgeBase.new()
+	knowledge_base = AnatomicalKnowledgeDatabase.new()
 	add_child(knowledge_base)
 	knowledge_base.load_knowledge_base()
 	print("Knowledge base initialized and loaded.")
 	
 	# Initialize neural network module
-	neural_net = NeuralNet.new()
+	neural_net = BrainVisualizationCore.new()
 	add_child(neural_net)
 	print("Neural network module initialized.")
 	
 	# Initialize model switcher
-	model_switcher = ModelSwitcher.new()
+	model_switcher = ModelVisibilityManager.new()
 	add_child(model_switcher)
 	print("Model switcher initialized.")
 	
 	# Setup UI layer
-	$UI_Layer.visible = true  # Ensure UI layer is visible
+	$UI_Layer.visible = true # Ensure UI layer is visible
 	print("DEBUG: UI_Layer visibility set to: " + str($UI_Layer.visible))
 	
 	# Connect info panel signals
@@ -92,8 +92,8 @@ func _ready() -> void:
 	# Initialize camera with animation
 	camera_distance = 10.0
 	# Start with a different orientation to create a "reveal" effect
-	camera_rotation_x = 0.5  # Looking more from above
-	camera_rotation_y = -0.8  # From a side angle
+	camera_rotation_x = 0.5 # Looking more from above
+	camera_rotation_y = -0.8 # From a side angle
 	_update_camera_transform()
 	
 	# Add debug ray visualization
@@ -102,7 +102,7 @@ func _ready() -> void:
 	# Start a timer to animate the camera to a better view
 	var timer = Timer.new()
 	add_child(timer)
-	timer.wait_time = 0.02  # 50fps animation
+	timer.wait_time = 0.02 # 50fps animation
 	timer.timeout.connect(_animate_camera)
 	timer.start()
 	print("Camera animation started.")
@@ -152,10 +152,10 @@ func _on_model_selected(model_name: String) -> void:
 	model_switcher.toggle_model_visibility(model_name)
 
 # Handle model visibility change from the model switcher
-func _on_model_visibility_changed(model_name: String, is_visible: bool) -> void:
+func _on_model_visibility_changed(model_name: String, new_visibility_state: bool) -> void:
 	# Update UI
 	if model_control_panel:
-		model_control_panel.update_button_state(model_name, is_visible)
+		model_control_panel.update_button_state(model_name, new_visibility_state)
 
 # Load 3D brain models from assets/models/ directory
 func _load_brain_models() -> void:
@@ -173,20 +173,20 @@ func _load_brain_models() -> void:
 		{
 			"path": "res://assets/models/Half_Brain.glb",
 			"position": Vector3(0, 0, 0),
-			"rotation": Vector3(0, 180, 0),  # Rotate 180 degrees to face camera
-			"scale": Vector3(0.7, 0.7, 0.7)  # Increase scale to 70%
+			"rotation": Vector3(0, 180, 0), # Rotate 180 degrees to face camera
+			"scale": Vector3(0.7, 0.7, 0.7) # Increase scale to 70%
 		},
 		{
 			"path": "res://assets/models/Internal_Structures.glb",
 			"position": Vector3(0, 0, 0),
-			"rotation": Vector3(0, 180, 0),  # Rotate 180 degrees to face camera
-			"scale": Vector3(0.7, 0.7, 0.7)  # Increase scale to 70%
+			"rotation": Vector3(0, 180, 0), # Rotate 180 degrees to face camera
+			"scale": Vector3(0.7, 0.7, 0.7) # Increase scale to 70%
 		},
 		{
 			"path": "res://assets/models/Brainstem(Solid).glb",
 			"position": Vector3(0, 0, 0),
-			"rotation": Vector3(0, 180, 0),  # Rotate 180 degrees to face camera
-			"scale": Vector3(0.7, 0.7, 0.7)  # Increase scale to 70%
+			"rotation": Vector3(0, 180, 0), # Rotate 180 degrees to face camera
+			"scale": Vector3(0.7, 0.7, 0.7) # Increase scale to 70%
 		}
 	]
 	
@@ -348,7 +348,7 @@ func _handle_selection(click_position: Vector2) -> void:
 	var space_state = get_world_3d().direct_space_state
 	var ray_params = PhysicsRayQueryParameters3D.create(from, to)
 	# Configure collision mask to detect all objects
-	ray_params.collision_mask = 0xFFFFFFFF  # All bits set, detect all layers
+	ray_params.collision_mask = 0xFFFFFFFF # All bits set, detect all layers
 	
 	# Try ray cast
 	var result = space_state.intersect_ray(ray_params)
@@ -388,7 +388,7 @@ func _handle_selection(click_position: Vector2) -> void:
 			highlight_material.albedo_color = highlight_color
 			highlight_material.emission_enabled = true
 			highlight_material.emission = highlight_color
-			highlight_material.emission_energy = emission_energy
+			highlight_material.emission_energy_multiplier = emission_energy
 			
 			# Apply highlight to all surfaces if there are multiple
 			if current_selected_mesh.mesh and current_selected_mesh.mesh.get_surface_count() > 1:
@@ -500,28 +500,28 @@ func _input(event: InputEvent) -> void:
 		
 		match event.keycode:
 			# Camera rotation
-			KEY_LEFT, KEY_A:  # Rotate camera left
+			KEY_LEFT, KEY_A: # Rotate camera left
 				camera_rotation_y += CAMERA_ROTATION_SPEED * 4.0
-			KEY_RIGHT, KEY_D:  # Rotate camera right
+			KEY_RIGHT, KEY_D: # Rotate camera right
 				camera_rotation_y -= CAMERA_ROTATION_SPEED * 4.0
-			KEY_UP, KEY_W:  # Rotate camera up
+			KEY_UP, KEY_W: # Rotate camera up
 				camera_rotation_x += CAMERA_ROTATION_SPEED * 4.0
-			KEY_DOWN, KEY_S:  # Rotate camera down
+			KEY_DOWN, KEY_S: # Rotate camera down
 				camera_rotation_x -= CAMERA_ROTATION_SPEED * 4.0
 				
 			# Camera zoom
-			KEY_Q, KEY_MINUS:  # Zoom out
+			KEY_Q, KEY_MINUS: # Zoom out
 				camera_distance = min(camera_distance + CAMERA_ZOOM_SPEED, CAMERA_MAX_DISTANCE)
-			KEY_E, KEY_PLUS, KEY_EQUAL:  # Zoom in
+			KEY_E, KEY_PLUS, KEY_EQUAL: # Zoom in
 				camera_distance = max(camera_distance - CAMERA_ZOOM_SPEED, CAMERA_MIN_DISTANCE)
 				
 			# Reset camera
-			KEY_R:  # Reset camera to default position
+			KEY_R: # Reset camera to default position
 				camera_rotation_x = 0.3
 				camera_rotation_y = 0.0
 				camera_distance = 10.0
 				
-			_:  # If no match, mark as not handled
+			_: # If no match, mark as not handled
 				handled = false
 				
 		# If we handled a key, update camera and mark as handled
@@ -587,7 +587,7 @@ func _update_camera_transform() -> void:
 var target_rotation_x: float = 0.3
 var target_rotation_y: float = 0.0
 var animation_progress: float = 0.0
-var animation_duration: float = 2.0  # Seconds
+var animation_duration: float = 2.0 # Seconds
 var animation_active: bool = false
 
 # Animate camera to smoothly transition to default view
@@ -602,7 +602,7 @@ func _animate_camera() -> void:
 		animation_progress = 0.0
 	
 	# Progress the animation
-	animation_progress += 0.02  # Timer wait time
+	animation_progress += 0.02 # Timer wait time
 	var t = min(animation_progress / animation_duration, 1.0)
 	
 	# Use smoothstep for easing
@@ -628,10 +628,10 @@ func _setup_debug_ray() -> void:
 	# Create ray mesh
 	var immediate_mesh = ImmediateMesh.new()
 	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(1, 0, 0, 1)  # Red
+	material.albedo_color = Color(1, 0, 0, 1) # Red
 	material.emission_enabled = true
 	material.emission = Color(1, 0, 0, 1)
-	material.emission_energy = 2.0
+	material.emission_energy_multiplier = 2.0
 	
 	# Create mesh instance
 	debug_ray_mesh = MeshInstance3D.new()

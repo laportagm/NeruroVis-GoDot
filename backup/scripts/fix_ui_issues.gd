@@ -18,7 +18,7 @@ func _run():
 	# Step 1: Find and analyze the info panel scene
 	var ui_panel_scene_path = "res://scenes/ui_info_panel.tscn"
 	var ui_panel_script_path = "res://scenes/ui_info_panel.gd"
-	var ui_panel_alt_script_path = "res://scripts/ui_info_panel.gd"
+	var ui_panel_alt_script_path = "res://scripts/ui/InformationPanelController.gd"
 	
 	print("UI DIAGNOSTIC: Step 1: Analyzing UI panel files...")
 	
@@ -68,7 +68,7 @@ func _run():
 		"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection/FunctionsList"
 	]
 	
-	# Check structure expected by scripts/ui_info_panel.gd
+	# Check structure expected by scripts/ui/InformationPanelController.gd
 	var expected_paths_alt_script = [
 		"PanelContainer/MarginContainer/VBoxContainer/StructureNameLabel",
 		"PanelContainer/MarginContainer/VBoxContainer/DescriptionLabel",
@@ -141,7 +141,7 @@ func _run():
 	print("UI DIAGNOSTIC:    - Make sure the StructureInfoPanel is a direct child of UI_Layer")
 	
 	print("UI DIAGNOSTIC: 2. In ui_info_panel.tscn, the script path should point to:")
-	print("UI DIAGNOSTIC:    - res://scenes/ui_info_panel.gd (current version)")
+	print("UI DIAGNOSTIC:    - res://scripts/ui/InformationPanelController.gd (current version)")
 	
 	print("UI DIAGNOSTIC: 3. Make sure node paths in the script match the scene:")
 	print("UI DIAGNOSTIC:    - Ensure all @onready var nodes match the actual scene structure")

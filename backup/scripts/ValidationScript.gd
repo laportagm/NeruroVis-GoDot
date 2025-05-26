@@ -66,16 +66,17 @@ func test_neural_net_robustness() -> void:
 	print("Normal mapping: " + normal_result)
 	
 	# Null input (should handle gracefully)
-	var null_result = nn.map_mesh_name_to_structure_id(null)
-	print("Null input mapping: " + null_result)
+	# Note: Since map_mesh_name_to_structure_id expects String, we test with empty string instead
+	var null_result = nn.map_mesh_name_to_structure_id("")
+	print("Null-equivalent input mapping: " + null_result)
 	
 	# Empty string
 	var empty_result = nn.map_mesh_name_to_structure_id("")
 	print("Empty string mapping: " + empty_result)
 	
-	# Non-string input
-	var non_string_result = nn.map_mesh_name_to_structure_id(123)
-	print("Non-string input mapping: " + non_string_result)
+	# Non-string input (converted to string)
+	var non_string_result = nn.map_mesh_name_to_structure_id(str(123))
+	print("Non-string input mapping (converted): " + non_string_result)
 	
 	# Non-existent mesh name
 	var nonexistent_result = nn.map_mesh_name_to_structure_id("ThisMeshDoesNotExist")

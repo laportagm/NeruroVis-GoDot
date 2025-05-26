@@ -1,6 +1,6 @@
 {
-  "version": "1.1",
-  "lastUpdated": "2025-05-20",
+  "version": "1.2",
+  "lastUpdated": "2025-05-25",
   "structures": [
     {
       "id": "Striatum",
@@ -180,6 +180,126 @@
         "Motion detection and perception",
         "Depth perception and spatial relationships",
         "Visual pattern and face recognition"
+      ]
+    },
+    {
+      "id": "Insular_Cortex",
+      "displayName": "Insular Cortex (Insula)",
+      "shortDescription": "A small region of the cerebral cortex located deep within the lateral sulcus, beneath the frontal, parietal, and temporal lobes. The insula is involved in consciousness, emotion, regulation, perception, motor control, and cognitive function.",
+      "functions": [
+        "Interoceptive awareness (awareness of internal bodily signals)",
+        "Emotional processing and empathy",
+        "Taste and olfactory processing",
+        "Pain perception and processing",
+        "Social cognition and moral decision-making"
+      ]
+    },
+    {
+      "id": "Cingulate_Cortex",
+      "displayName": "Cingulate Cortex",
+      "shortDescription": "A region of the cerebral cortex that forms a collar around the corpus callosum and is part of the limbic system. It plays important roles in emotion formation and processing, learning, and memory.",
+      "functions": [
+        "Emotion formation and processing",
+        "Learning and memory consolidation",
+        "Attention and cognitive control",
+        "Error monitoring and conflict detection",
+        "Social behavior and empathy"
+      ]
+    },
+    {
+      "id": "Caudate_Nucleus",
+      "displayName": "Caudate Nucleus",
+      "shortDescription": "A C-shaped structure in the basal ganglia that is part of the striatum. It plays important roles in learning, memory, reward, motivation, emotion, and romantic interaction, and is involved in movement control.",
+      "functions": [
+        "Motor control and movement planning",
+        "Goal-directed behavior and motivation",
+        "Learning and memory, particularly procedural learning",
+        "Reward processing and addiction pathways",
+        "Cognitive flexibility and behavioral adaptation"
+      ]
+    },
+    {
+      "id": "Putamen",
+      "displayName": "Putamen",
+      "shortDescription": "A round structure located at the base of the forebrain, forming part of the basal ganglia along with the caudate nucleus. It is involved in regulating movements and learning processes.",
+      "functions": [
+        "Movement regulation and motor control",
+        "Learning motor sequences and habits",
+        "Language articulation and rhythm",
+        "Cognitive functions including reinforcement learning",
+        "Processing of motor and sensory information"
+      ]
+    },
+    {
+      "id": "Globus_Pallidus",
+      "displayName": "Globus Pallidus",
+      "shortDescription": "A major component of the basal ganglia consisting of two parts: internal (GPi) and external (GPe). It acts as the main output nucleus of the basal ganglia and plays a crucial role in motor control.",
+      "functions": [
+        "Output control for the basal ganglia motor circuit",
+        "Fine-tuning and regulating voluntary movements",
+        "Inhibiting unwanted or excessive movements",
+        "Motor learning and skill acquisition",
+        "Coordination between different motor programs"
+      ]
+    },
+    {
+      "id": "Substantia_Nigra",
+      "displayName": "Substantia Nigra",
+      "shortDescription": "A basal ganglia structure located in the midbrain that plays an important role in reward and movement. Degeneration of this area is associated with Parkinson's disease.",
+      "functions": [
+        "Dopamine production for motor control",
+        "Reward processing and reinforcement learning",
+        "Voluntary movement initiation and control",
+        "Procedural learning and habit formation",
+        "Behavioral motivation and goal-directed actions"
+      ]
+    },
+    {
+      "id": "Subthalamic_Nucleus",
+      "displayName": "Subthalamic Nucleus",
+      "shortDescription": "A small lens-shaped nucleus in the diencephalon that is part of the basal ganglia motor circuit. It plays a critical role in motor control and is a target for deep brain stimulation in Parkinson's disease.",
+      "functions": [
+        "Modulating basal ganglia output",
+        "Fine motor control and movement precision",
+        "Inhibiting competing motor programs",
+        "Action selection and motor decision-making",
+        "Integration of cortical and limbic inputs"
+      ]
+    },
+    {
+      "id": "Pineal_Gland",
+      "displayName": "Pineal Gland",
+      "shortDescription": "A small endocrine gland located near the center of the brain, between the two hemispheres. It produces melatonin and plays a crucial role in regulating circadian rhythms and sleep-wake cycles.",
+      "functions": [
+        "Melatonin production and secretion",
+        "Regulating circadian rhythms and sleep-wake cycles",
+        "Seasonal adaptation and reproductive cycles",
+        "Antioxidant properties and neuroprotection",
+        "Modulating immune system function"
+      ]
+    },
+    {
+      "id": "Pituitary_Gland",
+      "displayName": "Pituitary Gland",
+      "shortDescription": "Often called the 'master gland,' this pea-sized endocrine gland is located at the base of the brain. It controls the function of most other endocrine glands and is divided into anterior and posterior lobes.",
+      "functions": [
+        "Hormone production and regulation (growth hormone, ACTH, TSH)",
+        "Control of other endocrine glands",
+        "Regulation of growth and development",
+        "Stress response and cortisol regulation",
+        "Reproductive hormone control (LH, FSH)"
+      ]
+    },
+    {
+      "id": "Hypothalamus",
+      "displayName": "Hypothalamus",
+      "shortDescription": "A small region at the base of the brain that links the nervous system to the endocrine system via the pituitary gland. It controls many automatic functions and maintains homeostasis.",
+      "functions": [
+        "Temperature regulation and thermostat function",
+        "Hunger, thirst, and appetite control",
+        "Sleep-wake cycle regulation",
+        "Hormone production and endocrine control",
+        "Emotional responses and stress management"
       ]
     }
   ]

@@ -1,0 +1,93 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🚀 Quick Launch A1-NeuroVis",
+            "type": "shell",
+            "command": "open",
+            "args": ["-a", "Godot", "${workspaceFolder}/project.godot"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🧹 Clean Godot Cache",
+            "type": "shell",
+            "command": "rm",
+            "args": ["-rf", "${workspaceFolder}/.godot"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📊 Check Project Health",
+            "type": "shell",
+            "command": "echo",
+            "args": ["Checking A1-NeuroVis project health..."],
+            "group": "test",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Count Scripts",
+                "Count Scenes", 
+                "Check Autoloads"
+            ]
+        },
+        {
+            "label": "Count Scripts",
+            "type": "shell",
+            "command": "find",
+            "args": ["${workspaceFolder}/scripts", "-name", "*.gd", "-type", "f"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "Count Scenes", 
+            "type": "shell",
+            "command": "find",
+            "args": ["${workspaceFolder}/scenes", "-name", "*.tscn", "-type", "f"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "Check Autoloads",
+            "type": "shell", 
+            "command": "grep",
+            "args": ["-n", "autoload", "${workspaceFolder}/project.godot"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "🔍 Analyze Neural Models",
+            "type": "shell",
+            "command": "find",
+            "args": ["${workspaceFolder}", "-name", "*.glb", "-o", "-name", "*.fbx", "-o", "-name", "*.obj"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -83,7 +83,7 @@ func _run_tests() -> void:
 	print("Test 4: Testing raycasting and selection")
 	
 	# Test 1: Simple ray straight forward from camera
-	var center_screen_pos = get_viewport().get_visible_rect().size / 2
+	var center_screen_pos = get_viewport().get_visible_rect().size / 2.0
 	var did_hit_object = _test_raycast(center_screen_pos, "center of screen")
 	
 	# Try multiple rays if first one doesn't hit

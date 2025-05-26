@@ -52,7 +52,17 @@ func discover_test_files() -> Array[String]:
 func run_test_file(test_file_path: String):
 	print("🧪 Running: %s" % test_file_path)
 	
-	var script = load("res://" + test_file_path)
+	# Validate test file path
+	if test_file_path.is_empty():
+		record_test_failure("", "Empty test file path provided")
+		return
+	
+	var full_path = "res://" + test_file_path
+	if not ResourceLoader.exists(full_path):
+		record_test_failure(test_file_path, "Test script does not exist: " + full_path)
+		return
+	
+	var script = load(full_path)
 	if script == null:
 		record_test_failure(test_file_path, "Failed to load test script")
 		return
@@ -75,7 +85,7 @@ func run_test_file(test_file_path: String):
 	else:
 		record_test_failure(test_file_path, "No run_test method found")
 	
-	test_instance.queue_free()
+	# Note: RefCounted objects don't need queue_free()
 
 func record_test_success(test_name: String, duration_ms: int = 0):
 	passed_tests += 1

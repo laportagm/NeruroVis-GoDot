@@ -61,10 +61,13 @@ NeuroVis is an AI-Enhanced Brain Anatomy Visualizer desktop application built wi
   - `node_3d.gd` contains the scene's script functionality
   - `ui_info_panel.tscn`: Scene for the detailed anatomical information panel
 
-- **`/scripts/`**: Contains GDScript files for application logic
-  - `KnowledgeBase.gd`: Manages loading and accessing anatomical data
-  - `NeuralNet.gd`: Handles 3D visualization of neural structures
-  - `ui_info_panel.gd`: Script for the `ui_info_panel.tscn`, handles displaying structure data
+- **`/scripts/`**: Contains GDScript files organized by domain
+  - **`/core/`**: Core business logic (AnatomicalKnowledgeDatabase.gd, BrainVisualizationCore.gd)
+  - **`/models/`**: Model management (ModelVisibilityManager.gd, ModelRegistry.gd)
+  - **`/interaction/`**: User interaction systems (CameraBehaviorController.gd, BrainStructureSelectionManager.gd)
+  - **`/ui/`**: UI components (InformationPanelController.gd, StructureLabeler.gd)
+  - **`/visualization/`**: Visualization utilities (DebugVisualizer.gd, PerformanceDebugger.gd)
+  - **`/dev_utils/`**: Development and debugging tools
 
 - **`/docs/`**: Contains comprehensive project documentation
   - **`/Setup_Documentation/`**: Initial project setup files
@@ -93,29 +96,29 @@ The project follows Godot's scene and node-based architecture:
 
 The project uses the following Autoload singletons for global functionality:
 
-1. **`KB` (`res://scripts/KnowledgeBase.gd`)**:
+1. **`KB` (`res://scripts/core/AnatomicalKnowledgeDatabase.gd`)**:
    - Manages loading and accessing anatomical data from JSON files globally.
 
-2. **`ModelSwitcherGlobal` (`res://scripts/ModelSwitcher.gd`)**:
+2. **`ModelSwitcherGlobal` (`res://scripts/models/ModelVisibilityManager.gd`)**:
    - Manages the visibility state of different 3D brain models globally across all scenes.
 
-3. **`DebugCmd` (`res://scripts/DebugCommands.gd`)**:
+3. **`DebugCmd` (`res://scripts/core/DebugCommands.gd`)**:
    - Provides a debug command system for development builds (conditionally loaded based on `OS.is_debug_build()`).
 
 ## Key Classes and Resources
 
-1. **KnowledgeBase (KnowledgeBase.gd)**:
+1. **AnatomicalKnowledgeDatabase (AnatomicalKnowledgeDatabase.gd)**:
    - Loads anatomical data from JSON
    - Provides methods to access structure information
    - Handles errors and status tracking for data loading
    - **Autoload Access:** Available globally as `KB`
 
-2. **ModelSwitcher (ModelSwitcher.gd)**:
+2. **ModelVisibilityManager (ModelVisibilityManager.gd)**:
    - Manages 3D brain model visibility and registration
    - Handles model switching functionality with signals for UI updates
    - **Autoload Access:** Available globally as `ModelSwitcherGlobal`
 
-3. **NeuralNet (NeuralNet.gd)**:
+3. **BrainVisualizationCore (BrainVisualizationCore.gd)**:
    - Manages 3D visualization of neural structures
    - Core class for brain visualization functionality
 

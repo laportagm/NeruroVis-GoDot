@@ -1,40 +1,53 @@
-# Godot-specific ignores
+# A1-NeuroVis - Enhanced .gitignore
+
+# Godot 4 specific ignores
 .godot/
 .import/
+*.import
+*.md5
+
+# Godot-specific export files
 export.cfg
 export_presets.cfg
-*.translation
-
-# Godot 4.0+ specific ignores
-.godot/
-
-# Imports
-*.import
-
-# Resource cache
-.import/
-
-# Builds and executables
-builds/
-*.exe
-*.app
-*.pck
-*.x86_64
-*.x86
-*.arm64
+*.tmp
 
 # Temporary files
-**/__pycache__/
-**/.pytest_cache/
-**/*.pyc
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
 
-# IDE specific files
-.idea/
-.vscode/
-*.code-workspace
-.vs/
+# VS Code
+.vscode/extensions.json
+.vscode/launch.json.backup
+.vscode/settings.json.backup
 
-# Version control
+# Development and debug files
+logs/
+temp/
+debug_output/
+*.log
+*.pid
+*.seed
+*.coverprofile
+
+# Performance profiling
+*.prof
+*.pprof
+performance_data/
+
+# Build and export directories
+build/
+dist/
+export/
+
+# Godot MCP specific
+godot-mcp/cli-server/build/
+godot-mcp/cli-server/node_modules/
+godot-mcp/cli-server/*.log
+
+# OS specific files
 .DS_Store
 .DS_Store?
 ._*
@@ -43,11 +56,43 @@ builds/
 ehthumbs.db
 Thumbs.db
 
-# Crash reports
-*.dump
+# IDE specific files
+*.sublime-*
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Backup files
-*.bak
-*.tmp
-*~
-*.swp
+# Dependencies and packages
+node_modules/
+*.zip
+*.tar.gz
+*.rar
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Test outputs
+test_reports/
+coverage/
+*.coverage
+
+# Documentation builds
+docs/_build/
+site/
+
+# Sensitive configuration
+.env
+.env.local
+.env.*.local
+config.local.*
+secrets.json
+
+# User-specific Godot settings
+project_settings.tres
+input_map.tres
