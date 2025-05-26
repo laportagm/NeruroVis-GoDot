@@ -168,26 +168,20 @@ func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		knowledge_base = script_resource.new()
-		if knowledge_base == null:
-			push_error("[BOOTSTRAP] Failed to create knowledge base instance")
-			emit_signal("initialization_failed", "knowledge_base", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(knowledge_base)
-		if knowledge_base.has_method("load_knowledge_base"):
-			knowledge_base.load_knowledge_base()
-		
-		systems_initialized["knowledge_base"] = true
-		emit_signal("system_initialized", "knowledge_base")
-		print("[BOOTSTRAP] Knowledge base initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during knowledge base initialization")
-		emit_signal("initialization_failed", "knowledge_base", "Exception occurred")
+	knowledge_base = script_resource.new()
+	if knowledge_base == null:
+		push_error("[BOOTSTRAP] Failed to create knowledge base instance")
+		emit_signal("initialization_failed", "knowledge_base", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(knowledge_base)
+	if knowledge_base.has_method("load_knowledge_base"):
+		knowledge_base.load_knowledge_base()
+	
+	systems_initialized["knowledge_base"] = true
+	emit_signal("system_initialized", "knowledge_base")
+	print("[BOOTSTRAP] Knowledge base initialized successfully")
+	return true
 
 func _initialize_neural_net(main_scene: Node3D) -> bool:
 	"""Initialize the brain visualization core"""
@@ -196,24 +190,18 @@ func _initialize_neural_net(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		neural_net = script_resource.new()
-		if neural_net == null:
-			push_error("[BOOTSTRAP] Failed to create neural net instance")
-			emit_signal("initialization_failed", "neural_net", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(neural_net)
-		
-		systems_initialized["neural_net"] = true
-		emit_signal("system_initialized", "neural_net")
-		print("[BOOTSTRAP] Neural network module initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during neural net initialization")
-		emit_signal("initialization_failed", "neural_net", "Exception occurred")
+	neural_net = script_resource.new()
+	if neural_net == null:
+		push_error("[BOOTSTRAP] Failed to create neural net instance")
+		emit_signal("initialization_failed", "neural_net", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(neural_net)
+	
+	systems_initialized["neural_net"] = true
+	emit_signal("system_initialized", "neural_net")
+	print("[BOOTSTRAP] Neural network module initialized successfully")
+	return true
 
 func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	"""Initialize the model visibility manager"""
@@ -222,24 +210,18 @@ func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		model_switcher = script_resource.new()
-		if model_switcher == null:
-			push_error("[BOOTSTRAP] Failed to create model switcher instance")
-			emit_signal("initialization_failed", "model_switcher", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(model_switcher)
-		
-		systems_initialized["model_switcher"] = true
-		emit_signal("system_initialized", "model_switcher")
-		print("[BOOTSTRAP] Model switcher initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during model switcher initialization")
-		emit_signal("initialization_failed", "model_switcher", "Exception occurred")
+	model_switcher = script_resource.new()
+	if model_switcher == null:
+		push_error("[BOOTSTRAP] Failed to create model switcher instance")
+		emit_signal("initialization_failed", "model_switcher", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(model_switcher)
+	
+	systems_initialized["model_switcher"] = true
+	emit_signal("system_initialized", "model_switcher")
+	print("[BOOTSTRAP] Model switcher initialized successfully")
+	return true
 
 func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	"""Initialize the model coordination system"""
@@ -248,29 +230,23 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		model_coordinator = script_resource.new()
-		if model_coordinator == null:
-			push_error("[BOOTSTRAP] Failed to create model coordinator instance")
-			emit_signal("initialization_failed", "model_coordinator", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(model_coordinator)
-		
-		# Setup brain model parent if available
-		var brain_parent = main_scene.get_node_or_null("BrainModel")
-		if brain_parent and model_coordinator.has_method("set_model_parent"):
-			model_coordinator.set_model_parent(brain_parent)
-		
-		systems_initialized["model_coordinator"] = true
-		emit_signal("system_initialized", "model_coordinator")
-		print("[BOOTSTRAP] Model coordinator initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during model coordinator initialization")
-		emit_signal("initialization_failed", "model_coordinator", "Exception occurred")
+	model_coordinator = script_resource.new()
+	if model_coordinator == null:
+		push_error("[BOOTSTRAP] Failed to create model coordinator instance")
+		emit_signal("initialization_failed", "model_coordinator", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(model_coordinator)
+	
+	# Setup brain model parent if available
+	var brain_parent = main_scene.get_node_or_null("BrainModel")
+	if brain_parent and model_coordinator.has_method("set_model_parent"):
+		model_coordinator.set_model_parent(brain_parent)
+	
+	systems_initialized["model_coordinator"] = true
+	emit_signal("system_initialized", "model_coordinator")
+	print("[BOOTSTRAP] Model coordinator initialized successfully")
+	return true
 
 func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	"""Initialize the brain structure selection manager"""
@@ -279,24 +255,18 @@ func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		selection_manager = script_resource.new()
-		if selection_manager == null:
-			push_error("[BOOTSTRAP] Failed to create selection manager instance")
-			emit_signal("initialization_failed", "selection_manager", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(selection_manager)
-		
-		systems_initialized["selection_manager"] = true
-		emit_signal("system_initialized", "selection_manager")
-		print("[BOOTSTRAP] Selection manager initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during selection manager initialization")
-		emit_signal("initialization_failed", "selection_manager", "Exception occurred")
+	selection_manager = script_resource.new()
+	if selection_manager == null:
+		push_error("[BOOTSTRAP] Failed to create selection manager instance")
+		emit_signal("initialization_failed", "selection_manager", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(selection_manager)
+	
+	systems_initialized["selection_manager"] = true
+	emit_signal("system_initialized", "selection_manager")
+	print("[BOOTSTRAP] Selection manager initialized successfully")
+	return true
 
 func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	"""Initialize the camera behavior controller"""
@@ -305,33 +275,27 @@ func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	if not script_resource:
 		return false
 	
-	try:
-		camera_controller = script_resource.new()
-		if camera_controller == null:
-			push_error("[BOOTSTRAP] Failed to create camera controller instance")
-			emit_signal("initialization_failed", "camera_controller", "Instance creation failed")
-			return false
-		
-		main_scene.add_child(camera_controller)
-		
-		# Initialize with camera and brain model parent
-		var camera = main_scene.get_node_or_null("Camera3D")
-		var brain_parent = main_scene.get_node_or_null("BrainModel")
-		
-		if camera and camera_controller.has_method("initialize"):
-			camera_controller.initialize(camera, brain_parent)
-		else:
-			push_warning("[BOOTSTRAP] No camera found for camera controller")
-		
-		systems_initialized["camera_controller"] = true
-		emit_signal("system_initialized", "camera_controller")
-		print("[BOOTSTRAP] Camera controller initialized successfully")
-		return true
-		
-	except:
-		push_error("[BOOTSTRAP] Exception during camera controller initialization")
-		emit_signal("initialization_failed", "camera_controller", "Exception occurred")
+	camera_controller = script_resource.new()
+	if camera_controller == null:
+		push_error("[BOOTSTRAP] Failed to create camera controller instance")
+		emit_signal("initialization_failed", "camera_controller", "Instance creation failed")
 		return false
+	
+	main_scene.add_child(camera_controller)
+	
+	# Initialize with camera and brain model parent
+	var camera = main_scene.get_node_or_null("Camera3D")
+	var brain_parent = main_scene.get_node_or_null("BrainModel")
+	
+	if camera and camera_controller.has_method("initialize"):
+		camera_controller.initialize(camera, brain_parent)
+	else:
+		push_warning("[BOOTSTRAP] No camera found for camera controller")
+	
+	systems_initialized["camera_controller"] = true
+	emit_signal("system_initialized", "camera_controller")
+	print("[BOOTSTRAP] Camera controller initialized successfully")
+	return true
 
 ## Helper functions
 func _safe_load_script(script_path: String):
