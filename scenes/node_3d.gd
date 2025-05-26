@@ -29,11 +29,6 @@ var input_router = null
 
 # Initialization tracking
 var initialization_complete: bool = false
-var error_recovery_active: bool = false
-
-# Performance monitoring
-var frame_count: int = 0
-var fps_warning_threshold: float = 10.0
 
 # Signals
 signal structure_selected(structure_name: String)
@@ -129,72 +124,50 @@ func _validate_core_nodes() -> bool:
 	return all_valid
 
 func _validate_camera() -> bool:
-	"""Validate camera node exists and create fallback if needed"""
-	if is_instance_valid(camera) and camera is Camera3D:
-		return true
+	"""Validate camera node exists"""
+	if camera == null:
+		print("[MAIN_SCENE] ERROR: Camera not found")
+		return false
 	
-	# Try to find camera
-	camera = get_node_or_null("Camera3D")
-	if camera and camera is Camera3D:
-		return true
+	if not camera is Camera3D:
+		print("[MAIN_SCENE] ERROR: Camera node is not a Camera3D")
+		return false
 	
-	# Create emergency camera
-	print("[MAIN_SCENE] Creating emergency camera...")
-	camera = Camera3D.new()
-	camera.name = "EmergencyCamera"
-	camera.transform = Transform3D(
-		Vector3(1, 0, 0),
-		Vector3(0, 0.866025, 0.5), 
-		Vector3(0, -0.5, 0.866025),
-		Vector3(0, 5, 10)
-	)
-	camera.current = true
-	add_child(camera)
 	return true
 
 func _validate_ui_layer() -> bool:
 	"""Validate UI layer exists"""
-	if is_instance_valid(ui_layer):
-		return true
+	if ui_layer == null:
+		print("[MAIN_SCENE] ERROR: UI_Layer not found")
+		return false
 	
-	ui_layer = get_node_or_null("UI_Layer")
-	if ui_layer:
-		return true
-	
-	print("[MAIN_SCENE] UI_Layer not found - critical error")
-	return false
+	return true
 
 func _validate_brain_model_parent() -> bool:
 	"""Validate brain model parent exists"""
-	if is_instance_valid(brain_model_parent):
-		return true
+	if brain_model_parent == null:
+		print("[MAIN_SCENE] ERROR: BrainModel parent not found")
+		return false
 	
-	brain_model_parent = get_node_or_null("BrainModel")
-	if brain_model_parent:
-		return true
-	
-	# Create emergency brain model parent
-	print("[MAIN_SCENE] Creating emergency brain model parent...")
-	brain_model_parent = Node3D.new()
-	brain_model_parent.name = "EmergencyBrainModel"
+	return true
 	add_child(brain_model_parent)
 	return true
 
 func _validate_object_label() -> bool:
 	"""Validate object name label exists"""
-	if is_instance_valid(object_name_label):
-		return true
+	if object_name_label == null:
+		print("[MAIN_SCENE] ERROR: ObjectNameLabel not found")
+		return false
 	
-	object_name_label = get_node_or_null("UI_Layer/ObjectNameLabel")
-	return object_name_label != null
+	return true
 
 func _validate_info_panel() -> bool:
 	"""Validate info panel exists"""
-	if is_instance_valid(info_panel):
-		return true
+	if info_panel == null:
+		print("[MAIN_SCENE] ERROR: StructureInfoPanel not found")
+		return false
 	
-	info_panel = get_node_or_null("UI_Layer/StructureInfoPanel")
-	return info_panel != null
+	return true
 
 ## System bootstrap initialization
 func _initialize_system_bootstrap() -> bool:
@@ -394,27 +367,16 @@ func _input(event: InputEvent) -> void:
 	Input handling is now delegated to InputRouter
 	This function serves as a fallback for any unhandled input
 	"""
-	if not initialization_complete or error_recovery_active:
+	if not initialization_complete:
 		return
 	
-	# InputRouter handles all input - this is just a safety fallback
+	# InputRouter handles all input
 	pass
 
-## Process functions with performance monitoring
 func _process(delta):
-	"""Optimized processing with performance monitoring"""
-	if not initialization_complete or error_recovery_active:
+	"""Basic processing"""
+	if not initialization_complete:
 		return
-	
-	# Performance monitoring every 60 frames
-	frame_count += 1
-	if frame_count % 60 == 0:
-		var fps = Engine.get_frames_per_second()
-		if fps < fps_warning_threshold and fps > 0:
-			print("[MAIN_SCENE] Low FPS detected: ", fps)
-		elif fps == 0:
-			print("[MAIN_SCENE] Critical: FPS dropped to zero")
-			_handle_performance_emergency()
 
 ## Signal handlers
 func _on_all_systems_initialized() -> void:
@@ -571,22 +533,7 @@ func _find_structure_id_by_name(mesh_name: String) -> String:
 	return ""
 
 ## Performance and error handling
-func _handle_performance_emergency() -> void:
-	"""Handle performance emergencies"""
-	print("[MAIN_SCENE] Handling performance emergency")
-	error_recovery_active = true
-	
-	# Disable non-essential systems temporarily
-	if input_router:
-		input_router.disable_input()
-	
-	# Wait a frame and re-enable
-	await get_tree().process_frame
-	
-	if input_router:
-		input_router.enable_input()
-	
-	error_recovery_active = false
+# Removed over-engineered performance emergency handler
 
 ## Debug functions
 func _register_debug_commands() -> void:
@@ -602,8 +549,6 @@ func _debug_scene_status() -> void:
 	"""Show scene status for debugging"""
 	print("=== REFACTORED SCENE STATUS ===")
 	print("Initialization complete: ", initialization_complete)
-	print("Error recovery active: ", error_recovery_active)
-	print("Frame count: ", frame_count)
 	print("System bootstrap: ", "✓" if system_bootstrap else "✗")
 	print("Input router: ", "✓" if input_router else "✗")
 
@@ -641,7 +586,6 @@ func _print_interaction_instructions() -> void:
 func _exit_tree():
 	"""Clean up when node is removed from tree"""
 	initialization_complete = false
-	error_recovery_active = false
 	
 	if system_bootstrap:
 		system_bootstrap.queue_free()

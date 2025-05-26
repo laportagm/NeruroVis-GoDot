@@ -7,8 +7,7 @@ extends Node
 
 # System initialization tracking
 var systems_initialized: Dictionary = {}
-var initialization_attempt_count: int = 0
-var max_initialization_attempts: int = 3
+# Removed retry logic - systems either work or fail fast
 var initialization_complete: bool = false
 
 # System references
@@ -35,13 +34,6 @@ func initialize_all_systems(main_scene: Node3D) -> bool:
 	Returns true if all systems initialized successfully
 	"""
 	print("[BOOTSTRAP] Beginning system initialization...")
-	
-	initialization_attempt_count += 1
-	
-	if initialization_attempt_count > max_initialization_attempts:
-		push_error("[BOOTSTRAP] Maximum initialization attempts exceeded!")
-		emit_signal("initialization_failed", "bootstrap", "Max attempts exceeded")
-		return false
 	
 	# Show loading overlay
 	var loading_overlay = _create_loading_overlay(main_scene)
@@ -76,15 +68,18 @@ func _initialize_debug_systems() -> bool:
 	
 	if OS.is_debug_build():
 		# Initialize resource debugger if available
-		if _validate_autoload("ResourceDebugger"):
-			ResourceDebugger.initialize()
+		var resource_debugger = get_node_or_null("/root/ResourceDebugger")
+		if resource_debugger and resource_debugger.has_method("initialize"):
+			resource_debugger.initialize()
 			systems_initialized["ResourceDebugger"] = true
 			emit_signal("system_initialized", "ResourceDebugger")
 		
 		# Initialize resource load tracer
-		if _validate_autoload("ResourceLoadTracer"):
-			ResourceLoadTracer.initialize()
-			ResourceLoadTracer.diagnose_common_issues()
+		var resource_tracer = get_node_or_null("/root/ResourceLoadTracer")
+		if resource_tracer and resource_tracer.has_method("initialize"):
+			resource_tracer.initialize()
+			if resource_tracer.has_method("diagnose_common_issues"):
+				resource_tracer.diagnose_common_issues()
 			systems_initialized["ResourceLoadTracer"] = true
 			emit_signal("system_initialized", "ResourceLoadTracer")
 	
@@ -164,7 +159,7 @@ func _initialize_final_systems(main_scene: Node3D) -> bool:
 func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 	"""Initialize the anatomical knowledge database"""
 	var script_path = "res://scripts/core/AnatomicalKnowledgeDatabase.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -186,7 +181,7 @@ func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 func _initialize_neural_net(main_scene: Node3D) -> bool:
 	"""Initialize the brain visualization core"""
 	var script_path = "res://scripts/core/BrainVisualizationCore.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -206,7 +201,7 @@ func _initialize_neural_net(main_scene: Node3D) -> bool:
 func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	"""Initialize the model visibility manager"""
 	var script_path = "res://scripts/models/ModelVisibilityManager.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -226,7 +221,7 @@ func _initialize_model_switcher(main_scene: Node3D) -> bool:
 func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	"""Initialize the model coordination system"""
 	var script_path = "res://scripts/models/ModelRegistry.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -251,7 +246,7 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	"""Initialize the brain structure selection manager"""
 	var script_path = "res://scripts/interaction/BrainStructureSelectionManager.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -271,7 +266,7 @@ func _initialize_selection_manager(main_scene: Node3D) -> bool:
 func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	"""Initialize the camera behavior controller"""
 	var script_path = "res://scripts/interaction/CameraBehaviorController.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
 	
@@ -298,15 +293,15 @@ func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	return true
 
 ## Helper functions
-func _safe_load_script(script_path: String):
-	"""Safely load a script with error handling"""
+func _load_script(script_path: String):
+	"""Load a script resource"""
 	if not ResourceLoader.exists(script_path):
-		push_error("[BOOTSTRAP] Script not found: " + script_path)
+		print("[BOOTSTRAP] ERROR: Script not found: ", script_path)
 		return null
 	
 	var script_resource = load(script_path)
 	if not script_resource:
-		push_error("[BOOTSTRAP] Failed to load script: " + script_path)
+		print("[BOOTSTRAP] ERROR: Failed to load script: ", script_path)
 		return null
 	
 	return script_resource
@@ -314,7 +309,7 @@ func _safe_load_script(script_path: String):
 func _create_loading_overlay(main_scene: Node3D):
 	"""Create and show loading overlay"""
 	var script_path = "res://scripts/ui/LoadingOverlay.gd"
-	var script_resource = _safe_load_script(script_path)
+	var script_resource = _load_script(script_path)
 	if not script_resource:
 		print("[BOOTSTRAP] LoadingOverlay not available, continuing without loading screen")
 		return null
@@ -368,7 +363,6 @@ func _debug_system_status() -> void:
 	"""Show status of all systems"""
 	print("=== SYSTEM STATUS ===")
 	print("Initialization complete: ", initialization_complete)
-	print("Attempt count: ", initialization_attempt_count, "/", max_initialization_attempts)
 	print("Systems:")
 	for system_name in systems_initialized.keys():
 		var status = "✓" if systems_initialized[system_name] else "✗"

@@ -24,17 +24,23 @@ signal structure_info_requested(structure_id: String)
 func _ready() -> void:
 	# Tween will be created as needed in Godot 4.x
 	
+	# Validate UI nodes exist before connecting signals
+	if not _validate_ui_nodes():
+		print("[INFO_PANEL] UI nodes not found - using compatibility mode")
+		return
+	
 	# Connect close button signal - check if it's already connected first
-	var signal_connections = close_button.get_signal_connection_list("pressed")
-	var already_connected = false
-	
-	for connection in signal_connections:
-		if connection.callable.get_object() == self and connection.callable.get_method() == "_on_close_button_pressed":
-			already_connected = true
-			break
-	
-	if not already_connected:
-		close_button.pressed.connect(_on_close_button_pressed)
+	if close_button:
+		var signal_connections = close_button.get_signal_connection_list("pressed")
+		var already_connected = false
+		
+		for connection in signal_connections:
+			if connection.callable.get_object() == self and connection.callable.get_method() == "_on_close_button_pressed":
+				already_connected = true
+				break
+		
+		if not already_connected:
+			close_button.pressed.connect(_on_close_button_pressed)
 	
 	# Setup enhanced styling
 	_setup_enhanced_styling()
@@ -43,6 +49,28 @@ func _ready() -> void:
 	clear_data()
 	
 	print("Enhanced StructureInfoPanel initialized!")
+
+func _validate_ui_nodes() -> bool:
+	"""Validate that required UI nodes exist"""
+	var nodes_valid = true
+	
+	if structure_name_label == null:
+		print("[INFO_PANEL] Warning: structure_name_label node not found")
+		nodes_valid = false
+	
+	if close_button == null:
+		print("[INFO_PANEL] Warning: close_button node not found")
+		nodes_valid = false
+	
+	if description_text == null:
+		print("[INFO_PANEL] Warning: description_text node not found")
+		nodes_valid = false
+	
+	if functions_list == null:
+		print("[INFO_PANEL] Warning: functions_list node not found")
+		nodes_valid = false
+	
+	return nodes_valid
 
 # Display data for a brain structure with enhanced animations and styling
 func display_structure_data(structure_data: Dictionary) -> void:
@@ -102,18 +130,20 @@ func _update_content_animated(structure_data: Dictionary) -> void:
 # Immediate content update (called during animation)
 func _update_content_immediate(structure_data: Dictionary) -> void:
 	# Update structure name with enhanced styling
-	if structure_data.has("displayName"):
-		structure_name_label.text = structure_data.displayName
-		structure_name_label.modulate = title_color
-	else:
-		structure_name_label.text = "Unknown Structure"
+	if structure_name_label:
+		if structure_data.has("displayName"):
+			structure_name_label.text = structure_data.displayName
+			structure_name_label.modulate = title_color
+		else:
+			structure_name_label.text = "Unknown Structure"
 	
 	# Update description with rich text formatting
-	if structure_data.has("shortDescription"):
-		var formatted_description = _format_description_text(structure_data.shortDescription)
-		description_text.text = formatted_description
-	else:
-		description_text.text = "[color=#FFAAAA]No description available.[/color]"
+	if description_text:
+		if structure_data.has("shortDescription"):
+			var formatted_description = _format_description_text(structure_data.shortDescription)
+			description_text.text = formatted_description
+		else:
+			description_text.text = "[color=#FFAAAA]No description available.[/color]"
 	
 	# Update functions list
 	_populate_enhanced_functions_list(structure_data.get("functions", []))
@@ -122,6 +152,10 @@ func _update_content_immediate(structure_data: Dictionary) -> void:
 # Enhanced functions list with better styling and animations
 func _populate_enhanced_functions_list(functions_array: Array) -> void:
 	print("INFO PANEL: Populating " + str(functions_array.size()) + " enhanced functions")
+	
+	if not functions_list:
+		print("[INFO_PANEL] functions_list is null, cannot populate")
+		return
 	
 	# Clear existing items first
 	for child in functions_list.get_children():
@@ -223,9 +257,13 @@ func _animate_panel_exit() -> void:
 # Clear data with enhanced reset and proper cleanup
 func clear_data() -> void:
 	current_structure_id = ""
-	structure_name_label.text = "No Structure Selected"
-	structure_name_label.modulate = Color.WHITE
-	description_text.text = "[color=#AAAAAA][i]Select a structure to view information.[/i][/color]"
+	
+	if structure_name_label:
+		structure_name_label.text = "No Structure Selected"
+		structure_name_label.modulate = Color.WHITE
+	
+	if description_text:
+		description_text.text = "[color=#AAAAAA][i]Select a structure to view information.[/i][/color]"
 	
 	# Clear functions list with proper cleanup
 	_clear_functions_list_safe()
@@ -235,6 +273,10 @@ func clear_data() -> void:
 
 # Safe function list clearing with proper memory management
 func _clear_functions_list_safe() -> void:
+	if functions_list == null:
+		print("[INFO_PANEL] functions_list is null, cannot clear")
+		return
+		
 	for child in functions_list.get_children():
 		functions_list.remove_child(child)
 		child.queue_free()
