@@ -5,15 +5,6 @@
 class_name SystemBootstrap
 extends Node
 
-# Preload core dependencies
-const AnatomicalKnowledgeDatabaseScript = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd")
-const BrainVisualizationCoreScript = preload("res://scripts/core/BrainVisualizationCore.gd")
-const ModelVisibilityManagerScript = preload("res://scripts/models/ModelVisibilityManager.gd")
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
-const BrainStructureSelectionManagerScript = preload("res://scripts/interaction/BrainStructureSelectionManager.gd")
-const CameraBehaviorControllerScript = preload("res://scripts/interaction/CameraBehaviorController.gd")
-const LoadingOverlay = preload("res://scripts/ui/LoadingOverlay.gd")
-
 # System initialization tracking
 var systems_initialized: Dictionary = {}
 var initialization_attempt_count: int = 0
@@ -172,15 +163,21 @@ func _initialize_final_systems(main_scene: Node3D) -> bool:
 ## Individual system initializers
 func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 	"""Initialize the anatomical knowledge database"""
+	var script_path = "res://scripts/core/AnatomicalKnowledgeDatabase.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		knowledge_base = AnatomicalKnowledgeDatabaseScript.new()
+		knowledge_base = script_resource.new()
 		if knowledge_base == null:
 			push_error("[BOOTSTRAP] Failed to create knowledge base instance")
 			emit_signal("initialization_failed", "knowledge_base", "Instance creation failed")
 			return false
 		
 		main_scene.add_child(knowledge_base)
-		knowledge_base.load_knowledge_base()
+		if knowledge_base.has_method("load_knowledge_base"):
+			knowledge_base.load_knowledge_base()
 		
 		systems_initialized["knowledge_base"] = true
 		emit_signal("system_initialized", "knowledge_base")
@@ -194,8 +191,13 @@ func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 
 func _initialize_neural_net(main_scene: Node3D) -> bool:
 	"""Initialize the brain visualization core"""
+	var script_path = "res://scripts/core/BrainVisualizationCore.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		neural_net = BrainVisualizationCoreScript.new()
+		neural_net = script_resource.new()
 		if neural_net == null:
 			push_error("[BOOTSTRAP] Failed to create neural net instance")
 			emit_signal("initialization_failed", "neural_net", "Instance creation failed")
@@ -215,8 +217,13 @@ func _initialize_neural_net(main_scene: Node3D) -> bool:
 
 func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	"""Initialize the model visibility manager"""
+	var script_path = "res://scripts/models/ModelVisibilityManager.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		model_switcher = ModelVisibilityManagerScript.new()
+		model_switcher = script_resource.new()
 		if model_switcher == null:
 			push_error("[BOOTSTRAP] Failed to create model switcher instance")
 			emit_signal("initialization_failed", "model_switcher", "Instance creation failed")
@@ -236,8 +243,13 @@ func _initialize_model_switcher(main_scene: Node3D) -> bool:
 
 func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	"""Initialize the model coordination system"""
+	var script_path = "res://scripts/models/ModelRegistry.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		model_coordinator = ModelCoordinatorScene.new()
+		model_coordinator = script_resource.new()
 		if model_coordinator == null:
 			push_error("[BOOTSTRAP] Failed to create model coordinator instance")
 			emit_signal("initialization_failed", "model_coordinator", "Instance creation failed")
@@ -247,7 +259,7 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 		
 		# Setup brain model parent if available
 		var brain_parent = main_scene.get_node_or_null("BrainModel")
-		if brain_parent:
+		if brain_parent and model_coordinator.has_method("set_model_parent"):
 			model_coordinator.set_model_parent(brain_parent)
 		
 		systems_initialized["model_coordinator"] = true
@@ -262,8 +274,13 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 
 func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	"""Initialize the brain structure selection manager"""
+	var script_path = "res://scripts/interaction/BrainStructureSelectionManager.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		selection_manager = BrainStructureSelectionManagerScript.new()
+		selection_manager = script_resource.new()
 		if selection_manager == null:
 			push_error("[BOOTSTRAP] Failed to create selection manager instance")
 			emit_signal("initialization_failed", "selection_manager", "Instance creation failed")
@@ -283,8 +300,13 @@ func _initialize_selection_manager(main_scene: Node3D) -> bool:
 
 func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	"""Initialize the camera behavior controller"""
+	var script_path = "res://scripts/interaction/CameraBehaviorController.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		return false
+	
 	try:
-		camera_controller = CameraBehaviorControllerScript.new()
+		camera_controller = script_resource.new()
 		if camera_controller == null:
 			push_error("[BOOTSTRAP] Failed to create camera controller instance")
 			emit_signal("initialization_failed", "camera_controller", "Instance creation failed")
@@ -296,7 +318,7 @@ func _initialize_camera_controller(main_scene: Node3D) -> bool:
 		var camera = main_scene.get_node_or_null("Camera3D")
 		var brain_parent = main_scene.get_node_or_null("BrainModel")
 		
-		if camera:
+		if camera and camera_controller.has_method("initialize"):
 			camera_controller.initialize(camera, brain_parent)
 		else:
 			push_warning("[BOOTSTRAP] No camera found for camera controller")
@@ -312,17 +334,47 @@ func _initialize_camera_controller(main_scene: Node3D) -> bool:
 		return false
 
 ## Helper functions
+func _safe_load_script(script_path: String):
+	"""Safely load a script with error handling"""
+	if not ResourceLoader.exists(script_path):
+		push_error("[BOOTSTRAP] Script not found: " + script_path)
+		return null
+	
+	var script_resource = load(script_path)
+	if not script_resource:
+		push_error("[BOOTSTRAP] Failed to load script: " + script_path)
+		return null
+	
+	return script_resource
+
 func _create_loading_overlay(main_scene: Node3D):
 	"""Create and show loading overlay"""
-	var loading_overlay = LoadingOverlay.new()
+	var script_path = "res://scripts/ui/LoadingOverlay.gd"
+	var script_resource = _safe_load_script(script_path)
+	if not script_resource:
+		print("[BOOTSTRAP] LoadingOverlay not available, continuing without loading screen")
+		return null
+	
+	var loading_overlay = script_resource.new()
 	loading_overlay.name = "LoadingOverlay"
 	main_scene.add_child(loading_overlay)
-	loading_overlay.show_loading(LoadingOverlay.LoadingState.INITIALIZATION)
+	
+	if loading_overlay.has_method("show_loading"):
+		# Try to get the LoadingState enum, fallback to basic loading
+		if loading_overlay.get_script().get_script_constant_map().has("LoadingState"):
+			var loading_state = loading_overlay.get_script().get_script_constant_map()["LoadingState"]
+			if loading_state.has("INITIALIZATION"):
+				loading_overlay.show_loading(loading_state.INITIALIZATION)
+			else:
+				loading_overlay.show_loading(0)  # Fallback to first enum value
+		else:
+			loading_overlay.show_loading(0)  # Fallback
+	
 	return loading_overlay
 
 func _validate_autoload(autoload_name: String) -> bool:
 	"""Validate that an autoload exists and is accessible"""
-	return Engine.has_singleton(autoload_name) or get_node("/root/" + autoload_name) != null
+	return Engine.has_singleton(autoload_name) or get_node_or_null("/root/" + autoload_name) != null
 
 func _validate_critical_systems() -> bool:
 	"""Validate that all critical systems are properly initialized"""

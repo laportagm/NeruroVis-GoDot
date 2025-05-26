@@ -5,11 +5,11 @@
 class_name MainSceneRefactored
 extends Node3D
 
-# Preload new components
-const SystemBootstrap = preload("res://scripts/core/SystemBootstrap.gd")
-const InputRouter = preload("res://scripts/interaction/InputRouter.gd")
-const OnboardingManager = preload("res://scripts/ui/OnboardingManager.gd")
-const ModernInfoDisplay = preload("res://scripts/ui/ModernInfoDisplay.gd")
+# Component references (loaded dynamically to avoid circular dependencies)
+var SystemBootstrap = null
+var InputRouter = null
+var OnboardingManager = null
+var ModernInfoDisplay = null
 
 # Export variables for configuration
 @export var highlight_color: Color = Color(0.0, 1.0, 0.0, 1.0)
@@ -17,8 +17,8 @@ const ModernInfoDisplay = preload("res://scripts/ui/ModernInfoDisplay.gd")
 @export var debug_mode: bool = true
 
 # Core system components
-var system_bootstrap: SystemBootstrap = null
-var input_router: InputRouter = null
+var system_bootstrap = null
+var input_router = null
 
 # Node references (validated during initialization)
 @onready var camera: Camera3D = $Camera3D
@@ -46,8 +46,26 @@ func _ready() -> void:
 	print("[MAIN_SCENE] Starting refactored main scene initialization...")
 	name = "MainSceneRefactored"
 	
+	# Load component scripts
+	_load_component_scripts()
+	
 	# Initialize the scene using composition pattern
 	await initialize_scene()
+
+## Component script loading
+func _load_component_scripts() -> void:
+	"""Load component scripts dynamically to avoid circular dependencies"""
+	SystemBootstrap = load("res://scripts/core/SystemBootstrap.gd")
+	InputRouter = load("res://scripts/interaction/InputRouter.gd")
+	OnboardingManager = load("res://scripts/ui/OnboardingManager.gd")
+	ModernInfoDisplay = load("res://scripts/ui/ModernInfoDisplay.gd")
+	
+	if not SystemBootstrap:
+		push_error("[MAIN_SCENE] Failed to load SystemBootstrap script")
+	if not InputRouter:
+		push_error("[MAIN_SCENE] Failed to load InputRouter script")
+	
+	print("[MAIN_SCENE] Component scripts loaded successfully")
 
 ## Main scene initialization orchestrator
 func initialize_scene() -> void:
@@ -185,6 +203,10 @@ func _initialize_system_bootstrap() -> bool:
 	"""
 	print("[MAIN_SCENE] Initializing system bootstrap...")
 	
+	if not SystemBootstrap:
+		push_error("[MAIN_SCENE] SystemBootstrap script not loaded")
+		return false
+	
 	system_bootstrap = SystemBootstrap.new()
 	if not system_bootstrap:
 		push_error("[MAIN_SCENE] Failed to create system bootstrap")
@@ -206,6 +228,10 @@ func _initialize_input_router() -> bool:
 	Create and configure the input router component
 	"""
 	print("[MAIN_SCENE] Initializing input router...")
+	
+	if not InputRouter:
+		push_error("[MAIN_SCENE] InputRouter script not loaded")
+		return false
 	
 	input_router = InputRouter.new()
 	if not input_router:
@@ -345,6 +371,10 @@ func _apply_modern_theme() -> void:
 
 func _setup_onboarding_if_needed() -> void:
 	"""Setup onboarding for first-time users"""
+	if not OnboardingManager:
+		print("[MAIN_SCENE] OnboardingManager not available, skipping onboarding")
+		return
+	
 	if not OnboardingManager.has_completed_onboarding():
 		print("[MAIN_SCENE] Starting onboarding for first-time user...")
 		var onboarding = OnboardingManager.new()
@@ -355,6 +385,8 @@ func _setup_onboarding_if_needed() -> void:
 		await onboarding.onboarding_completed
 		
 		onboarding.queue_free()
+	else:
+		print("[MAIN_SCENE] User has completed onboarding, skipping...")
 
 ## Input handling (delegated to InputRouter)
 func _input(event: InputEvent) -> void:
@@ -496,12 +528,15 @@ func _display_structure_info_modern(structure_name: String) -> void:
 	if existing_display:
 		existing_display.queue_free()
 	
-	var modern_info = ModernInfoDisplay.new()
-	modern_info.name = "ModernInfoDisplay"
-	modern_info.position = Vector2(get_viewport().size.x - 360, 100)
-	
-	ui_layer.add_child(modern_info)
-	modern_info.display_structure_data(structure_data)
+	if ModernInfoDisplay:
+		var modern_info = ModernInfoDisplay.new()
+		modern_info.name = "ModernInfoDisplay"
+		modern_info.position = Vector2(get_viewport().size.x - 360, 100)
+		
+		ui_layer.add_child(modern_info)
+		modern_info.display_structure_data(structure_data)
+	else:
+		print("[MAIN_SCENE] ModernInfoDisplay not available, using fallback")
 
 func _find_structure_id_by_name(mesh_name: String) -> String:
 	"""Find structure ID by mesh name using neural net mapping"""
