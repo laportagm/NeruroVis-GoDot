@@ -1,33 +1,41 @@
 {
+    // Godot Tools Configuration - Enhanced for debugging
     "godot_tools.editor_path": "/Applications/Godot.app/Contents/MacOS/Godot",
     "godot_tools.gdscript_lsp_server_port": 6005,
     "godot_tools.editor_version": "4.x",
     "godot_tools.scene_file_config": "main",
     "godot_tools.editor_server_enabled": true,
-    "godot_tools.connection_retry_count": 5,
-    "godot_tools.connection_retry_delay": 1000,
-    "godot_tools.show_connection_status": true,
     
+    // Editor Enhancement
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.minimap.enabled": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": true,
     "editor.inlayHints.enabled": "on",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
     
+    // File Management
     "files.exclude": {
         ".godot/": true,
         "**/*.import": true,
         "**/*.uid": true,
         "**/.DS_Store": true,
-        "**/logs/**": true
+        "**/logs/**": true,
+        "**/*.tmp": true
     },
     "files.associations": {
         "*.gd": "gdscript",
         "*.tscn": "godot-scene",
-        "*.tres": "godot-resource"
+        "*.tres": "godot-resource",
+        "*.cfg": "ini"
     },
     
+    // GDScript Specific Settings
     "[gdscript]": {
         "editor.insertSpaces": false,
         "editor.detectIndentation": false,
@@ -38,16 +46,20 @@
         "editor.suggest.showSnippets": true
     },
     
+    // Git Configuration
     "git.autofetch": true,
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     
+    // Performance
     "files.watcherExclude": {
         ".godot/": true,
         "**/logs/**": true,
-        "**/*.import": true
+        "**/*.import": true,
+        "**/node_modules/**": true
     },
     
+    // GitHub Copilot
     "github.copilot.enable": {
         "*": true,
         "gdscript": true,
@@ -55,5 +67,10 @@
         "godot-resource": true,
         "plaintext": true,
         "markdown": true
-    }
+    },
+    
+    // Debug Configuration
+    "godot_tools.connection_retry_count": 5,
+    "godot_tools.connection_retry_delay": 1000,
+    "godot_tools.show_connection_status": true
 }

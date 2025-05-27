@@ -1,401 +1,212 @@
+# Streamlined Information Panel Controller
+# Simple, direct implementation for structure information display
 class_name InformationPanelController
-extends PanelContainer
+extends Control
 
-# Node references - safe loading with null checks
-@onready var structure_name_label: Label = get_node_or_null("MarginContainer/VBoxContainer/TitleBar/StructureName")
-@onready var close_button: Button = get_node_or_null("MarginContainer/VBoxContainer/TitleBar/CloseButton")
-@onready var description_text: RichTextLabel = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection/DescriptionText")
-@onready var functions_list: VBoxContainer = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection/FunctionsList")
+# Core components
+var title_label: Label
+var description_label: RichTextLabel
+var functions_container: VBoxContainer
+var close_button: Button
 
-# Animation and enhancement components
-var tween: Tween
-var current_structure_id: String = ""
-var is_animating: bool = false
+# State
+var current_structure: Dictionary = {}
+var is_visible: bool = false
 
-# Enhanced styling options
-var title_color: Color = Color(0.2, 0.8, 1.0, 1.0)  # Cyan for titles
-var description_color: Color = Color(0.9, 0.9, 0.9, 1.0)  # Light gray for text
-var function_color: Color = Color(0.8, 1.0, 0.8, 1.0)  # Light green for functions
+# Styling
+var primary_color: Color = Color(0.2, 0.7, 1.0, 1.0)
+var text_color: Color = Color(0.9, 0.9, 0.9, 1.0)
+var function_color: Color = Color(0.7, 1.0, 0.7, 1.0)
 
-# Signal emitted when the panel is closed
+# Signals
 signal panel_closed
-# signal structure_info_requested(structure_id: String)  # Unused
 
 func _ready() -> void:
-	# Tween will be created as needed in Godot 4.x
-	
-	# Call deferred to ensure all nodes are ready
-	call_deferred("_initialize_panel")
+    _create_ui()
+    _setup_styling()
+    visible = false
 
-func _initialize_panel() -> void:
-	# Validate UI nodes exist before connecting signals
-	if not _validate_ui_nodes():
-		print("[INFO_PANEL] UI nodes not found - using compatibility mode")
-		_create_fallback_ui()
-		return
-	
-	# Connect close button signal - check if it's already connected first
-	if close_button:
-		var signal_connections = close_button.get_signal_connection_list("pressed")
-		var already_connected = false
-		
-		for connection in signal_connections:
-			if connection.callable.get_object() == self and connection.callable.get_method() == "_on_close_button_pressed":
-				already_connected = true
-				break
-		
-		if not already_connected:
-			close_button.pressed.connect(_on_close_button_pressed)
-	
-	# Setup enhanced styling
-	_setup_enhanced_styling()
-	
-	# Initialize with empty data
-	clear_data()
-	
-	print("Enhanced StructureInfoPanel initialized!")
+func _create_ui() -> void:
+    """Create streamlined UI structure"""
+    # Main panel setup
+    custom_minimum_size = Vector2(350, 200)
+    size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+    size_flags_vertical = Control.SIZE_SHRINK_CENTER
+    
+    # Main container
+    var main_container = VBoxContainer.new()
+    main_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    add_child(main_container)
+    
+    # Header with title and close button
+    var header = HBoxContainer.new()
+    main_container.add_child(header)
+    
+    title_label = Label.new()
+    title_label.text = "Structure Information"
+    title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    header.add_child(title_label)
+    
+    close_button = Button.new()
+    close_button.text = "×"
+    close_button.custom_minimum_size = Vector2(30, 30)
+    close_button.flat = true
+    close_button.pressed.connect(_on_close_pressed)
+    header.add_child(close_button)
+    
+    # Content area
+    var scroll = ScrollContainer.new()
+    scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    main_container.add_child(scroll)
+    
+    var content = VBoxContainer.new()
+    scroll.add_child(content)
+    
+    # Description
+    var desc_header = Label.new()
+    desc_header.text = "Description"
+    content.add_child(desc_header)
+    
+    description_label = RichTextLabel.new()
+    description_label.custom_minimum_size = Vector2(0, 100)
+    description_label.fit_content = true
+    description_label.bbcode_enabled = true
+    content.add_child(description_label)
+    
+    # Functions
+    var func_header = Label.new()
+    func_header.text = "Functions"
+    content.add_child(func_header)
+    
+    functions_container = VBoxContainer.new()
+    content.add_child(functions_container)
 
-func _validate_ui_nodes() -> bool:
-	"""Validate that required UI nodes exist"""
-	var nodes_valid = true
-	
-	if structure_name_label == null:
-		print("[INFO_PANEL] Warning: structure_name_label node not found")
-		nodes_valid = false
-	
-	if close_button == null:
-		print("[INFO_PANEL] Warning: close_button node not found")
-		nodes_valid = false
-	
-	if description_text == null:
-		print("[INFO_PANEL] Warning: description_text node not found")
-		nodes_valid = false
-	
-	if functions_list == null:
-		print("[INFO_PANEL] Warning: functions_list node not found")
-		nodes_valid = false
-	
-	return nodes_valid
+func _setup_styling() -> void:
+    """Apply modern styling"""
+    # Panel background
+    var style = StyleBoxFlat.new()
+    style.bg_color = Color(0.1, 0.1, 0.15, 0.9)
+    style.border_color = Color(0.3, 0.3, 0.4, 0.7)
+    style.border_width_top = 2
+    style.border_width_bottom = 2
+    style.border_width_left = 2
+    style.border_width_right = 2
+    style.corner_radius_top_left = 10
+    style.corner_radius_top_right = 10
+    style.corner_radius_bottom_left = 10
+    style.corner_radius_bottom_right = 10
+    add_theme_stylebox_override("panel", style)
+    
+    # Title styling
+    if title_label:
+        title_label.add_theme_color_override("font_color", primary_color)
+        title_label.add_theme_font_size_override("font_size", 16)
+    
+    # Close button styling
+    if close_button:
+        close_button.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4, 1.0))
+        close_button.add_theme_font_size_override("font_size", 18)
 
-func _create_fallback_ui() -> void:
-	print("[INFO_PANEL] Creating complete fallback UI structure")
-	
-	# Create the main container
-	var margin_container = MarginContainer.new()
-	margin_container.name = "MarginContainer"
-	margin_container.anchor_right = 1.0
-	margin_container.anchor_bottom = 1.0
-	add_child(margin_container)
-	
-	# Create VBoxContainer
-	var vbox = VBoxContainer.new()
-	vbox.name = "VBoxContainer"
-	margin_container.add_child(vbox)
-	
-	# Create TitleBar
-	var title_bar = HBoxContainer.new()
-	title_bar.name = "TitleBar"
-	vbox.add_child(title_bar)
-	
-	# Create StructureName label
-	structure_name_label = Label.new()
-	structure_name_label.name = "StructureName"
-	structure_name_label.text = "Structure Name"
-	structure_name_label.add_theme_font_size_override("font_size", 18)
-	title_bar.add_child(structure_name_label)
-	
-	# Add spacer
-	var spacer = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_bar.add_child(spacer)
-	
-	# Create CloseButton
-	close_button = Button.new()
-	close_button.name = "CloseButton"
-	close_button.text = "X"
-	close_button.custom_minimum_size = Vector2(30, 30)
-	title_bar.add_child(close_button)
-	
-	# Create ScrollContainer
-	var scroll = ScrollContainer.new()
-	scroll.name = "ScrollContainer"
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(scroll)
-	
-	var content_vbox = VBoxContainer.new()
-	scroll.add_child(content_vbox)
-	
-	# Create Description Section
-	var desc_section = VBoxContainer.new()
-	desc_section.name = "DescriptionSection"
-	content_vbox.add_child(desc_section)
-	
-	var desc_label = Label.new()
-	desc_label.text = "Description"
-	desc_label.add_theme_font_size_override("font_size", 16)
-	desc_section.add_child(desc_label)
-	
-	description_text = RichTextLabel.new()
-	description_text.name = "DescriptionText"
-	description_text.custom_minimum_size = Vector2(0, 100)
-	description_text.fit_content = true
-	desc_section.add_child(description_text)
-	
-	# Create Functions Section
-	var func_section = VBoxContainer.new()
-	func_section.name = "FunctionsSection"
-	content_vbox.add_child(func_section)
-	
-	var func_label = Label.new()
-	func_label.text = "Functions"
-	func_label.add_theme_font_size_override("font_size", 16)
-	func_section.add_child(func_label)
-	
-	functions_list = VBoxContainer.new()
-	functions_list.name = "FunctionsList"
-	func_section.add_child(functions_list)
-	
-	# Connect close button
-	if close_button:
-		close_button.pressed.connect(_on_close_button_pressed)
-	
-	print("[INFO_PANEL] Complete fallback UI structure created")
-
-# Display data for a brain structure with enhanced animations and styling
+# Public interface
 func display_structure_data(structure_data: Dictionary) -> void:
-	# Check if structure data is valid
-	if structure_data.is_empty():
-		print("Warning: Attempted to display empty structure data")
-		clear_data()
-		return
-	
-	# Prevent multiple animations from overlapping
-	if is_animating:
-		return
-	
-	current_structure_id = structure_data.get("id", "unknown")
-	print("INFO PANEL: Displaying enhanced structure data for " + current_structure_id)
-	
-	# Start entrance animation if not visible
-	if not visible:
-		_animate_panel_entrance()
-	
-	# Update content with animations
-	_update_content_animated(structure_data)
+    """Display structure information"""
+    if structure_data.is_empty():
+        hide_panel()
+        return
+    
+    current_structure = structure_data
+    
+    # Update title
+    var display_name = structure_data.get("displayName", "Unknown Structure")
+    title_label.text = display_name
+    
+    # Update description
+    var description = structure_data.get("shortDescription", "No description available.")
+    description_label.text = "[color=#E0E0E0]%s[/color]" % description
+    
+    # Update functions
+    _update_functions(structure_data.get("functions", []))
+    
+    # Show panel
+    show_panel()
 
-# Animate panel entrance
-func _animate_panel_entrance() -> void:
-	if is_animating:
-		return
-	
-	is_animating = true
-	
-	# Make sure parent CanvasLayer is visible
-	var parent_layer = get_parent()
-	if parent_layer is CanvasLayer and not parent_layer.visible:
-		parent_layer.visible = true
-	
-	# Start with panel invisible and scaled down
-	modulate.a = 0.0
-	scale = Vector2(0.8, 0.8)
-	visible = true
-	
-	# Animate entrance
-	var entrance_tween = create_tween()
-	entrance_tween.set_parallel(true)
-	entrance_tween.tween_property(self, "modulate:a", 1.0, 0.3)
-	entrance_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.3)
-	entrance_tween.tween_callback(func(): is_animating = false)
+func show_panel() -> void:
+    """Show the panel with animation"""
+    if is_visible:
+        return
+    
+    is_visible = true
+    visible = true
+    
+    # Simple fade-in animation
+    modulate.a = 0.0
+    var tween = create_tween()
+    tween.tween_property(self, "modulate:a", 1.0, 0.3)
 
-# Update content with smooth animations
-func _update_content_animated(structure_data: Dictionary) -> void:
-	# Fade out current content
-	if description_text:
-		var content_tween = create_tween()
-		content_tween.tween_property(description_text, "modulate:a", 0.0, 0.15)
-		content_tween.tween_callback(_update_content_immediate.bind(structure_data))
-		content_tween.tween_property(description_text, "modulate:a", 1.0, 0.15)
+func hide_panel() -> void:
+    """Hide the panel with animation"""
+    if not is_visible:
+        return
+    
+    is_visible = false
+    
+    # Simple fade-out animation
+    var tween = create_tween()
+    tween.tween_property(self, "modulate:a", 0.0, 0.2)
+    tween.tween_callback(func(): 
+        visible = false
+        modulate.a = 1.0
+        emit_signal("panel_closed")
+    )
 
-# Immediate content update (called during animation)
-func _update_content_immediate(structure_data: Dictionary) -> void:
-	# Update structure name with enhanced styling
-	if structure_name_label:
-		if structure_data.has("displayName"):
-			structure_name_label.text = structure_data.displayName
-			structure_name_label.modulate = title_color
-		else:
-			structure_name_label.text = "Unknown Structure"
-	
-	# Update description with rich text formatting
-	if description_text:
-		if structure_data.has("shortDescription"):
-			var formatted_description = _format_description_text(structure_data.shortDescription)
-			description_text.text = formatted_description
-		else:
-			description_text.text = "[color=#FFAAAA]No description available.[/color]"
-	
-	# Update functions list
-	_populate_enhanced_functions_list(structure_data.get("functions", []))
+func _update_functions(functions_array: Array) -> void:
+    """Update the functions list"""
+    # Clear existing functions
+    for child in functions_container.get_children():
+        child.queue_free()
+    
+    if functions_array.is_empty():
+        var placeholder = Label.new()
+        placeholder.text = "No functions information available"
+        placeholder.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6, 1.0))
+        functions_container.add_child(placeholder)
+        return
+    
+    # Add function items
+    for i in range(functions_array.size()):
+        var function_text = str(functions_array[i])
+        var item = _create_function_item(function_text, i)
+        functions_container.add_child(item)
 
+func _create_function_item(text: String, index: int) -> Control:
+    """Create a function list item"""
+    var container = HBoxContainer.new()
+    
+    # Bullet
+    var bullet = Label.new()
+    bullet.text = "•"
+    var color = Color.from_hsv(float(index) * 0.2, 0.7, 1.0)
+    bullet.add_theme_color_override("font_color", color)
+    bullet.custom_minimum_size.x = 15
+    
+    # Function text
+    var label = Label.new()
+    label.text = text
+    label.add_theme_color_override("font_color", function_color)
+    label.add_theme_font_size_override("font_size", 12)
+    label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    
+    container.add_child(bullet)
+    container.add_child(label)
+    
+    return container
 
-# Enhanced functions list with better styling and animations
-func _populate_enhanced_functions_list(functions_array: Array) -> void:
-	print("INFO PANEL: Populating " + str(functions_array.size()) + " enhanced functions")
-	
-	if not functions_list:
-		print("[INFO_PANEL] functions_list is null, cannot populate")
-		return
-	
-	# Clear existing items first
-	for child in functions_list.get_children():
-		functions_list.remove_child(child)
-		child.queue_free()
-	
-	# If no functions, add a styled placeholder
-	if functions_array.is_empty():
-		var label = RichTextLabel.new()
-		label.text = "[color=#FFAAAA][i]No functions information available.[/i][/color]"
-		label.fit_content = true
-		label.scroll_active = false
-		functions_list.add_child(label)
-		return
-	
-	# Add each function with enhanced styling
-	for i in range(functions_array.size()):
-		var function_text = functions_array[i]
-		var function_container = _create_enhanced_function_item(function_text, i)
-		functions_list.add_child(function_container)
+func _on_close_pressed() -> void:
+    """Handle close button press"""
+    hide_panel()
 
-# Create an enhanced function list item with better styling
-func _create_enhanced_function_item(function_text: String, index: int) -> Control:
-	var container = HBoxContainer.new()
-	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	# Create styled bullet with color based on index
-	var bullet_label = RichTextLabel.new()
-	var bullet_color = Color.from_hsv(float(index) * 0.15, 0.7, 1.0)  # Varied colors
-	bullet_label.text = "[color=#%s]▸[/color]" % bullet_color.to_html()
-	bullet_label.fit_content = true
-	bullet_label.scroll_active = false
-	bullet_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	
-	# Create styled function text
-	var function_label = RichTextLabel.new()
-	function_label.text = "[color=#%s]%s[/color]" % [function_color.to_html(), function_text]
-	function_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	function_label.fit_content = true
-	function_label.scroll_active = false
-	
-	container.add_child(bullet_label)
-	container.add_child(function_label)
-	
-	return container
-
-# Format description text with enhanced rich text styling
-func _format_description_text(description: String) -> String:
-	# Add basic rich text formatting to make description more readable
-	var formatted = "[color=#%s]%s[/color]" % [description_color.to_html(), description]
-	
-	# Highlight key anatomical terms
-	var anatomical_terms = [
-		"brain", "cortex", "neurons", "synapses", "cerebral", "temporal", 
-		"frontal", "parietal", "occipital", "hippocampus", "amygdala",
-		"thalamus", "cerebellum", "brainstem", "spinal cord"
-	]
-	
-	for term in anatomical_terms:
-		# Case-insensitive replacement with highlighting
-		var regex = RegEx.new()
-		regex.compile("(?i)\\b" + term + "\\b")
-		formatted = regex.sub(formatted, "[color=#FFD700][b]$0[/b][/color]", true)
-	
-	return formatted
-
-# Setup enhanced styling for the panel
-func _setup_enhanced_styling() -> void:
-	# Setup panel styling
-	if has_theme_stylebox_override("panel"):
-		var panel_style = get_theme_stylebox("panel").duplicate()
-		panel_style.bg_color = Color(0.1, 0.1, 0.15, 0.95)  # Semi-transparent dark blue
-		add_theme_stylebox_override("panel", panel_style)
-
-# Enhanced close with exit animation
-func _on_close_button_pressed() -> void:
-	print("INFO PANEL: Close button pressed with animation")
-	_animate_panel_exit()
-
-# Animate panel exit
-func _animate_panel_exit() -> void:
-	if is_animating:
-		return
-	
-	is_animating = true
-	
-	var exit_tween = create_tween()
-	exit_tween.set_parallel(true)
-	exit_tween.tween_property(self, "modulate:a", 0.0, 0.2)
-	exit_tween.tween_property(self, "scale", Vector2(0.8, 0.8), 0.2)
-	exit_tween.tween_callback(func(): 
-		visible = false
-		scale = Vector2(1.0, 1.0)  # Reset scale
-		modulate.a = 1.0  # Reset alpha
-		is_animating = false
-		emit_signal("panel_closed")
-	)
-
-# Clear data with enhanced reset and proper cleanup
-func clear_data() -> void:
-	current_structure_id = ""
-	
-	if structure_name_label:
-		structure_name_label.text = "No Structure Selected"
-		structure_name_label.modulate = Color.WHITE
-	
-	if description_text:
-		description_text.text = "[color=#AAAAAA][i]Select a structure to view information.[/i][/color]"
-	
-	# Clear functions list with proper cleanup
-	_clear_functions_list_safe()
-	
-	# Hide panel without animation
-	visible = false
-
-# Safe function list clearing with proper memory management
-func _clear_functions_list_safe() -> void:
-	if functions_list == null:
-		print("[INFO_PANEL] functions_list is null, cannot clear")
-		return
-		
-	for child in functions_list.get_children():
-		functions_list.remove_child(child)
-		child.queue_free()
-	
-	# Force garbage collection of freed nodes
-	await get_tree().process_frame
-
-# Cleanup method to prevent memory leaks
-func _exit_tree() -> void:
-	# Stop any running animations
-	is_animating = false
-	
-	# Clear all references
-	current_structure_id = ""
-	
-	# Clean up functions list
-	_clear_functions_list_safe()
-	
-	print("[UI_PANEL] StructureInfoPanel cleaned up")
-
-# Dispose of resources
 func dispose() -> void:
-	# Clear all data
-	clear_data()
-	
-	# Disconnect signals to prevent memory leaks
-	if close_button and close_button.has_signal("pressed"):
-		var connections = close_button.get_signal_connection_list("pressed")
-		for connection in connections:
-			if connection.signal.is_connected(connection.callable):
-				connection.signal.disconnect(connection.callable)
-	
-	_exit_tree()
+    """Clean up resources"""
+    current_structure.clear()
+    hide_panel()

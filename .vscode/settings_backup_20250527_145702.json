@@ -2,11 +2,6 @@
     "godot_tools.editor_path": "/Applications/Godot.app/Contents/MacOS/Godot",
     "godot_tools.gdscript_lsp_server_port": 6005,
     "godot_tools.editor_version": "4.x",
-    "godot_tools.scene_file_config": "main",
-    "godot_tools.editor_server_enabled": true,
-    "godot_tools.connection_retry_count": 5,
-    "godot_tools.connection_retry_delay": 1000,
-    "godot_tools.show_connection_status": true,
     
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
@@ -19,8 +14,7 @@
         ".godot/": true,
         "**/*.import": true,
         "**/*.uid": true,
-        "**/.DS_Store": true,
-        "**/logs/**": true
+        "**/.DS_Store": true
     },
     "files.associations": {
         "*.gd": "gdscript",
@@ -33,9 +27,7 @@
         "editor.detectIndentation": false,
         "editor.tabSize": 4,
         "editor.wordWrap": "bounded",
-        "editor.wordWrapColumn": 100,
-        "editor.suggest.showKeywords": true,
-        "editor.suggest.showSnippets": true
+        "editor.wordWrapColumn": 100
     },
     
     "git.autofetch": true,
@@ -44,8 +36,7 @@
     
     "files.watcherExclude": {
         ".godot/": true,
-        "**/logs/**": true,
-        "**/*.import": true
+        "**/logs/**": true
     },
     
     "github.copilot.enable": {

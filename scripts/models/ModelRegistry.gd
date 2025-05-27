@@ -92,12 +92,6 @@ func _setup_default_model_definitions() -> void:
 			"position": Vector3(0, 0, 0),
 			"rotation": Vector3(0, 180, 0),
 			"scale": Vector3(0.03, 0.03, 0.03)  # Scale to 3% (reduced by half again)
-		},
-		{
-			"path": "res://assets/models/Brainstem(Solid).glb",
-			"position": Vector3(0, 0, 0),
-			"rotation": Vector3(0, 180, 0),
-			"scale": Vector3(0.03, 0.03, 0.03)  # Scale to 3% (reduced by half again)
 		}
 	]
 	

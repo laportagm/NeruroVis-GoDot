@@ -1,0 +1,95 @@
+# Info Panel Factory - Manages theme selection for UI panels
+# This factory allows switching between different UI styles without breaking existing code
+class_name InfoPanelFactory
+extends RefCounted
+
+# Theme modes
+enum ThemeMode {
+	ENHANCED,  # Current gaming/colorful style
+	MINIMAL    # Clean Apple/OpenAI style
+}
+
+# Current theme preference (default to existing style)
+static var current_theme: ThemeMode = ThemeMode.ENHANCED
+
+# Create info panel based on current theme
+static func create_info_panel() -> Control:
+	print("[InfoPanelFactory] Current theme: %s" % ["ENHANCED", "MINIMAL"][current_theme])
+	
+	match current_theme:
+		ThemeMode.MINIMAL:
+			# Try to load minimal panel
+			var minimal_path = "res://scripts/ui/minimal_info_panel.gd"
+			if ResourceLoader.exists(minimal_path):
+				var MinimalPanelScript = load(minimal_path)
+				print("[InfoPanelFactory] Creating MINIMAL panel")
+				var panel = MinimalPanelScript.new()
+				print("[InfoPanelFactory] Panel created: %s" % panel.get_class())
+				return panel
+			else:
+				push_warning("[InfoPanelFactory] Minimal panel not found at: %s" % minimal_path)
+		
+		ThemeMode.ENHANCED, _:
+			# Default to enhanced/unified panel
+			var unified_path = "res://scenes/ui_info_panel_unified.gd"
+			if ResourceLoader.exists(unified_path):
+				var UnifiedPanelScript = load(unified_path)
+				print("[InfoPanelFactory] Creating ENHANCED/unified panel")
+				var panel = UnifiedPanelScript.new()
+				print("[InfoPanelFactory] Panel created: %s" % panel.get_class())
+				return panel
+			else:
+				# Fallback to basic panel
+				var basic_path = "res://scenes/ui_info_panel.gd"
+				if ResourceLoader.exists(basic_path):
+					var BasicPanelScript = load(basic_path)
+					print("[InfoPanelFactory] Creating basic panel")
+					return BasicPanelScript.new()
+	
+	# Ultimate fallback - create empty panel
+	push_error("[InfoPanelFactory] No panel scripts found, creating fallback")
+	var fallback = PanelContainer.new()
+	fallback.name = "FallbackPanel"
+	return fallback
+
+# Switch theme mode
+static func set_theme(mode: ThemeMode) -> void:
+	current_theme = mode
+	print("[InfoPanelFactory] Theme set to: %s" % ["ENHANCED", "MINIMAL"][mode])
+	_save_preference()
+
+# Get current theme
+static func get_theme() -> ThemeMode:
+	return current_theme
+
+# Load theme preference from user settings
+static func load_preference() -> void:
+	var config = ConfigFile.new()
+	if config.load("user://ui_settings.cfg") == OK:
+		current_theme = config.get_value("ui", "theme_mode", ThemeMode.ENHANCED)
+		print("[InfoPanelFactory] Loaded theme preference: %s" % ["ENHANCED", "MINIMAL"][current_theme])
+
+# Save theme preference
+static func _save_preference() -> void:
+	var config = ConfigFile.new()
+	config.set_value("ui", "theme_mode", current_theme)
+	config.save("user://ui_settings.cfg")
+	print("[InfoPanelFactory] Saved theme preference")
+
+# Get theme name for display
+static func get_theme_name() -> String:
+	match current_theme:
+		ThemeMode.MINIMAL:
+			return "Minimal (Professional)"
+		ThemeMode.ENHANCED, _:
+			return "Enhanced (Gaming)"
+
+# Quick property aliases for compatibility
+static var minimal_mode: bool:
+	get:
+		return current_theme == ThemeMode.MINIMAL
+	set(value):
+		set_theme(ThemeMode.MINIMAL if value else ThemeMode.ENHANCED)
+
+static func save_preference() -> void:
+	_save_preference()
