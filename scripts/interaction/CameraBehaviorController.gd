@@ -38,7 +38,7 @@ func _ready() -> void:
 	set_physics_process(true)
 	print("Professional CameraController initialized and added to group")
 
-func initialize(cam: Camera3D, target: Node3D = null) -> void:
+func initialize(cam: Camera3D, _target: Node3D = null) -> void:
 	camera = cam
 	if camera:
 		_update_camera_from_state()
@@ -221,7 +221,7 @@ func set_view_preset(preset: String) -> void:
 		"top": target_rotation = Vector2(PI/2 - 0.1, 0)
 
 # Legacy compatibility methods
-func handle_camera_input(event: InputEvent) -> bool:
+func handle_camera_input(_event: InputEvent) -> bool:
 	# Input is now handled in _unhandled_input
 	return false
 
@@ -232,15 +232,15 @@ func setup_initial_animation() -> void:
 	reset_view()
 	emit_signal("camera_animation_finished")
 
-func set_rotation_speed(speed: float) -> void:
+func set_rotation_speed(_speed: float) -> void:
 	# Compatibility method - rotation speed is now constant
 	pass
 
-func set_zoom_speed(speed: float) -> void:
+func set_zoom_speed(_speed: float) -> void:
 	# Compatibility method - zoom speed is now constant
 	pass
 
-func set_zoom_limits(min_dist: float, max_dist: float) -> void:
+func set_zoom_limits(_min_dist: float, _max_dist: float) -> void:
 	# Compatibility method - limits are now constants
 	pass
 

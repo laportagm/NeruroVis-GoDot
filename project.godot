@@ -37,6 +37,7 @@ settings/gdscript/include_language_server=true
 settings/gdscript/warnings/enable=true
 settings/gdscript/warnings/treat_warnings_as_errors=false
 settings/gdscript/warnings/exclude_addons=true
+settings/stdout/verbose_stdout=false
 
 [editor]
 
@@ -60,3 +61,4 @@ camera_focus={
 textures/canvas_textures/default_texture_filter=2
 anti_aliasing/quality/msaa_3d=2
 anti_aliasing/quality/screen_space_aa=1
+driver/driver_name="Forward+"

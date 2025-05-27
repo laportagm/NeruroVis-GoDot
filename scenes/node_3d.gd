@@ -593,7 +593,7 @@ func get_safe_camera_controller():
     return null
 
 # Process functions with safe execution and performance monitoring
-func _process(delta):
+func _process(_delta):
     """Optimized processing with accurate performance monitoring"""
     if not initialization_complete:
         return
@@ -615,7 +615,7 @@ func _process(delta):
     if frame_count % 300 == 0:
         _check_memory_usage()
 
-func _physics_process(delta):
+func _physics_process(_delta):
     """Safe physics processing with error recovery"""
     if not initialization_complete:
         return
@@ -815,7 +815,7 @@ func _check_memory_usage() -> void:
     
     # Check for memory growth (basic threshold)
     if memory_usage > 100 * 1024 * 1024:  # 100MB threshold
-        print("[MEMORY] High memory usage detected: ", memory_usage / (1024 * 1024), " MB")
+        print("[MEMORY] High memory usage detected: ", memory_usage / (1024.0 * 1024.0), " MB")
         _cleanup_memory()
     
     # Also check for rapid memory growth patterns
@@ -825,7 +825,7 @@ func _check_memory_usage() -> void:
         var last_memory = get_meta("last_memory_check")
         var memory_diff = memory_usage - last_memory
         if memory_diff > 5 * 1024 * 1024:  # 5MB growth in ~5 seconds
-            print("[MEMORY] Rapid memory growth detected: +", memory_diff / (1024 * 1024), " MB")
+            print("[MEMORY] Rapid memory growth detected: +", memory_diff / (1024.0 * 1024.0), " MB")
             _cleanup_memory()
         set_meta("last_memory_check", memory_usage)
 
@@ -1073,9 +1073,9 @@ func apply_modern_theme() -> void:
             object_label.set_theme(modern_theme)
         
         # Apply to StructureInfoPanel
-        var info_panel = ui_layer.get_node_or_null("StructureInfoPanel")
-        if info_panel and info_panel is Control:
-            info_panel.set_theme(modern_theme)
+        var structure_info_panel = ui_layer.get_node_or_null("StructureInfoPanel")
+        if structure_info_panel and structure_info_panel is Control:
+            structure_info_panel.set_theme(modern_theme)
         
         # Apply to ModelControlPanel
         var control_panel = ui_layer.get_node_or_null("ModelControlPanel")

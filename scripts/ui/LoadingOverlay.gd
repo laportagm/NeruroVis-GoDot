@@ -209,7 +209,7 @@ class SpinnerRing extends Control:
         # Draw the arc
         _draw_arc_line(center, radius, start_angle, end_angle, color, thickness)
 
-    func _draw_arc_line(center: Vector2, radius: float, start_angle: float, end_angle: float, arc_color: Color, width: float) -> void:
+    func _draw_arc_line(center: Vector2, arc_radius: float, start_angle: float, end_angle: float, arc_color: Color, width: float) -> void:
         var steps = 32
         var angle_step = (end_angle - start_angle) / steps
         
@@ -217,7 +217,7 @@ class SpinnerRing extends Control:
             var angle1 = start_angle + i * angle_step
             var angle2 = start_angle + (i + 1) * angle_step
             
-            var point1 = center + Vector2(cos(angle1), sin(angle1)) * radius
-            var point2 = center + Vector2(cos(angle2), sin(angle2)) * radius
+            var point1 = center + Vector2(cos(angle1), sin(angle1)) * arc_radius
+            var point2 = center + Vector2(cos(angle2), sin(angle2)) * arc_radius
             
             draw_line(point1, point2, arc_color, width, true)

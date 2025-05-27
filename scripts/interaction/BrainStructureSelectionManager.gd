@@ -356,9 +356,10 @@ func _cleanup_mesh_animations(mesh: MeshInstance3D) -> void:
         return
     
     # Kill any existing hover tween
-    var hover_tween = mesh.get_meta("hover_tween", null)
-    if hover_tween and is_instance_valid(hover_tween):
-        hover_tween.kill()
+    if mesh.has_meta("hover_tween"):
+        var mesh_hover_tween = mesh.get_meta("hover_tween")
+        if mesh_hover_tween and is_instance_valid(mesh_hover_tween):
+            mesh_hover_tween.kill()
         mesh.remove_meta("hover_tween")
     
     # Reset scale to normal
