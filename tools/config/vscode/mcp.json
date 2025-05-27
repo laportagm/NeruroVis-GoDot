@@ -1,0 +1,25 @@
+{
+  "servers": {
+    "godot-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/gagelaporta/mcp-servers/godot-mcp/build/index.js"
+      ],
+      "env": {
+        "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot",
+        "DEBUG": "true"
+      }
+    },
+    "figma-developer-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--stdio"
+      ],
+      "env": {
+        "FIGMA_API_KEY": "your_figma_api_key_here"
+      }
+    }
+  }
+}

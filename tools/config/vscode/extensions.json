@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "geequlim.godot-tools",
+        "ms-vscode.csharp",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-dotnettools.csharp-devkit",
+        "ms-dotnettools.csharp-devkit-vscode",
+        "ms-dotnettools.csharp-devkit-vscode-omnisharp",
+        "ms-dotnettools.csharp-devkit-vscode-omnisharp-roslyn",
+        "ms-dotnettools.csharp-devkit-vscode-omnisharp-roslyn-lsp",
+        "ms-dotnettools.csharp-devkit-vscode-omnisharp-roslyn-lsp-server",
+        "ms-dotnettools.csharp-devkit-vscode-omnisharp-roslyn-lsp-server-roslyn"
+    ]
+}

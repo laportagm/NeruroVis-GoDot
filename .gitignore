@@ -41,6 +41,7 @@ performance_data/
 build/
 dist/
 export/
+tmp/
 
 # Godot MCP specific
 godot-mcp/cli-server/build/

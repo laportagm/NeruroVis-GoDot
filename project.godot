@@ -12,15 +12,15 @@ config_version=5
 
 config/name="A1-NeuroVis"
 config/description="Advanced Neural Visualization System for Interactive Brain Anatomy"
-run/main_scene="res://scenes/node_3d.tscn"
+run/main_scene="res://scenes/main/node_3d.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-KB="*res://scripts/core/AnatomicalKnowledgeDatabase.gd"
-ModelSwitcherGlobal="*res://scripts/models/ModelVisibilityManager.gd"
-DebugCmd="*res://scripts/core/DebugCommands.gd"
+KB="*res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
+ModelSwitcherGlobal="*res://core/models/ModelVisibilityManager.gd"
+DebugCmd="*res://core/systems/DebugCommands.gd"
 ;ProjectProfiler="*res://scripts/dev_utils/ProjectProfiler.gd"
 ;DevConsole="*res://scripts/dev_utils/DevConsole.gd"
 ;TestRunner="*res://scripts/tests/TestRunner.gd"
