@@ -209,9 +209,9 @@ func test_autoload_system():
 	print("\n🧪 Test 5: Autoload System")
 	
 	var autoload_scripts = [
-		["KB", "res://scripts/KnowledgeBase.gd"],
-		["ModelSwitcherGlobal", "res://scripts/ModelSwitcher.gd"], 
-		["DebugCmd", "res://scripts/DebugCommands.gd"],
+		["KB", "res://scripts/core/AnatomicalKnowledgeDatabase.gd"],
+		["ModelSwitcherGlobal", "res://scripts/models/ModelVisibilityManager.gd"], 
+		["DebugCmd", "res://scripts/core/DebugCommands.gd"],
 		["TestFramework", "res://scripts/tests/TestRunner.gd"]
 	]
 	

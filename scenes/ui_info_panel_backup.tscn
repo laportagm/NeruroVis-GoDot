@@ -1,6 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://chrbwl4afpb3c"]
+[gd_scene load_steps=4 format=3 uid="uid://chrbwl4afpb3c"]
 
-[ext_resource type="Script" path="res://scripts/ui/InformationPanelController.gd" id="1_bwhq4"]
+[ext_resource type="Script" uid="uid://dnb8utoyqre0x" path="res://scripts/ui/InformationPanelController.gd" id="1_bwhq4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urk3s"]
+bg_color = Color(0.156863, 0.192157, 0.25098, 0.92549)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.25098)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3laq"]
+bg_color = Color(0.137255, 0.164706, 0.207843, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
 
 [node name="StructureInfoPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(400, 500)
@@ -15,6 +30,7 @@ offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_urk3s")
 script = ExtResource("1_bwhq4")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -28,8 +44,9 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleBar" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h3laq")
 
 [node name="StructureName" type="Label" parent="MarginContainer/VBoxContainer/TitleBar"]
 layout_mode = 2
@@ -42,7 +59,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-custom_minimum_size = Vector2(30, 30)
 text = "×"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
@@ -59,6 +75,15 @@ theme_override_constants/separation = 15
 layout_mode = 2
 theme_override_constants/separation = 5
 
+[node name="SectionLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.792157, 0.823529, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Description"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection"]
+layout_mode = 2
+
 [node name="DescriptionText" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection"]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 14
@@ -66,11 +91,19 @@ bbcode_enabled = true
 text = "Description text will appear here when a structure is selected."
 fit_content = true
 scroll_active = false
-custom_minimum_size = Vector2(0, 100)
 
 [node name="FunctionsSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
+
+[node name="SectionLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.792157, 0.823529, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Functions"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection"]
+layout_mode = 2
 
 [node name="FunctionsList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection"]
 layout_mode = 2

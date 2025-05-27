@@ -121,6 +121,10 @@ func _show_history() -> void:
 	for i in range(command_history.size()):
 		print("[" + str(i + 1) + "] " + command_history[i])
 
+# Get count of registered commands
+func get_command_count() -> int:
+	return registered_commands.size()
+
 # Utility methods for logging
 func log_error(message: String) -> void:
 	print("[color=#" + error_color + "]ERROR: " + message + "[/color]")

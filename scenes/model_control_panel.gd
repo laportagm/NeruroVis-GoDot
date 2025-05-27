@@ -172,7 +172,7 @@ func _on_model_toggled(pressed: bool, model_name: String, status_label: Label) -
     
     emit_signal("model_selected", model_name)
 
-func update_button_state(model_name: String, is_visible: bool) -> void:
+func update_button_state(model_name: String, visibility: bool) -> void:
     if not model_cards.has(model_name):
         print("Warning: Model card not found for: " + model_name)
         return
@@ -187,14 +187,14 @@ func update_button_state(model_name: String, is_visible: bool) -> void:
     
     # Update toggle without triggering signal
     toggle.set_block_signals(true)
-    toggle.button_pressed = is_visible
+    toggle.button_pressed = visibility
     toggle.set_block_signals(false)
     
     # Update status with animation
     var tween = status.create_tween()
     tween.tween_property(status, "modulate:a", 0.0, 0.1)
     tween.tween_callback(func():
-        if is_visible:
+        if visibility:
             status.text = "Visible"
             status.add_theme_color_override("font_color", Color("#06FFA5"))  # Success green
         else:

@@ -2,7 +2,7 @@ class_name ModelVisibilityManager
 extends Node
 
 # Signal when model visibility changes
-signal model_visibility_changed(model_name: String, is_visible: bool)
+signal model_visibility_changed(model_name: String, visibility: bool)
 
 # Dictionary to track loaded models and their visibility
 var models = {}
@@ -75,7 +75,7 @@ func toggle_model_visibility(model_name: String) -> void:
 	emit_signal("model_visibility_changed", model_name, new_visibility)
 
 # Set specific model visibility
-func set_model_visibility(model_name: String, is_visible: bool) -> void:
+func set_model_visibility(model_name: String, visibility: bool) -> void:
 	if not models.has(model_name):
 		printerr("ModelSwitcher Warning: Cannot set visibility for unknown model '" + model_name + "'")
 		return
@@ -83,13 +83,13 @@ func set_model_visibility(model_name: String, is_visible: bool) -> void:
 	var model_info = models[model_name]
 	
 	# Update visibility
-	model_info.node.visible = is_visible
-	model_info.visible = is_visible
+	model_info.node.visible = visibility
+	model_info.visible = visibility
 	
-	print("ModelSwitcher: Set '" + model_name + "' visibility to " + str(is_visible))
+	print("ModelSwitcher: Set '" + model_name + "' visibility to " + str(visibility))
 	
 	# Emit signal
-	emit_signal("model_visibility_changed", model_name, is_visible)
+	emit_signal("model_visibility_changed", model_name, visibility)
 
 # Show only one model, hide all others
 func show_only_model(model_name: String) -> void:

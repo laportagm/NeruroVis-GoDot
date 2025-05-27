@@ -1,11 +1,11 @@
 class_name InformationPanelController
 extends PanelContainer
 
-# Node references
-@onready var structure_name_label: Label = $MarginContainer/VBoxContainer/TitleBar/StructureName
-@onready var close_button: Button = $MarginContainer/VBoxContainer/TitleBar/CloseButton
-@onready var description_text: RichTextLabel = $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection/DescriptionText
-@onready var functions_list: VBoxContainer = $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection/FunctionsList
+# Node references - safe loading with null checks
+@onready var structure_name_label: Label = get_node_or_null("MarginContainer/VBoxContainer/TitleBar/StructureName")
+@onready var close_button: Button = get_node_or_null("MarginContainer/VBoxContainer/TitleBar/CloseButton")
+@onready var description_text: RichTextLabel = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/DescriptionSection/DescriptionText")
+@onready var functions_list: VBoxContainer = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/FunctionsSection/FunctionsList")
 
 # Animation and enhancement components
 var tween: Tween
@@ -19,14 +19,19 @@ var function_color: Color = Color(0.8, 1.0, 0.8, 1.0)  # Light green for functio
 
 # Signal emitted when the panel is closed
 signal panel_closed
-signal structure_info_requested(structure_id: String)
+# signal structure_info_requested(structure_id: String)  # Unused
 
 func _ready() -> void:
 	# Tween will be created as needed in Godot 4.x
 	
+	# Call deferred to ensure all nodes are ready
+	call_deferred("_initialize_panel")
+
+func _initialize_panel() -> void:
 	# Validate UI nodes exist before connecting signals
 	if not _validate_ui_nodes():
 		print("[INFO_PANEL] UI nodes not found - using compatibility mode")
+		_create_fallback_ui()
 		return
 	
 	# Connect close button signal - check if it's already connected first
@@ -71,6 +76,90 @@ func _validate_ui_nodes() -> bool:
 		nodes_valid = false
 	
 	return nodes_valid
+
+func _create_fallback_ui() -> void:
+	print("[INFO_PANEL] Creating complete fallback UI structure")
+	
+	# Create the main container
+	var margin_container = MarginContainer.new()
+	margin_container.name = "MarginContainer"
+	margin_container.anchor_right = 1.0
+	margin_container.anchor_bottom = 1.0
+	add_child(margin_container)
+	
+	# Create VBoxContainer
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBoxContainer"
+	margin_container.add_child(vbox)
+	
+	# Create TitleBar
+	var title_bar = HBoxContainer.new()
+	title_bar.name = "TitleBar"
+	vbox.add_child(title_bar)
+	
+	# Create StructureName label
+	structure_name_label = Label.new()
+	structure_name_label.name = "StructureName"
+	structure_name_label.text = "Structure Name"
+	structure_name_label.add_theme_font_size_override("font_size", 18)
+	title_bar.add_child(structure_name_label)
+	
+	# Add spacer
+	var spacer = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_bar.add_child(spacer)
+	
+	# Create CloseButton
+	close_button = Button.new()
+	close_button.name = "CloseButton"
+	close_button.text = "X"
+	close_button.custom_minimum_size = Vector2(30, 30)
+	title_bar.add_child(close_button)
+	
+	# Create ScrollContainer
+	var scroll = ScrollContainer.new()
+	scroll.name = "ScrollContainer"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+	
+	var content_vbox = VBoxContainer.new()
+	scroll.add_child(content_vbox)
+	
+	# Create Description Section
+	var desc_section = VBoxContainer.new()
+	desc_section.name = "DescriptionSection"
+	content_vbox.add_child(desc_section)
+	
+	var desc_label = Label.new()
+	desc_label.text = "Description"
+	desc_label.add_theme_font_size_override("font_size", 16)
+	desc_section.add_child(desc_label)
+	
+	description_text = RichTextLabel.new()
+	description_text.name = "DescriptionText"
+	description_text.custom_minimum_size = Vector2(0, 100)
+	description_text.fit_content = true
+	desc_section.add_child(description_text)
+	
+	# Create Functions Section
+	var func_section = VBoxContainer.new()
+	func_section.name = "FunctionsSection"
+	content_vbox.add_child(func_section)
+	
+	var func_label = Label.new()
+	func_label.text = "Functions"
+	func_label.add_theme_font_size_override("font_size", 16)
+	func_section.add_child(func_label)
+	
+	functions_list = VBoxContainer.new()
+	functions_list.name = "FunctionsList"
+	func_section.add_child(functions_list)
+	
+	# Connect close button
+	if close_button:
+		close_button.pressed.connect(_on_close_button_pressed)
+	
+	print("[INFO_PANEL] Complete fallback UI structure created")
 
 # Display data for a brain structure with enhanced animations and styling
 func display_structure_data(structure_data: Dictionary) -> void:

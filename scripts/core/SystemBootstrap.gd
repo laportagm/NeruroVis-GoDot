@@ -354,8 +354,10 @@ func _register_debug_commands() -> void:
 	if not _validate_autoload("DebugCmd"):
 		return
 	
-	DebugCmd.register_command("system_status", _debug_system_status, "Show system initialization status")
-	DebugCmd.register_command("reinit_system", _debug_reinit_system, "Reinitialize a specific system")
+	var debug_cmd = get_node_or_null("/root/DebugCmd")
+	if debug_cmd:
+		debug_cmd.register_command("system_status", _debug_system_status, "Show system initialization status")
+		debug_cmd.register_command("reinit_system", _debug_reinit_system, "Reinitialize a specific system")
 	print("[BOOTSTRAP] Debug commands registered")
 
 ## Debug command implementations
