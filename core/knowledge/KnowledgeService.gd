@@ -68,9 +68,7 @@ func _initialize_singleton() -> void:
 	# Initialize subsystems
 	_initialize_subsystems()
 	
-	# Setup monitoring if enabled
-	if monitor_performance:
-		_setup_performance_monitoring()
+	# Setup complete
 	
 	# Mark as initialized
 	_is_initialized = true
