@@ -59,8 +59,14 @@ func update_structure_info(structure_data: Dictionary) -> bool:
 		push_error("[BrainAnalysisPanel] Invalid structure data provided")
 		return false
 	
-	# Update current structure
-	current_structure = structure_data
+	# Get enhanced analysis from StructureAnalysisManager
+	if has_node("/root/StructureAnalysisManager"):
+		var analysis_manager = get_node("/root/StructureAnalysisManager")
+		current_structure = analysis_manager.analyze_structure(structure_data["id"])
+	else:
+		# Fallback to basic data
+		current_structure = structure_data
+	
 	_update_display()
 	
 	return true
