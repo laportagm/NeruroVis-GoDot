@@ -279,15 +279,22 @@ func _setup_accessibility() -> void:
 	"""Setup accessibility features for keyboard navigation and screen readers"""
 	
 	# Set focus order for keyboard navigation
-	close_button.focus_neighbor_left = share_button.get_path()
-	share_button.focus_neighbor_left = bookmark_button.get_path()
-	bookmark_button.focus_neighbor_right = share_button.get_path()
-	share_button.focus_neighbor_right = close_button.get_path()
+	if close_button and share_button:
+		close_button.focus_neighbor_left = share_button.get_path()
+	if share_button and bookmark_button:
+		share_button.focus_neighbor_left = bookmark_button.get_path()
+	if bookmark_button and share_button:
+		bookmark_button.focus_neighbor_right = share_button.get_path()
+	if share_button and close_button:
+		share_button.focus_neighbor_right = close_button.get_path()
 	
 	# Section headers in tab order
-	close_button.focus_neighbor_down = functions_header.get_path()
-	functions_header.focus_neighbor_down = connections_header.get_path()
-	connections_header.focus_neighbor_down = clinical_header.get_path()
+	if close_button and functions_header:
+		close_button.focus_neighbor_down = functions_header.get_path()
+	if functions_header and connections_header:
+		functions_header.focus_neighbor_down = connections_header.get_path()
+	if connections_header and clinical_header:
+		connections_header.focus_neighbor_down = clinical_header.get_path()
 	
 	# Set up keyboard shortcuts
 	set_process_unhandled_key_input(true)
