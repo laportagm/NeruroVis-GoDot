@@ -40,6 +40,7 @@ var _error_count: int = 0
 var _structure_cache: Dictionary = {}
 var _analysis_cache: Dictionary = {}
 var _knowledge_base_ref: Node = null
+var _settings: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
@@ -114,37 +115,6 @@ func _initialize_subsystems() -> void:
 	_structure_cache.clear()
 	_analysis_cache.clear()
 
-func _original_initialize_subsystems() -> void:
-	"""Initialize singleton subsystems"""
-	
-	# Initialize data structures
-	_data.clear()
-	_cache.clear()
-	
-	# Setup default data
-	_setup_default_data()
-	
-	# Initialize cache if enabled
-	if _settings.get("cache_enabled", true):
-		_initialize_cache()
-
-func _setup_default_data() -> void:
-	"""Setup default data structures"""
-	
-	_data = {
-		"version": VERSION,
-		"created_at": Time.get_unix_time_from_system(),
-		"session_id": _generate_session_id()
-	}
-
-func _initialize_cache() -> void:
-	"""Initialize caching system"""
-	
-	_cache = {
-		"max_size": _settings.get("max_cache_size", 100),
-		"current_size": 0,
-		"entries": {}
-	}
 
 func _setup_performance_monitoring() -> void:
 	"""Setup performance monitoring if enabled"""
