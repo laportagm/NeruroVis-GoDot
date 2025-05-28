@@ -288,13 +288,13 @@ func _setup_accessibility() -> void:
 	if share_button and close_button:
 		share_button.focus_neighbor_right = close_button.get_path()
 	
-	# Section headers in tab order
+	# Section headers in tab order (using Godot 4.x property names)
 	if close_button and functions_header:
-		close_button.focus_neighbor_down = functions_header.get_path()
+		close_button.focus_neighbor_bottom = functions_header.get_path()
 	if functions_header and connections_header:
-		functions_header.focus_neighbor_down = connections_header.get_path()
+		functions_header.focus_neighbor_bottom = connections_header.get_path()
 	if connections_header and clinical_header:
-		connections_header.focus_neighbor_down = clinical_header.get_path()
+		connections_header.focus_neighbor_bottom = clinical_header.get_path()
 	
 	# Set up keyboard shortcuts
 	set_process_unhandled_key_input(true)
