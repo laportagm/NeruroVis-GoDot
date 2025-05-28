@@ -46,7 +46,7 @@ var camera: Camera3D
 @export var navigation_button: MouseButton = MOUSE_BUTTON_LEFT
 
 # Preloaded scripts
-const BrainStructureSelectionManagerScript = preload("res://scripts/interaction/BrainStructureSelectionManager.gd")
+const BrainStructureSelectionManagerScript = preload("res://core/interaction/BrainStructureSelectionManager.gd")
 
 func _initialize_component() -> bool:
 	component_name = "InteractionHandler"

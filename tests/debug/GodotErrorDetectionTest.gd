@@ -92,8 +92,8 @@ func run_test() -> bool:
 		"res://icon.svg",
 		"res://assets/data/anatomical_data.json",
 		"res://scenes/node_3d.tscn",
-		"res://scripts/core/AnatomicalKnowledgeDatabase.gd",
-		"res://scripts/models/ModelVisibilityManager.gd"
+		"res://core/knowledge/AnatomicalKnowledgeDatabase.gd",
+		"res://core/models/ModelVisibilityManager.gd"
 	]
 	
 	for resource_path in critical_resources:

@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 [autoload]
 
 KB="*res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
+KnowledgeService="*res://core/knowledge/KnowledgeService.gd"
+StructureAnalysisManager="*res://core/systems/StructureAnalysisManager.gd"
+AIAssistant="*res://core/ai/AIAssistantService.gd"
+UIThemeManager="*res://ui/panels/UIThemeManager.gd"
 ModelSwitcherGlobal="*res://core/models/ModelVisibilityManager.gd"
 DebugCmd="*res://core/systems/DebugCommands.gd"
 ;ProjectProfiler="*res://scripts/dev_utils/ProjectProfiler.gd"

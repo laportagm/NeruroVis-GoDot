@@ -3,8 +3,8 @@
 
 extends Node
 
-const SystemBootstrap = preload("res://scripts/core/SystemBootstrap.gd")
-const InputRouter = preload("res://scripts/interaction/InputRouter.gd")
+const SystemBootstrap = preload("res://core/systems/SystemBootstrap.gd")
+const InputRouter = preload("res://core/interaction/InputRouter.gd")
 const MainSceneRefactored = preload("res://scenes/node_3d.gd")
 
 func _ready():

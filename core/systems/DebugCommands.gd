@@ -140,7 +140,7 @@ func log_warning(message: String) -> void:
 
 # Helper function to safely load VisualDebugger
 func get_visual_debugger():
-	return load("res://scripts/visualization/VisualDebugger.gd")
+	return load("res://core/visualization/VisualDebugger.gd")
 
 # Register built-in commands
 func _ready() -> void:
@@ -216,6 +216,15 @@ func _ready() -> void:
 			log_error("Unknown test: " + test_name)
 			log_info("Available tests: all, autoloads, infrastructure, model_switcher"),
 		"Run tests (all, autoloads, infrastructure, model_switcher)")
+	
+	# Register parser error checking commands
+	register_command("parser_check", cmd_parser_check, "Check all scripts for parser errors")
+	register_command("dependency_check", cmd_dependency_check, "Validate autoload dependencies")
+	register_command("scene_validate", cmd_scene_validate, "Validate scene structure")
+	register_command("resource_check", cmd_resource_check, "Check for missing resources")
+	register_command("preload_test", cmd_preload_test, "Test resource preloading")
+	register_command("syntax_check", cmd_syntax_check, "Quick syntax validation")
+	register_command("godot_check", cmd_godot_check, "Check Godot version and compatibility")
 	
 	# Register commands from new debugging systems
 	# TODO: Re-enable once all systems are stable
@@ -335,3 +344,233 @@ func _test_model_switcher():
 			log_warning("   - No models available for testing")
 	else:
 		log_error("   ❌ get_available_models() method missing")
+
+# === PARSER ERROR CHECKING COMMANDS ===
+
+func cmd_parser_check(_args: String = "") -> void:
+	"""Check all scripts for parser errors"""
+	log_info("🔍 Running parser error check...")
+	
+	var script_files = []
+	_collect_script_files("res://", script_files)
+	
+	var errors = 0
+	var total = script_files.size()
+	
+	for file_path in script_files:
+		var script = load(file_path)
+		if not script:
+			log_error("❌ Parse error: %s" % file_path)
+			errors += 1
+		elif _args == "verbose":
+			log_success("✅ OK: %s" % file_path.get_file())
+	
+	log_info("Parser check complete: %d/%d files passed" % [total - errors, total])
+	if errors == 0:
+		log_success("🎉 No parser errors found!")
+	else:
+		log_error("Found %d parser error(s)" % errors)
+
+func cmd_dependency_check(_args: String = "") -> void:
+	"""Validate all autoload dependencies"""
+	log_info("🔗 Checking dependencies...")
+	
+	var required_autoloads = [
+		"KnowledgeService",
+		"UIThemeManager", 
+		"ModelSwitcherGlobal",
+		"StructureAnalysisManager",
+		"DebugCmd"
+	]
+	
+	var missing = []
+	for autoload_name in required_autoloads:
+		if Engine.has_singleton(autoload_name):
+			log_success("✅ %s available" % autoload_name)
+		else:
+			log_error("❌ %s missing" % autoload_name)
+			missing.append(autoload_name)
+	
+	if missing.size() == 0:
+		log_success("✅ All dependencies available")
+	else:
+		log_error("Missing dependencies: %s" % str(missing))
+
+func cmd_scene_validate(args: String = "") -> void:
+	"""Validate scene structure"""
+	var scene_path = args if args != "" else "res://scenes/main/node_3d.tscn"
+	
+	log_info("🎬 Validating scene: %s" % scene_path)
+	
+	if not ResourceLoader.exists(scene_path):
+		log_error("❌ Scene not found: %s" % scene_path)
+		return
+	
+	var scene = load(scene_path)
+	if not scene:
+		log_error("❌ Failed to load scene: %s" % scene_path)
+		return
+	
+	if not scene is PackedScene:
+		log_error("❌ Not a scene file: %s" % scene_path)
+		return
+	
+	var instance = scene.instantiate()
+	if not instance:
+		log_error("❌ Failed to instantiate scene")
+		return
+	
+	log_success("✅ Scene validated successfully")
+	
+	# Check for required nodes in main scene
+	if scene_path.ends_with("node_3d.tscn"):
+		_validate_main_scene_structure(instance)
+	
+	instance.queue_free()
+
+func cmd_resource_check(_args: String = "") -> void:
+	"""Check for missing resources"""
+	log_info("📂 Checking critical resources...")
+	
+	var critical_resources = [
+		"res://project.godot",
+		"res://icon.svg",
+		"res://assets/data/anatomical_data.json",
+		"res://scenes/main/node_3d.tscn",
+		"res://core/knowledge/KnowledgeService.gd",
+		"res://core/models/ModelVisibilityManager.gd"
+	]
+	
+	var missing = []
+	for resource_path in critical_resources:
+		if ResourceLoader.exists(resource_path):
+			log_success("✅ Found: %s" % resource_path.get_file())
+		else:
+			log_error("❌ Missing: %s" % resource_path)
+			missing.append(resource_path)
+	
+	if missing.size() == 0:
+		log_success("✅ All critical resources found")
+	else:
+		log_error("Missing %d resource(s)" % missing.size())
+
+func cmd_preload_test(args: String = "") -> void:
+	"""Test resource preloading"""
+	var test_path = args if args != "" else "res://scenes/main/node_3d.tscn"
+	
+	log_info("⚡ Testing preload: %s" % test_path)
+	
+	if not ResourceLoader.exists(test_path):
+		log_error("❌ Resource not found: %s" % test_path)
+		return
+	
+	var start_time = Time.get_ticks_msec()
+	var resource = load(test_path)
+	var load_time = Time.get_ticks_msec() - start_time
+	
+	if resource:
+		log_success("✅ Loaded in %d ms" % load_time)
+		log_info("   Type: %s" % resource.get_class())
+	else:
+		log_error("❌ Failed to load resource")
+
+func cmd_syntax_check(_args: String = "") -> void:
+	"""Quick syntax validation"""
+	log_info("📝 Quick syntax check...")
+	
+	var core_files = [
+		"res://scenes/main/node_3d.gd",
+		"res://core/knowledge/KnowledgeService.gd",
+		"res://core/models/ModelVisibilityManager.gd",
+		"res://ui/panels/UIThemeManager.gd"
+	]
+	
+	var errors = 0
+	for file_path in core_files:
+		if ResourceLoader.exists(file_path):
+			var script = load(file_path)
+			if script:
+				log_success("✅ %s" % file_path.get_file())
+			else:
+				log_error("❌ %s" % file_path.get_file())
+				errors += 1
+		else:
+			log_error("❌ Missing: %s" % file_path.get_file())
+			errors += 1
+	
+	if errors == 0:
+		log_success("✅ All core files syntax OK")
+	else:
+		log_error("Found %d syntax error(s)" % errors)
+
+func cmd_godot_check(_args: String = "") -> void:
+	"""Check Godot version and compatibility"""
+	log_info("🎮 Godot Environment Check:")
+	
+	var version_info = Engine.get_version_info()
+	log_info("   Version: %d.%d.%d %s" % [
+		version_info.major,
+		version_info.minor, 
+		version_info.patch,
+		version_info.status
+	])
+	
+	log_info("   Hash: %s" % version_info.hash)
+	log_info("   Platform: %s" % OS.get_name())
+	log_info("   Debug build: %s" % str(OS.is_debug_build()))
+	
+	# Check for Godot 4 features
+	if version_info.major >= 4:
+		log_success("✅ Godot 4+ detected")
+	else:
+		log_warning("⚠️ Godot 3 detected - may have compatibility issues")
+	
+	# Check renderer
+	var renderer = RenderingServer.get_rendering_device()
+	if renderer:
+		log_success("✅ Vulkan renderer available")
+	else:
+		log_warning("⚠️ Using compatibility renderer")
+
+# === HELPER FUNCTIONS ===
+
+func _collect_script_files(dir_path: String, files: Array) -> void:
+	"""Recursively collect all GDScript files"""
+	var dir = DirAccess.open(dir_path)
+	if not dir:
+		return
+	
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	
+	while file_name != "":
+		if dir.current_is_dir() and not file_name.begins_with(".") and file_name != "tmp":
+			_collect_script_files(dir_path + "/" + file_name, files)
+		elif file_name.ends_with(".gd"):
+			files.append(dir_path + "/" + file_name)
+		
+		file_name = dir.get_next()
+
+func _validate_main_scene_structure(scene_instance: Node) -> void:
+	"""Validate main scene has required nodes"""
+	log_info("   🔍 Checking main scene structure...")
+	
+	var required_nodes = {
+		"Camera3D": "$Camera3D",
+		"UI_Layer": "$UI_Layer",
+		"BrainModel": "$BrainModel"
+	}
+	
+	var missing = []
+	for node_name in required_nodes:
+		var path = required_nodes[node_name]
+		if scene_instance.has_node(path):
+			log_success("   ✅ %s found" % node_name)
+		else:
+			log_error("   ❌ %s missing at %s" % [node_name, path])
+			missing.append(node_name)
+	
+	if missing.size() == 0:
+		log_success("   ✅ Scene structure validated")
+	else:
+		log_error("   Missing nodes: %s" % str(missing))

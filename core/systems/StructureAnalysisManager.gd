@@ -94,7 +94,7 @@ func _load_configuration() -> void:
 func _load_project_settings() -> void:
 	"""Load settings from project configuration"""
 	
-	var setting_prefix = "{{SINGLETON_NAME_LOWER}}"
+	var setting_prefix = "structure_analysis_manager"
 	
 	for key in _settings.keys():
 		var setting_path = setting_prefix + "/" + key
@@ -231,12 +231,12 @@ func _query_knowledge_base(structure_id: String) -> Dictionary:
 	_log_debug("Knowledge base method not found")
 	return {}
 
-func _analyze_relationships(structure_id: String) -> Array:
+func _analyze_relationships(_structure_id: String) -> Array:
 	"""Analyze relationships with other brain structures"""
 	# Placeholder for relationship analysis
 	return []
 
-func _analyze_connectivity(structure_id: String) -> Dictionary:
+func _analyze_connectivity(_structure_id: String) -> Dictionary:
 	"""Analyze neural connectivity patterns"""
 	# Placeholder for connectivity analysis
 	return {"input_connections": 0, "output_connections": 0}

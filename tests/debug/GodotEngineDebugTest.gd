@@ -119,7 +119,7 @@ func run_test() -> bool:
 		"res://project.godot",
 		"res://assets/data/anatomical_data.json",
 		"res://scenes/node_3d.tscn",
-		"res://scripts/core/AnatomicalKnowledgeDatabase.gd"
+		"res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
 	]
 	
 	var accessible_files = 0
@@ -156,8 +156,8 @@ func run_test() -> bool:
 	
 	# Test script loading
 	var scripts_to_test = [
-		"res://scripts/core/AnatomicalKnowledgeDatabase.gd",
-		"res://scripts/models/ModelVisibilityManager.gd",
+		"res://core/knowledge/AnatomicalKnowledgeDatabase.gd",
+		"res://core/models/ModelVisibilityManager.gd",
 		"res://tests/framework/TestFramework.gd"
 	]
 	

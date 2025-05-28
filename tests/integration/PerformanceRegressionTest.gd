@@ -17,7 +17,7 @@ func run_test() -> bool:
 	framework.start_test("Knowledge Base Loading Performance")
 	
 	var start_time = Time.get_ticks_msec()
-	var kb = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd").new()
+	var kb = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd").new()
 	var load_result = kb.load_knowledge_base()
 	var load_time = Time.get_ticks_msec() - start_time
 	
@@ -68,7 +68,7 @@ func run_test() -> bool:
 	# Test 4: Model Operations Performance
 	framework.start_test("Model Operations Performance")
 	
-	var model_switcher = preload("res://scripts/models/ModelVisibilityManager.gd").new()
+	var model_switcher = preload("res://core/models/ModelVisibilityManager.gd").new()
 	var mock_model = TestFramework.MockNode3D.new()
 	mock_model.name = "PerformanceTestModel"
 	

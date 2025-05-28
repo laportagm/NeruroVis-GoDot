@@ -46,12 +46,12 @@ func test_component_loading():
 	print("\n🧪 Test 1: Component Loading")
 	
 	var components = {
-		"SystemBootstrap": "res://scripts/core/SystemBootstrap.gd",
-		"InputRouter": "res://scripts/interaction/InputRouter.gd",
+		"SystemBootstrap": "res://core/systems/SystemBootstrap.gd",
+		"InputRouter": "res://core/interaction/InputRouter.gd",
 		"MainScene": "res://scenes/node_3d.gd",
-		"AnatomicalKnowledgeDatabase": "res://scripts/core/AnatomicalKnowledgeDatabase.gd",
-		"BrainStructureSelectionManager": "res://scripts/interaction/BrainStructureSelectionManager.gd",
-		"CameraBehaviorController": "res://scripts/interaction/CameraBehaviorController.gd"
+		"AnatomicalKnowledgeDatabase": "res://core/knowledge/AnatomicalKnowledgeDatabase.gd",
+		"BrainStructureSelectionManager": "res://core/interaction/BrainStructureSelectionManager.gd",
+		"CameraBehaviorController": "res://core/interaction/CameraBehaviorController.gd"
 	}
 	
 	var success = true
@@ -74,7 +74,7 @@ func test_system_bootstrap():
 	"""Test SystemBootstrap functionality"""
 	print("\n🧪 Test 2: SystemBootstrap Functionality")
 	
-	var bootstrap_script = load("res://scripts/core/SystemBootstrap.gd")
+	var bootstrap_script = load("res://core/systems/SystemBootstrap.gd")
 	if not bootstrap_script:
 		record_test_result("SystemBootstrap Functionality", false)
 		print("  ✗ Could not load SystemBootstrap script")
@@ -114,7 +114,7 @@ func test_input_router():
 	"""Test InputRouter functionality"""
 	print("\n🧪 Test 3: InputRouter Functionality")
 	
-	var router_script = load("res://scripts/interaction/InputRouter.gd")
+	var router_script = load("res://core/interaction/InputRouter.gd")
 	if not router_script:
 		record_test_result("InputRouter Functionality", false)
 		print("  ✗ Could not load InputRouter script")
@@ -209,10 +209,10 @@ func test_autoload_system():
 	print("\n🧪 Test 5: Autoload System")
 	
 	var autoload_scripts = [
-		["KB", "res://scripts/core/AnatomicalKnowledgeDatabase.gd"],
-		["ModelSwitcherGlobal", "res://scripts/models/ModelVisibilityManager.gd"], 
-		["DebugCmd", "res://scripts/core/DebugCommands.gd"],
-		["TestFramework", "res://scripts/tests/TestRunner.gd"]
+		["KB", "res://core/knowledge/AnatomicalKnowledgeDatabase.gd"],
+		["ModelSwitcherGlobal", "res://core/models/ModelVisibilityManager.gd"], 
+		["DebugCmd", "res://core/systems/DebugCommands.gd"],
+		["TestFramework", "res://tests/TestRunner.gd"]
 	]
 	
 	var success = true

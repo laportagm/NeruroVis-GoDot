@@ -1,4 +1,14 @@
-# Manages structure selection, highlighting, and raycast operations for the NeuroVis application
+## BrainStructureSelectionManager.gd
+## Handles educational 3D structure selection with learning context
+##
+## This system manages user interaction for selecting anatomical structures,
+## providing visual feedback, educational tooltips, and learning analytics.
+## It uses raycasting to detect which brain structure the user is interacting with
+## and applies appropriate visual highlighting for educational emphasis.
+##
+## @tutorial: Structure selection patterns for educational platforms
+## @version: 2.0
+
 class_name BrainStructureSelectionManager
 extends Node
 

@@ -6,7 +6,7 @@ func _ready():
 	
 	# Test 1: InfoPanelFactory exists
 	print("\nTest 1: InfoPanelFactory exists")
-	var factory_path = "res://scripts/ui/InfoPanelFactory.gd"
+	var factory_path = "res://ui/panels/InfoPanelFactory.gd"
 	if ResourceLoader.exists(factory_path):
 		print("✅ InfoPanelFactory found")
 		

@@ -18,9 +18,9 @@ class_name TestPlayer
 var health: int = 100
 var speed: float = 5.0
 
-func _ready():
+func _ready() -> void:
 	# Initialize player
-	
-func _process(delta):
+	pass
+func _process(delta: float) -> void:
 	# Update player each frame
-	
+	pass

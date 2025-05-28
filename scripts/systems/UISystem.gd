@@ -228,7 +228,7 @@ func _find_structure_id_by_name(mesh_name: String) -> String:
 
 func _load_modern_info_display() -> void:
 	"""Load ModernInfoDisplay script if available"""
-	var script_path = "res://scripts/ui/ModernInfoDisplay.gd"
+	var script_path = "res://ui/panels/ModernInfoDisplay.gd"
 	if ResourceLoader.exists(script_path):
 		ModernInfoDisplay = load(script_path)
 		print("[UI_SYSTEM] ModernInfoDisplay script loaded")

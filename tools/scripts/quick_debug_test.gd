@@ -22,7 +22,7 @@ func test_basic_loading():
 	print("\n1. Testing basic script loading...")
 	
 	# Test SystemBootstrap
-	var bootstrap_path = "res://scripts/core/SystemBootstrap.gd"
+	var bootstrap_path = "res://core/systems/SystemBootstrap.gd"
 	if ResourceLoader.exists(bootstrap_path):
 		var bootstrap_script = load(bootstrap_path)
 		if bootstrap_script:
@@ -35,7 +35,7 @@ func test_basic_loading():
 		print("  ✗ SystemBootstrap not found")
 	
 	# Test InputRouter
-	var router_path = "res://scripts/interaction/InputRouter.gd"
+	var router_path = "res://core/interaction/InputRouter.gd"
 	if ResourceLoader.exists(router_path):
 		var router_script = load(router_path)
 		if router_script:

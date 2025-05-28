@@ -4,7 +4,7 @@
 class_name InputRouterTest
 extends "res://tests/framework/TestFramework.gd"
 
-const InputRouter = preload("res://scripts/interaction/InputRouter.gd")
+const InputRouter = preload("res://core/interaction/InputRouter.gd")
 
 var test_router: InputRouter
 var mock_main_scene: Node3D

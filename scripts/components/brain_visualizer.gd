@@ -43,9 +43,9 @@ var neural_net = null
 var model_switcher = null
 
 # Preloaded scripts
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
-const BrainVisualizationCoreScript = preload("res://scripts/core/BrainVisualizationCore.gd")
-const ModelVisibilityManagerScript = preload("res://scripts/models/ModelVisibilityManager.gd")
+const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
+const BrainVisualizationCoreScript = preload("res://core/systems/BrainVisualizationCore.gd")
+const ModelVisibilityManagerScript = preload("res://core/models/ModelVisibilityManager.gd")
 
 func _ready() -> void:
 	# Defer initialization to allow scene tree to settle

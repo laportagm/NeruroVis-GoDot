@@ -17,7 +17,7 @@ extends Node3D
 @onready var model_control_panel = $UI_Layer/ModelControlPanel
 
 # Preload the scripts we need
-const LoadingOverlay = preload("res://scripts/ui/LoadingOverlay.gd")
+const LoadingOverlay = preload("res://ui/panels/LoadingOverlay.gd")
 
 # Signals
 signal scene_ready

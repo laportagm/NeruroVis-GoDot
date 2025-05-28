@@ -158,7 +158,7 @@ func _initialize_final_systems(main_scene: Node3D) -> bool:
 ## Individual system initializers
 func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 	"""Initialize the anatomical knowledge database"""
-	var script_path = "res://scripts/core/AnatomicalKnowledgeDatabase.gd"
+	var script_path = "res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -180,7 +180,7 @@ func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 
 func _initialize_neural_net(main_scene: Node3D) -> bool:
 	"""Initialize the brain visualization core"""
-	var script_path = "res://scripts/core/BrainVisualizationCore.gd"
+	var script_path = "res://core/systems/BrainVisualizationCore.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -200,7 +200,7 @@ func _initialize_neural_net(main_scene: Node3D) -> bool:
 
 func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	"""Initialize the model visibility manager"""
-	var script_path = "res://scripts/models/ModelVisibilityManager.gd"
+	var script_path = "res://core/models/ModelVisibilityManager.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -220,7 +220,7 @@ func _initialize_model_switcher(main_scene: Node3D) -> bool:
 
 func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	"""Initialize the model coordination system"""
-	var script_path = "res://scripts/models/ModelRegistry.gd"
+	var script_path = "res://core/models/ModelRegistry.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -245,7 +245,7 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 
 func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	"""Initialize the brain structure selection manager"""
-	var script_path = "res://scripts/interaction/BrainStructureSelectionManager.gd"
+	var script_path = "res://core/interaction/BrainStructureSelectionManager.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -265,7 +265,7 @@ func _initialize_selection_manager(main_scene: Node3D) -> bool:
 
 func _initialize_camera_controller(main_scene: Node3D) -> bool:
 	"""Initialize the camera behavior controller"""
-	var script_path = "res://scripts/interaction/CameraBehaviorController.gd"
+	var script_path = "res://core/interaction/CameraBehaviorController.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		return false
@@ -308,7 +308,7 @@ func _load_script(script_path: String):
 
 func _create_loading_overlay(main_scene: Node3D):
 	"""Create and show loading overlay"""
-	var script_path = "res://scripts/ui/LoadingOverlay.gd"
+	var script_path = "res://ui/panels/LoadingOverlay.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
 		print("[BOOTSTRAP] LoadingOverlay not available, continuing without loading screen")

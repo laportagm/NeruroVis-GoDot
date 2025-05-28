@@ -1,7 +1,6 @@
 # Modern UI Theme Manager for NeuroVis
 # Unified design system based on Figma specifications
-class_name UIThemeManager
-extends RefCounted
+extends Node
 
 # === DESIGN SYSTEM ===
 # Color palette aligned with Figma specs
@@ -132,6 +131,11 @@ const ANIM_DURATION_SLOW = 0.4
 enum ThemeMode { ENHANCED, MINIMAL }
 static var current_mode: ThemeMode = ThemeMode.ENHANCED
 
+# === STYLE CACHE ===
+static var _style_cache: Dictionary = {}
+static var _cache_enabled: bool = true
+static var _max_cache_size: int = 50
+
 # === THEME GETTERS ===
 static func get_current_colors() -> Dictionary:
 	match current_mode:
@@ -150,6 +154,13 @@ static func get_current_effects() -> Dictionary:
 
 # === ENHANCED GLASSMORPHISM STYLING ===
 static func create_enhanced_glass_style(opacity_override: float = -1.0) -> StyleBoxFlat:
+	# Generate cache key
+	var cache_key = "glass_%d_%.2f" % [current_mode, opacity_override]
+	
+	# Check cache first
+	if _cache_enabled and _style_cache.has(cache_key):
+		return _style_cache[cache_key].duplicate()
+	
 	var style = StyleBoxFlat.new()
 	var colors = get_current_colors()
 	var effects = get_current_effects()
@@ -183,6 +194,10 @@ static func create_enhanced_glass_style(opacity_override: float = -1.0) -> Style
 		style.shadow_size = 8
 		style.shadow_color = effects.get("shadow_md", EFFECTS.minimal.shadow_md)
 		style.shadow_offset = Vector2(0, 4)
+	
+	# Store in cache if enabled
+	if _cache_enabled:
+		_add_to_cache(cache_key, style)
 	
 	return style
 
@@ -289,7 +304,7 @@ static func animate_enhanced_entrance(control: Control, delay: float = 0.0) -> v
 	
 	var effects = get_current_effects()
 	var duration = ANIMATION.get("entrance_duration", 0.4)
-	var scale_factor = effects.get("hover_scale", 1.02)
+	var _scale_factor = effects.get("hover_scale", 1.02)
 	
 	# Start state
 	control.modulate = Color.TRANSPARENT
@@ -299,7 +314,7 @@ static func animate_enhanced_entrance(control: Control, delay: float = 0.0) -> v
 	tween.set_parallel(true)
 	
 	if delay > 0:
-		tween.tween_delay(delay)
+		tween.tween_interval(delay)
 	
 	# Enhanced entrance with spring easing
 	tween.tween_property(control, "modulate", Color.WHITE, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
@@ -382,7 +397,7 @@ static func create_button_style(color: Color = ACCENT_BLUE) -> StyleBoxFlat:
 static func create_panel_style() -> StyleBoxFlat:
 	return create_enhanced_glass_style()
 
-static func apply_glass_panel(control: Control, opacity: float = 0.9, _style_type: String = "default") -> void:
+static func apply_glass_panel(control: Control, _opacity: float = 0.9, _style_type: String = "default") -> void:
 	apply_enhanced_panel_style(control, "default")
 
 static func apply_modern_label(label: Label, font_size: int, color: Color, _style_type: String = "default") -> void:
@@ -391,16 +406,16 @@ static func apply_modern_label(label: Label, font_size: int, color: Color, _styl
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
 
-static func apply_modern_button(button: Button, color: Color, _style_type: String = "default") -> void:
+static func apply_modern_button(button: Button, _color: Color, _style_type: String = "default") -> void:
 	apply_enhanced_button_style(button, "primary")
 
-static func animate_entrance(control: Control, param1 = null, param2 = null, param3 = null) -> void:
+static func animate_entrance(control: Control, param1 = null, _param2 = null, _param3 = null) -> void:
 	var delay = 0.0
 	if param1 != null:
 		delay = float(param1) if param1 is float or param1 is int else 0.0
 	animate_enhanced_entrance(control, delay)
 
-static func animate_exit(control: Control, param1 = null, param2 = null) -> void:
+static func animate_exit(control: Control, param1 = null, _param2 = null) -> void:
 	if not control:
 		return
 	var duration = ANIMATION.exit_duration
@@ -430,8 +445,10 @@ static func animate_fade_text_change(label: Label, new_text: String, duration: f
 
 # === UTILITY METHODS ===
 static func set_theme_mode(mode: ThemeMode) -> void:
-	current_mode = mode
-	print("[UIThemeManager] Theme mode changed to: ", ["ENHANCED", "MINIMAL"][mode])
+	if current_mode != mode:
+		current_mode = mode
+		clear_style_cache()  # Clear cache when theme changes
+		print("[UIThemeManager] Theme mode changed to: ", ["ENHANCED", "MINIMAL"][mode])
 
 static func get_color(color_name: String) -> Color:
 	var colors = get_current_colors()
@@ -522,7 +539,7 @@ static func create_educational_card_style(style_type: String = "default") -> Sty
 	
 	return style
 
-static func apply_rich_text_styling(rich_text: RichTextLabel, font_size: int, style_type: String = "default") -> void:
+static func apply_rich_text_styling(rich_text: RichTextLabel, font_size: int, _style_type: String = "default") -> void:
 	"""Apply enhanced styling to RichTextLabel controls"""
 	if not rich_text:
 		return
@@ -593,8 +610,30 @@ static func create_styled_label(text: String, font_size_key: String = "body") ->
 	var label = Label.new()
 	label.text = text
 	
-	var colors = get_current_colors()
-	var typography = get_current_typography()
+	var _colors = get_current_colors()
+	var _typography = get_current_typography()
 	
 	apply_enhanced_typography(label, font_size_key)
 	return label
+
+# === CACHE MANAGEMENT ===
+static func _add_to_cache(key: String, style: StyleBoxFlat) -> void:
+	"""Add a style to the cache with size management"""
+	if _style_cache.size() >= _max_cache_size:
+		# Remove oldest entry (first key)
+		var keys = _style_cache.keys()
+		if keys.size() > 0:
+			_style_cache.erase(keys[0])
+	
+	_style_cache[key] = style
+
+static func clear_style_cache() -> void:
+	"""Clear all cached styles"""
+	_style_cache.clear()
+	print("[UIThemeManager] Style cache cleared")
+
+static func set_cache_enabled(enabled: bool) -> void:
+	"""Enable or disable style caching"""
+	_cache_enabled = enabled
+	if not enabled:
+		clear_style_cache()

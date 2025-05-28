@@ -3,12 +3,12 @@ class_name MainSceneRobust
 extends Node3D
 
 # Preload custom classes
-const CameraControllerScene = preload("res://scripts/interaction/CameraBehaviorController.gd")
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
-const BrainStructureSelectionManagerScript = preload("res://scripts/interaction/BrainStructureSelectionManager.gd")
-const AnatomicalKnowledgeDatabaseScript = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd")
-const BrainVisualizationCoreScript = preload("res://scripts/core/BrainVisualizationCore.gd")
-const ModelVisibilityManagerScript = preload("res://scripts/models/ModelVisibilityManager.gd")
+const CameraControllerScene = preload("res://core/interaction/CameraBehaviorController.gd")
+const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
+const BrainStructureSelectionManagerScript = preload("res://core/interaction/BrainStructureSelectionManager.gd")
+const AnatomicalKnowledgeDatabaseScript = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd")
+const BrainVisualizationCoreScript = preload("res://core/systems/BrainVisualizationCore.gd")
+const ModelVisibilityManagerScript = preload("res://core/models/ModelVisibilityManager.gd")
 
 # Constants
 const RAY_LENGTH: float = 1000.0
@@ -160,7 +160,12 @@ func try_initialize_camera() -> bool:
     print("[WARNING] No camera found, creating emergency camera...")
     var emergency_camera = Camera3D.new()
     emergency_camera.name = "EmergencyCamera"
-    emergency_camera.transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 10)
+    emergency_camera.transform = Transform3D(
+        Vector3(1, 0, 0),
+        Vector3(0, 0.866025, 0.5), 
+        Vector3(0, -0.5, 0.866025),
+        Vector3(0, 5, 10)
+    )
     emergency_camera.current = true
     add_child(emergency_camera)
     camera = emergency_camera
@@ -279,30 +284,30 @@ func initialize_systems():
     print("[INIT] Initializing systems...")
     
     # Initialize knowledge base
-    try:
-        knowledge_base = AnatomicalKnowledgeDatabaseScript.new()
+    knowledge_base = AnatomicalKnowledgeDatabaseScript.new()
+    if knowledge_base:
         add_child(knowledge_base)
         knowledge_base.load_knowledge_base()
         print("[INIT] Knowledge base initialized and loaded")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize knowledge base")
         return
     
     # Initialize neural network module
-    try:
-        neural_net = BrainVisualizationCoreScript.new()
+    neural_net = BrainVisualizationCoreScript.new()
+    if neural_net:
         add_child(neural_net)
         print("[INIT] Neural network module initialized")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize neural network")
         return
     
     # Initialize model switcher
-    try:
-        model_switcher = ModelVisibilityManagerScript.new()
+    model_switcher = ModelVisibilityManagerScript.new()
+    if model_switcher:
         add_child(model_switcher)
         print("[INIT] Model switcher initialized")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize model switcher")
         return
 
@@ -313,18 +318,18 @@ func initialize_components():
     print("[INIT] Initializing components...")
     
     # Create and initialize SelectionManager
-    try:
-        selection_manager = BrainStructureSelectionManagerScript.new()
+    selection_manager = BrainStructureSelectionManagerScript.new()
+    if selection_manager:
         add_child(selection_manager)
         selection_manager_backup = selection_manager
         print("[INIT] SelectionManager initialized and added to scene")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize SelectionManager")
         return
     
     # Create and initialize CameraController
-    try:
-        camera_controller = CameraControllerScene.new()
+    camera_controller = CameraControllerScene.new()
+    if camera_controller:
         add_child(camera_controller)
         camera_controller_backup = camera_controller
         print("[INIT] CameraController initialized and added to scene")
@@ -332,10 +337,14 @@ func initialize_components():
         # Initialize camera controller if camera is available
         var safe_camera = get_safe_camera()
         if safe_camera:
-            camera_controller.initialize(safe_camera, get_safe_brain_model_parent())
-            camera_controller.set_rotation_speed(CAMERA_ROTATION_SPEED)
-            camera_controller.set_zoom_speed(CAMERA_ZOOM_SPEED)
-            camera_controller.set_zoom_limits(CAMERA_MIN_DISTANCE, CAMERA_MAX_DISTANCE)
+            if camera_controller.has_method("initialize"):
+                camera_controller.initialize(safe_camera, get_safe_brain_model_parent())
+            if camera_controller.has_method("set_rotation_speed"):
+                camera_controller.set_rotation_speed(CAMERA_ROTATION_SPEED)
+            if camera_controller.has_method("set_zoom_speed"):
+                camera_controller.set_zoom_speed(CAMERA_ZOOM_SPEED)
+            if camera_controller.has_method("set_zoom_limits"):
+                camera_controller.set_zoom_limits(CAMERA_MIN_DISTANCE, CAMERA_MAX_DISTANCE)
             
             # Connect signals safely
             if camera_controller.has_signal("camera_animation_finished"):
@@ -346,7 +355,7 @@ func initialize_components():
             print("[INIT] Camera controller initialized and configured")
         else:
             push_error("[ERROR] Cannot initialize camera controller - no camera available")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize CameraController")
         return
 
@@ -395,14 +404,15 @@ func initialize_models_and_final_setup():
     print("[INIT] Initializing models and final setup...")
     
     # Initialize model coordinator
-    try:
-        model_coordinator = ModelCoordinatorScene.new()
+    model_coordinator = ModelCoordinatorScene.new()
+    if model_coordinator:
         add_child(model_coordinator)
         
         # Setup model coordinator
         var safe_brain_parent = get_safe_brain_model_parent()
         if safe_brain_parent and model_coordinator:
-            model_coordinator.set_model_parent(safe_brain_parent)
+            if model_coordinator.has_method("set_model_parent"):
+                model_coordinator.set_model_parent(safe_brain_parent)
             
             # Connect to ModelCoordinator signals
             if model_coordinator.has_signal("models_loaded"):
@@ -410,31 +420,32 @@ func initialize_models_and_final_setup():
             if model_coordinator.has_signal("model_load_failed"):
                 model_coordinator.model_load_failed.connect(_on_model_load_failed)
             
-            model_coordinator.load_brain_models()
+            if model_coordinator.has_method("load_brain_models"):
+                model_coordinator.load_brain_models()
             print("[INIT] Brain models loading initiated via ModelCoordinator")
-    except:
+    else:
         push_error("[ERROR] Failed to initialize model coordinator")
         return
     
     # Create model control panel
-    try:
+    if has_method("_setup_model_control_panel"):
         _setup_model_control_panel()
         print("[INIT] Model control panel setup complete")
-    except:
+    else:
         push_warning("[WARNING] Failed to setup model control panel")
     
     # Add debug ray visualization
-    try:
+    if has_method("_setup_debug_ray"):
         _setup_debug_ray()
         print("[INIT] Debug ray visualization setup complete")
-    except:
+    else:
         push_warning("[WARNING] Failed to setup debug ray")
     
     # Register debug commands
-    try:
+    if has_method("_register_debug_commands"):
         _register_debug_commands()
         print("[INIT] Debug commands registered")
-    except:
+    else:
         push_warning("[WARNING] Failed to register debug commands")
     
     # Start initial camera animation if available
@@ -519,7 +530,7 @@ func get_safe_brain_model_parent() -> Node3D:
     
     return null
 
-func get_safe_selection_manager() )
+func get_safe_selection_manager():
     """Returns a valid selection manager reference or null"""
     if is_instance_valid(selection_manager):
         return selection_manager
@@ -530,14 +541,14 @@ func get_safe_selection_manager() )
     
     # Try to find it in children
     for child in get_children():
-        if child get_script() == BrainStructureSelectionManagerScript:
+        if child.get_script() == BrainStructureSelectionManagerScript:
             selection_manager = child
             selection_manager_backup = child
             return child
     
     return null
 
-func get_safe_camera_controller() )
+func get_safe_camera_controller():
     """Returns a valid camera controller reference or null"""
     if is_instance_valid(camera_controller):
         return camera_controller
@@ -548,7 +559,7 @@ func get_safe_camera_controller() )
     
     # Try to find it in children
     for child in get_children():
-        if child get_script() == CameraControllerScene:
+        if child.get_script() == CameraControllerScene:
             camera_controller = child
             camera_controller_backup = child
             return child

@@ -9,7 +9,7 @@ func run_test() -> bool:
 	
 	# Test 1: ModelSwitcher Instantiation
 	framework.start_test("ModelSwitcher Instantiation")
-	var model_switcher = preload("res://scripts/models/ModelVisibilityManager.gd").new()
+	var model_switcher = preload("res://core/models/ModelVisibilityManager.gd").new()
 	framework.assert_not_null(model_switcher, "ModelSwitcher should instantiate")
 	framework.assert_true(model_switcher.has_signal("model_visibility_changed"), "Should have visibility signal")
 	var test1_result = framework.end_test()

@@ -11,7 +11,7 @@ func run_test() -> bool:
 	framework.start_test("Application Startup Workflow")
 	
 	# Simulate knowledge base initialization
-	var kb = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd").new()
+	var kb = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd").new()
 	framework.assert_not_null(kb, "Knowledge base should initialize")
 	
 	var load_success = kb.load_knowledge_base()
@@ -19,7 +19,7 @@ func run_test() -> bool:
 	framework.assert_true(kb.is_loaded, "Knowledge base should be marked as loaded")
 	
 	# Simulate model switcher initialization
-	var model_switcher = preload("res://scripts/models/ModelVisibilityManager.gd").new()
+	var model_switcher = preload("res://core/models/ModelVisibilityManager.gd").new()
 	framework.assert_not_null(model_switcher, "Model switcher should initialize")
 	
 	var test1_result = framework.end_test()

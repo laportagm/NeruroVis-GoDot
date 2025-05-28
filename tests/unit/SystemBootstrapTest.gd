@@ -4,7 +4,7 @@
 class_name SystemBootstrapTest
 extends "res://tests/framework/TestFramework.gd"
 
-const SystemBootstrap = preload("res://scripts/core/SystemBootstrap.gd")
+const SystemBootstrap = preload("res://core/systems/SystemBootstrap.gd")
 
 var test_bootstrap: SystemBootstrap
 var mock_main_scene: Node3D

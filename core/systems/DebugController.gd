@@ -1,6 +1,9 @@
 class_name DebugController
 extends Control
 
+# Preload DebugVisualizer class
+const DebugVisualizer = preload("res://core/visualization/DebugVisualizer.gd")
+
 # Signal when a test is completed
 signal test_completed(test_name: String, success: bool, message: String)
 
@@ -178,7 +181,7 @@ func _add_debug_component_to_scene(scene_instance) -> void:
 			return
 	
 	# Create and add debug visualizer
-	var debug_visualizer = load("res://scripts/visualization/DebugVisualizer.gd").new()
+	var debug_visualizer = load("res://core/visualization/DebugVisualizer.gd").new()
 	debug_visualizer.name = "DebugVisualizer"
 	debug_visualizer.visualizations_enabled = debug_visualizations_enabled
 	debug_visualizer.show_raycasts = show_raycasts

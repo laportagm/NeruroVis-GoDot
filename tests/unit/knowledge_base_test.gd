@@ -1,6 +1,9 @@
 class_name KnowledgeBaseTest
 extends Node
 
+# Preload the knowledge base class
+const AnatomicalKnowledgeDatabase = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd")
+
 # Signal to report test results
 signal test_completed(success: bool, message: String)
 
@@ -38,7 +41,7 @@ func _run_tests() -> void:
 	print("✓ Anatomical data file exists")
 	
 	print("Test 2: Creating new knowledge base instance")
-	knowledge_base = KnowledgeBase.new()
+	knowledge_base = AnatomicalKnowledgeDatabase.new()
 	add_child(knowledge_base)
 	
 	if not knowledge_base:
@@ -166,7 +169,7 @@ func _run_tests() -> void:
 	
 	print("Test 8: Testing knowledge base error handling")
 	# Create a new knowledge base with invalid path
-	var invalid_kb = KnowledgeBase.new()
+	var invalid_kb = AnatomicalKnowledgeDatabase.new()
 	add_child(invalid_kb)
 	
 	# Override path to non-existent file

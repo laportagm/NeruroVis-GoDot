@@ -30,6 +30,230 @@
             "problemMatcher": []
         },
         {
+            "label": "🧠 Smart Context Update",
+            "type": "shell",
+            "command": "bash",
+            "args": [".claude/scripts/update-project-context.sh"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🚀 Optimized Claude Request",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🧠 NEUROVIS OPTIMIZED DEVELOPMENT REQUEST 🧠\n\nCONTEXT LOADING:\n✅ NeuroVis educational neuroscience platform for medical students\n✅ Architecture: Modular Godot 4.4.1 educational system\n✅ Standards: CLAUDE.md + Code Quality + Educational Excellence\n✅ Performance: 60fps, <500MB memory, accessibility compliant\n\nENHANCED REQUEST PROCESSING:\nOriginal: ${input:requestWithStandards}\n\nAuto-Enhanced Context:\n- Educational Goal: Medical student learning enhancement\n- Target Users: Healthcare professionals and students\n- Integration: Existing NeuroVis autoload services\n- Performance: Educational platform optimization\n- Accessibility: WCAG 2.1 AA compliance\n- Medical Accuracy: Anatomical correctness validation\n\nDELIVER: Production-ready educational platform code with complete standards compliance."
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "dependsOn": "🧠 Smart Context Update"
+        },
+        {
+            "label": "🔍 Smart Error Analysis",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🔍 NEUROVIS INTELLIGENT ERROR ANALYSIS 🔍\n\nCONTEXT:\n✅ Project: NeuroVis educational neuroscience platform\n✅ Architecture: Educational modular Godot system\n✅ Common Issues: ContentComponent methods, type hints, educational docs\n\nERROR ANALYSIS REQUEST: ${input:errorDescription}\n\nINTELLIGENT DEBUGGING:\n✅ Root cause identification with NeuroVis context\n✅ Educational impact assessment\n✅ Standards-compliant solution\n✅ Performance consideration\n✅ Prevention strategy\n\nDELIVER: Complete fix with educational context preservation."
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "dependsOn": "🧠 Smart Context Update"
+        },
+        {
+            "label": "🛡️ Ultimate Standards + Code Quality",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🛡️ ULTIMATE NEUROVIS + CODE QUALITY ENFORCER 🛡️\n\nCRITICAL VALIDATION:\n✅ Educational context + learning objectives\n✅ NeuroVis architecture compliance\n✅ GDScript syntax + type hints (STRICT)\n✅ Naming conventions (PascalCase/snake_case)\n✅ Error handling + null checks\n✅ Performance optimization (60fps)\n✅ Educational documentation complete\n✅ Linting standards (no warnings)\n\nAUTO-REJECTION: Missing type hints, wrong naming, no error handling, missing educational context\n\nUSER REQUEST: ${input:requestWithStandards}\n\nDeliver with COMPREHENSIVE standards + code quality compliance."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🔧 Code Quality Enforcer",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🔧 GDSCRIPT CODE QUALITY & LINTING ENFORCER 🔧\n\nSTRICT CODE STANDARDS:\n✅ GDScript syntax: class_name, func, var typing\n✅ Naming: PascalCase classes, snake_case functions\n✅ Type hints: ALL parameters + return values\n✅ Error handling: Null checks, validation\n✅ Documentation: Educational context required\n✅ Performance: Optimized for educational platform\n✅ Linting: No unused vars, clean formatting\n\nUSER REQUEST: ${input:requestWithStandards}\n\nDeliver with PERFECT GDScript quality."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🎯 Code Review & Linting",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "Role: Senior GDScript code reviewer specializing in educational platforms. Task: Comprehensive code review for NeuroVis standards compliance. Check: Syntax correctness, type hints, naming conventions, error handling, performance optimization, educational documentation, linting standards. Reference: CLAUDE.md + GDScript best practices. Output: Detailed review with specific fixes for any violations."
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🎨 Educational Design Assistant",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🎨 NEUROVIS EDUCATIONAL DESIGN ASSISTANT 🎨\n\nCONTEXT: NeuroVis medical education platform\nTARGET: Medical students and healthcare professionals\nSTANDARDS: Educational excellence + accessibility + clinical accuracy\n\nDESIGN REQUEST: ${input:designRequest}\n\nEDUCATIONAL DESIGN FOCUS:\n✅ Learning objective alignment\n✅ Clinical relevance validation\n✅ Accessibility compliance (WCAG 2.1 AA)\n✅ User experience for medical education\n✅ Visual hierarchy for learning efficiency\n✅ Performance optimization for 3D interactions\n\nDELIVER: Educational design solution with implementation guidance."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🛡️ Standards Wrapper",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🛡️ NEUROVIS STANDARDS WRAPPER 🛡️\n\nCONTEXT: NeuroVis educational platform\nSTANDARDS: CLAUDE.md compliance required\nTARGET: Medical education excellence\n\nMANDATORY REQUIREMENTS:\n✅ Educational context in all responses\n✅ Learning objectives addressed\n✅ Architecture patterns followed\n✅ Performance budgets respected\n✅ Accessibility considered\n\nUSER REQUEST: ${input:requestWithStandards}\n\nDeliver with NeuroVis educational standards."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🎓 Educational Context Guard",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🎓 EDUCATIONAL CONTEXT VALIDATION 🎓\n\nLEARNING MISSION CHECK:\n✅ Medical education enhancement?\n✅ Learning objectives defined?\n✅ Clinical relevance stated?\n✅ Accessibility for diverse learners?\n✅ Evidence-based educational approach?\n\nUSER REQUEST: ${input:requestWithStandards}\n\nResponse must demonstrate educational value."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🏗️ Architecture Enforcer",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "🏗️ NEUROVIS ARCHITECTURE ENFORCER 🏗️\n\nSTRICT STRUCTURE RULES:\n✅ core/ → Educational business logic\n✅ ui/ → Educational interface\n✅ scenes/ → Educational workflows\n✅ assets/ → Educational content\n✅ Autoloads: KnowledgeService, AIAssistant, UIThemeManager\n✅ GDScript conventions enforced\n\nUSER REQUEST: ${input:requestWithStandards}\n\nValidate architecture compliance."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📚 Educational Standards Check",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "Role: NeuroVis standards auditor. Task: Comprehensive compliance audit for current NeuroVis codebase. Check: Educational context, CLAUDE.md compliance, architecture patterns, performance, accessibility. Reference: Established NeuroVis educational standards."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🏗️ Auto-Organize Project",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "Role: NeuroVis project architect. Task: Analyze project structure and organize files according to NeuroVis educational standards. Ensure: Proper directory placement (core/, ui/, scenes/, assets/), educational context preservation, architecture compliance."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🎯 Develop Educational Feature",
+            "type": "shell",
+            "command": "claude",
+            "args": [
+                "Role: Senior NeuroVis educational developer. Task: Design and implement complete educational feature: ${input:featureName}. Requirements: Learning objectives, clinical relevance, accessibility compliance, NeuroVis architecture patterns, performance optimization, medical accuracy. Reference: CLAUDE.md standards."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "⚡ Quick Test Suite",
+            "type": "shell",
+            "command": "./tools/scripts/quick_test.sh",
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "📊 Check Project Health",
             "type": "shell",
             "command": "echo",
@@ -88,6 +312,60 @@
                 "panel": "shared"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "🎨 Validate Educational Themes",
+            "type": "shell",
+            "command": "claude",
+            "args": ["Role: UI theme auditor. Task: Validate NeuroVis Enhanced/Minimal themes for educational compliance, accessibility (WCAG 2.1 AA), and clinical presentation standards. Reference: UIThemeManager patterns."],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🧠 Educational Content Audit",
+            "type": "shell",
+            "command": "claude",
+            "args": ["Role: Educational content auditor. Task: Validate anatomical_data.json for medical accuracy, learning objective alignment, clinical relevance completeness. Check: Educational content consistency with 3D models."],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "featureName",
+            "description": "Educational feature name",
+            "default": "New Educational Feature",
+            "type": "promptString"
+        },
+        {
+            "id": "requestWithStandards",
+            "description": "Your request (will be processed with NeuroVis standards enforcement)",
+            "default": "Add educational feature",
+            "type": "promptString"
+        },
+        {
+            "id": "errorDescription",
+            "description": "Describe the error you're experiencing",
+            "default": "Error description",
+            "type": "promptString"
+        },
+        {
+            "id": "designRequest",
+            "description": "Educational design request",
+            "default": "Design educational interface",
+            "type": "promptString"
         }
     ]
 }

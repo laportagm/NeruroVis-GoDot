@@ -1,8 +1,8 @@
 extends Node3D
 
 # Preload custom classes
-const CameraControllerScene = preload("res://scripts/interaction/CameraBehaviorController.gd")
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
+const CameraControllerScene = preload("res://core/interaction/CameraBehaviorController.gd")
+const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
 
 # Constants
 const RAY_LENGTH: float = 1000.0

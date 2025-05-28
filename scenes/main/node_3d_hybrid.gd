@@ -21,13 +21,13 @@ extends Node3D
 @onready var model_control_panel = $UI_Layer/ModelControlPanel
 
 # ==================== PRELOADED SCRIPTS ====================
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
-const LoadingOverlay = preload("res://scripts/ui/LoadingOverlay.gd")
-const BrainStructureSelectionManagerScript = preload("res://scripts/interaction/BrainStructureSelectionManager.gd")
-const CameraBehaviorControllerScript = preload("res://scripts/interaction/CameraBehaviorController.gd")
-const AnatomicalKnowledgeDatabaseScript = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd")
-const BrainVisualizationCoreScript = preload("res://scripts/core/BrainVisualizationCore.gd")
-const ModelVisibilityManagerScript = preload("res://scripts/models/ModelVisibilityManager.gd")
+const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
+const LoadingOverlay = preload("res://ui/panels/LoadingOverlay.gd")
+const BrainStructureSelectionManagerScript = preload("res://core/interaction/BrainStructureSelectionManager.gd")
+const CameraBehaviorControllerScript = preload("res://core/interaction/CameraBehaviorController.gd")
+const AnatomicalKnowledgeDatabaseScript = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd")
+const BrainVisualizationCoreScript = preload("res://core/systems/BrainVisualizationCore.gd")
+const ModelVisibilityManagerScript = preload("res://core/models/ModelVisibilityManager.gd")
 
 # ==================== COMPONENT-LIKE ORGANIZATION ====================
 # Brain Visualization Component

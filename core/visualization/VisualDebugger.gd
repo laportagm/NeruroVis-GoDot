@@ -27,7 +27,7 @@ static func _static_init() -> void:
 # Add a debug label at the given position
 static func add_label(text: String, position: Vector3, parent: Node3D = null) -> Label3D:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return null
 	
 	var label = Label3D.new()
@@ -35,7 +35,7 @@ static func add_label(text: String, position: Vector3, parent: Node3D = null) ->
 	label.position = position
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.font_size = 14
-	label.modulate = VisualDebugger.text_color
+	label.modulate = text_color
 	
 	if parent:
 		parent.add_child(label)
@@ -44,13 +44,13 @@ static func add_label(text: String, position: Vector3, parent: Node3D = null) ->
 		var current_scene = Engine.get_main_loop().current_scene
 		current_scene.add_child(label)
 	
-	VisualDebugger.debug_objects.append(label)
+	debug_objects.append(label)
 	return label
 
 # Draw a debug ray from origin to destination
 static func draw_ray(from: Vector3, to: Vector3, duration: float = 1.0, parent: Node3D = null) -> MeshInstance3D:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return null
 	
 	var immediate_mesh = ImmediateMesh.new()
@@ -76,7 +76,7 @@ static func draw_ray(from: Vector3, to: Vector3, duration: float = 1.0, parent: 
 		var current_scene = Engine.get_main_loop().current_scene
 		current_scene.add_child(mesh_instance)
 	
-	VisualDebugger.debug_objects.append(mesh_instance)
+	debug_objects.append(mesh_instance)
 	
 	# Set up removal timer
 	if duration > 0:
@@ -85,7 +85,7 @@ static func draw_ray(from: Vector3, to: Vector3, duration: float = 1.0, parent: 
 		timer.wait_time = duration
 		timer.one_shot = true
 		timer.timeout.connect(func(): 
-			VisualDebugger.debug_objects.erase(mesh_instance)
+			debug_objects.erase(mesh_instance)
 			mesh_instance.queue_free()
 		)
 		timer.start()
@@ -95,7 +95,7 @@ static func draw_ray(from: Vector3, to: Vector3, duration: float = 1.0, parent: 
 # Draw a box at the given position with the given size
 static func draw_box(position: Vector3, size: Vector3 = Vector3.ONE, duration: float = 1.0, parent: Node3D = null) -> MeshInstance3D:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return null
 	
 	var box_mesh = BoxMesh.new()
@@ -104,7 +104,7 @@ static func draw_box(position: Vector3, size: Vector3 = Vector3.ONE, duration: f
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = box_mesh
 	mesh_instance.position = position
-	mesh_instance.material_override = VisualDebugger.debug_material.duplicate()
+	mesh_instance.material_override = debug_material.duplicate()
 	
 	if parent:
 		parent.add_child(mesh_instance)
@@ -113,7 +113,7 @@ static func draw_box(position: Vector3, size: Vector3 = Vector3.ONE, duration: f
 		var current_scene = Engine.get_main_loop().current_scene
 		current_scene.add_child(mesh_instance)
 	
-	VisualDebugger.debug_objects.append(mesh_instance)
+	debug_objects.append(mesh_instance)
 	
 	# Set up removal timer
 	if duration > 0:
@@ -122,7 +122,7 @@ static func draw_box(position: Vector3, size: Vector3 = Vector3.ONE, duration: f
 		timer.wait_time = duration
 		timer.one_shot = true
 		timer.timeout.connect(func(): 
-			VisualDebugger.debug_objects.erase(mesh_instance)
+			debug_objects.erase(mesh_instance)
 			mesh_instance.queue_free()
 		)
 		timer.start()
@@ -132,7 +132,7 @@ static func draw_box(position: Vector3, size: Vector3 = Vector3.ONE, duration: f
 # Draw a sphere at the given position with the given radius
 static func draw_sphere(position: Vector3, radius: float = 0.5, duration: float = 1.0, parent: Node3D = null) -> MeshInstance3D:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return null
 	
 	var sphere_mesh = SphereMesh.new()
@@ -142,7 +142,7 @@ static func draw_sphere(position: Vector3, radius: float = 0.5, duration: float 
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = sphere_mesh
 	mesh_instance.position = position
-	mesh_instance.material_override = VisualDebugger.debug_material.duplicate()
+	mesh_instance.material_override = debug_material.duplicate()
 	
 	if parent:
 		parent.add_child(mesh_instance)
@@ -151,7 +151,7 @@ static func draw_sphere(position: Vector3, radius: float = 0.5, duration: float 
 		var current_scene = Engine.get_main_loop().current_scene
 		current_scene.add_child(mesh_instance)
 	
-	VisualDebugger.debug_objects.append(mesh_instance)
+	debug_objects.append(mesh_instance)
 	
 	# Set up removal timer
 	if duration > 0:
@@ -160,7 +160,7 @@ static func draw_sphere(position: Vector3, radius: float = 0.5, duration: float 
 		timer.wait_time = duration
 		timer.one_shot = true
 		timer.timeout.connect(func(): 
-			VisualDebugger.debug_objects.erase(mesh_instance)
+			debug_objects.erase(mesh_instance)
 			mesh_instance.queue_free()
 		)
 		timer.start()
@@ -170,7 +170,7 @@ static func draw_sphere(position: Vector3, radius: float = 0.5, duration: float 
 # Highlight a mesh instance
 static func highlight_mesh(mesh_instance: MeshInstance3D, color: Color = Color(0, 1, 0, 0.5), duration: float = 0.0) -> void:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return
 	
 	if not mesh_instance or not mesh_instance.mesh:
@@ -192,7 +192,7 @@ static func highlight_mesh(mesh_instance: MeshInstance3D, color: Color = Color(0
 		mesh_instance.set_surface_override_material(i, highlight_material)
 	
 	# Store in dictionary
-	VisualDebugger.mesh_highlights[mesh_instance] = {
+	mesh_highlights[mesh_instance] = {
 		"original_materials": original_materials,
 		"timer": null
 	}
@@ -207,19 +207,19 @@ static func highlight_mesh(mesh_instance: MeshInstance3D, color: Color = Color(0
 			VisualDebugger.remove_highlight(mesh_instance)
 		)
 		timer.start()
-		VisualDebugger.mesh_highlights[mesh_instance].timer = timer
+		mesh_highlights[mesh_instance].timer = timer
 
 # Remove highlight from a mesh instance
 static func remove_highlight(mesh_instance: MeshInstance3D) -> void:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return
 	
-	if not mesh_instance or not VisualDebugger.mesh_highlights.has(mesh_instance):
+	if not mesh_instance or not mesh_highlights.has(mesh_instance):
 		return
 	
 	# Restore original materials
-	var highlight_data = VisualDebugger.mesh_highlights[mesh_instance]
+	var highlight_data = mesh_highlights[mesh_instance]
 	
 	for i in range(mesh_instance.get_surface_override_material_count()):
 		if i < highlight_data.original_materials.size():
@@ -230,44 +230,44 @@ static func remove_highlight(mesh_instance: MeshInstance3D) -> void:
 		highlight_data.timer.queue_free()
 	
 	# Remove from dictionary
-	VisualDebugger.mesh_highlights.erase(mesh_instance)
+	mesh_highlights.erase(mesh_instance)
 
 # Clear all debug objects
 static func clear_all() -> void:
 	_static_init()  # Ensure static variables are initialized
 	# Remove all debug objects
-	for obj in VisualDebugger.debug_objects:
+	for obj in debug_objects:
 		if obj and obj.is_inside_tree():
 			obj.queue_free()
 	
-	VisualDebugger.debug_objects.clear()
+	debug_objects.clear()
 	
 	# Remove all mesh highlights
-	for mesh_instance in VisualDebugger.mesh_highlights.keys():
+	for mesh_instance in mesh_highlights.keys():
 		VisualDebugger.remove_highlight(mesh_instance)
 
 # Get current enabled state
 static func is_enabled() -> bool:
-	return VisualDebugger._enabled
+	return _enabled
 
 # Enable or disable debug visuals
 static func set_enabled(enabled: bool) -> void:
 	_static_init()  # Ensure static variables are initialized
-	VisualDebugger._enabled = enabled
+	_enabled = enabled
 	
 	# Hide or show existing objects
-	for obj in VisualDebugger.debug_objects:
+	for obj in debug_objects:
 		if obj and obj.is_inside_tree():
 			obj.visible = enabled
 
 # Toggle debug visuals
 static func toggle() -> void:
-	set_enabled(not VisualDebugger._enabled)
+	set_enabled(not _enabled)
 
 # Visualize a raycast
 static func visualize_raycast(click_position: Vector2, camera: Camera3D, length: float = 1000.0, duration: float = 1.0) -> void:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return
 	
 	if not camera:
@@ -281,7 +281,7 @@ static func visualize_raycast(click_position: Vector2, camera: Camera3D, length:
 # Create label for all nodes in a scene - useful for debugging structure names
 static func label_all_nodes(parent: Node3D, recursive: bool = true, filter_class: String = "") -> void:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return
 	
 	for child in parent.get_children():
@@ -297,7 +297,7 @@ static func label_all_nodes(parent: Node3D, recursive: bool = true, filter_class
 # Visualize collision shapes in a scene
 static func visualize_collision_shapes(parent: Node) -> void:
 	_static_init()  # Ensure static variables are initialized
-	if not Engine.is_editor_hint() and not VisualDebugger._enabled:
+	if not Engine.is_editor_hint() and not _enabled:
 		return
 	
 	_visualize_collision_shapes_recursive(parent)
@@ -318,7 +318,7 @@ static func _visualize_collision_shapes_recursive(node: Node) -> void:
 			mesh_instance.material_override.albedo_color = VisualDebugger.collision_color
 			
 			# Track for removal later
-			VisualDebugger.debug_objects.append(mesh_instance)
+			debug_objects.append(mesh_instance)
 	
 	# Recursively process children
 	for child in node.get_children():

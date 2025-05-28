@@ -34,7 +34,7 @@ var current_state: Dictionary = {
 }
 
 # Preloaded scripts
-const AnatomicalKnowledgeDatabaseScript = preload("res://scripts/core/AnatomicalKnowledgeDatabase.gd")
+const AnatomicalKnowledgeDatabaseScript = preload("res://core/knowledge/AnatomicalKnowledgeDatabase.gd")
 
 func _initialize_component() -> bool:
 	component_name = "StateManager"

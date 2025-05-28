@@ -382,7 +382,7 @@ func _apply_enhanced_styling() -> void:
 	
 	# Header styling
 	UIThemeManager.apply_modern_label(structure_name_label, UIThemeManager.FONT_SIZE_H2, UIThemeManager.TEXT_PRIMARY, "heading")
-	UIThemeManager.apply_modern_label(structure_id_badge, UIThemeManager.FONT_SIZE_TINY, UIThemeManager.TEXT_ACCENT, "badge", true)
+	UIThemeManager.apply_modern_label(structure_id_badge, UIThemeManager.FONT_SIZE_TINY, UIThemeManager.TEXT_ACCENT, "badge")
 	
 	# Button styling
 	UIThemeManager.apply_modern_button(bookmark_button, UIThemeManager.ACCENT_YELLOW, "icon")
@@ -667,8 +667,8 @@ func _assess_content_difficulty() -> String:
 	var functions = current_structure_data.get("functions", [])
 	
 	var total_words = description.split(" ").size()
-	for func in functions:
-		total_words += str(func).split(" ").size()
+	for function_item in functions:
+		total_words += str(function_item).split(" ").size()
 	
 	# Simple heuristic
 	if total_words < 50:
@@ -684,8 +684,8 @@ func _update_reading_time_estimate() -> void:
 	var functions = current_structure_data.get("functions", [])
 	
 	var total_words = description.split(" ").size()
-	for func in functions:
-		total_words += str(func).split(" ").size()
+	for function_item in functions:
+		total_words += str(function_item).split(" ").size()
 	
 	# Average reading speed: 200 words per minute
 	var reading_time_minutes = max(1, int(total_words / 200.0 * 60))
