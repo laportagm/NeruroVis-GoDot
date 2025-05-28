@@ -61,23 +61,6 @@ func _process(delta: float) -> void:
 	# Process logic here
 	pass
 
-# === PUBLIC METHODS ===
-## {{METHOD_DESCRIPTION}}
-## @param {{PARAM_NAME}}: {{PARAM_DESCRIPTION}}
-## @return: {{RETURN_DESCRIPTION}}
-func {{METHOD_NAME}}({{PARAM_NAME}}: {{PARAM_TYPE}}) -> {{RETURN_TYPE}}:
-	"""{{METHOD_DOCUMENTATION}}"""
-	
-	# Validation
-	if {{VALIDATION_CONDITION}}:
-		push_error("[{{CLASS_NAME}}] {{ERROR_MESSAGE}}")
-		return {{ERROR_RETURN_VALUE}}
-	
-	# Implementation
-	# TODO: Implement method logic
-	
-	return {{SUCCESS_RETURN_VALUE}}
-
 # === PRIVATE METHODS ===
 func _initialize() -> void:
 	"""Initialize the component with default settings"""
