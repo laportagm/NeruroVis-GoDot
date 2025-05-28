@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://chrbwl4afpb3c"]
 
-[ext_resource type="Script" path="res://scripts/ui/InformationPanelController.gd" id="1_bwhq4"]
+[ext_resource type="Script" path="res://ui/panels/InformationPanelController.gd" id="1_bwhq4"]
 
 [node name="StructureInfoPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(400, 500)

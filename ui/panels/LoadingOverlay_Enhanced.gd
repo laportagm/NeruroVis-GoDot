@@ -3,6 +3,9 @@
 class_name EnhancedLoadingOverlay
 extends Control
 
+# === DEPENDENCIES ===
+const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+
 # UI Components
 @onready var background_panel: PanelContainer
 @onready var content_container: VBoxContainer

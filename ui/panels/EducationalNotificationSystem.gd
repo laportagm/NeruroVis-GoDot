@@ -3,6 +3,9 @@
 class_name EducationalNotificationSystem
 extends Control
 
+# === DEPENDENCIES ===
+const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+
 # Notification types
 enum NotificationType {
 	INFO,

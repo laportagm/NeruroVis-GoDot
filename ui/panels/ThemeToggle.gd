@@ -4,7 +4,7 @@ class_name ThemeToggle
 extends CheckButton
 
 # Preload the InfoPanelFactory
-const InfoPanelFactory = preload("res://scripts/ui/InfoPanelFactory.gd")
+const InfoPanelFactory = preload("res://ui/panels/InfoPanelFactory.gd")
 
 func _ready() -> void:
 	# Set initial state based on current theme

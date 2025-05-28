@@ -11,7 +11,7 @@ var close_button: Button
 
 # State
 var current_structure: Dictionary = {}
-var is_visible: bool = false
+var panel_visible: bool = false
 
 # Styling
 var primary_color: Color = Color(0.2, 0.7, 1.0, 1.0)
@@ -132,10 +132,10 @@ func display_structure_data(structure_data: Dictionary) -> void:
 
 func show_panel() -> void:
     """Show the panel with animation"""
-    if is_visible:
+    if panel_visible:
         return
     
-    is_visible = true
+    panel_visible = true
     visible = true
     
     # Simple fade-in animation
@@ -145,10 +145,10 @@ func show_panel() -> void:
 
 func hide_panel() -> void:
     """Hide the panel with animation"""
-    if not is_visible:
+    if not panel_visible:
         return
     
-    is_visible = false
+    panel_visible = false
     
     # Simple fade-out animation
     var tween = create_tween()

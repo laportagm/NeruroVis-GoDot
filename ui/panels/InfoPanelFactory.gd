@@ -19,7 +19,7 @@ static func create_info_panel() -> Control:
 	match current_theme:
 		ThemeMode.MINIMAL:
 			# Try to load minimal panel
-			var minimal_path = "res://scripts/ui/minimal_info_panel.gd"
+			var minimal_path = "res://ui/panels/minimal_info_panel.gd"
 			if ResourceLoader.exists(minimal_path):
 				var MinimalPanelScript = load(minimal_path)
 				print("[InfoPanelFactory] Creating MINIMAL panel")
@@ -30,21 +30,30 @@ static func create_info_panel() -> Control:
 				push_warning("[InfoPanelFactory] Minimal panel not found at: %s" % minimal_path)
 		
 		ThemeMode.ENHANCED, _:
-			# Default to enhanced/unified panel
-			var unified_path = "res://scenes/ui_info_panel_unified.gd"
-			if ResourceLoader.exists(unified_path):
-				var UnifiedPanelScript = load(unified_path)
-				print("[InfoPanelFactory] Creating ENHANCED/unified panel")
-				var panel = UnifiedPanelScript.new()
+			# Use the new enhanced panel as primary option
+			var enhanced_path = "res://ui/panels/EnhancedInformationPanel.gd"
+			if ResourceLoader.exists(enhanced_path):
+				var EnhancedPanelScript = load(enhanced_path)
+				print("[InfoPanelFactory] Creating ENHANCED panel (Figma-compliant)")
+				var panel = EnhancedPanelScript.new()
 				print("[InfoPanelFactory] Panel created: %s" % panel.get_class())
 				return panel
 			else:
-				# Fallback to basic panel
-				var basic_path = "res://scenes/ui_info_panel.gd"
-				if ResourceLoader.exists(basic_path):
-					var BasicPanelScript = load(basic_path)
-					print("[InfoPanelFactory] Creating basic panel")
-					return BasicPanelScript.new()
+				# Fallback to unified panel
+				var unified_path = "res://scenes/ui_info_panel_unified.gd"
+				if ResourceLoader.exists(unified_path):
+					var UnifiedPanelScript = load(unified_path)
+					print("[InfoPanelFactory] Creating ENHANCED/unified panel")
+					var panel = UnifiedPanelScript.new()
+					print("[InfoPanelFactory] Panel created: %s" % panel.get_class())
+					return panel
+				else:
+					# Fallback to basic panel
+					var basic_path = "res://scenes/ui_info_panel.gd"
+					if ResourceLoader.exists(basic_path):
+						var BasicPanelScript = load(basic_path)
+						print("[InfoPanelFactory] Creating basic panel")
+						return BasicPanelScript.new()
 	
 	# Ultimate fallback - create empty panel
 	push_error("[InfoPanelFactory] No panel scripts found, creating fallback")

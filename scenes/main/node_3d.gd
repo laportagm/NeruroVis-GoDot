@@ -3,12 +3,12 @@ class_name NeuroVisMainScene
 extends Node3D
 
 # Preload essential classes only
-const BrainStructureSelectionManagerScript = preload("res://scripts/interaction/BrainStructureSelectionManager.gd")
-const CameraBehaviorControllerScript = preload("res://scripts/interaction/CameraBehaviorController.gd")
-const ModelCoordinatorScene = preload("res://scripts/models/ModelRegistry.gd")
-const UIThemeManager = preload("res://scripts/ui/UIThemeManager.gd")
+const BrainStructureSelectionManagerScript = preload("res://core/interaction/BrainStructureSelectionManager.gd")
+const CameraBehaviorControllerScript = preload("res://core/interaction/CameraBehaviorController.gd")
+const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
+const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
 const UnifiedStructureInfoPanelScript = preload("res://scenes/ui_info_panel_unified.gd")
-const InfoPanelFactory = preload("res://scripts/ui/InfoPanelFactory.gd")
+const InfoPanelFactory = preload("res://ui/panels/InfoPanelFactory.gd")
 
 # Constants
 const RAY_LENGTH: float = 1000.0
@@ -153,7 +153,7 @@ func _setup_enhanced_ui() -> void:
     InfoPanelFactory.load_preference()
     
     # Add theme toggle button with safety checks
-    var theme_toggle_script = preload("res://scripts/ui/ThemeToggle.gd")
+    var theme_toggle_script = preload("res://ui/panels/ThemeToggle.gd")
     if not theme_toggle_script:
         push_error("[ENHANCED_UI] Failed to load ThemeToggle script!")
         return
@@ -199,7 +199,13 @@ func _connect_panel_signals() -> void:
     if info_panel.has_signal("panel_closed"):
         info_panel.panel_closed.connect(_on_info_panel_closed)
     
-    # Connect additional unified panel signals (only if they exist)
+    # Connect enhanced panel signals (new format)
+    if info_panel.has_signal("bookmark_toggled"):
+        info_panel.bookmark_toggled.connect(_on_structure_bookmarked)
+    if info_panel.has_signal("section_toggled"):
+        info_panel.section_toggled.connect(_on_section_toggled)
+    
+    # Connect legacy unified panel signals (only if they exist)
     if info_panel.has_signal("structure_bookmarked"):
         info_panel.structure_bookmarked.connect(_on_structure_bookmarked)
     if info_panel.has_signal("structure_search_requested"):
@@ -355,12 +361,7 @@ func _display_structure_info(structure_name: String) -> void:
     
     info_panel.name = "StructureInfoPanel"
     
-    # Position it appropriately on screen
-    info_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
-    info_panel.position.x -= 400  # Move it in from the right edge
-    info_panel.custom_minimum_size = Vector2(380, 500)
-    
-    # Add to UI layer with safety check
+    # Add to UI layer first
     if ui_layer and info_panel:
         ui_layer.add_child(info_panel)
         print("[INFO] Info panel added to UI layer")
@@ -368,15 +369,30 @@ func _display_structure_info(structure_name: String) -> void:
         push_error("[ERROR] Cannot add info panel - ui_layer or info_panel is null")
         return
     
+    # Apply responsive positioning and sizing
+    var viewport_size = get_viewport().get_visible_rect().size
+    if info_panel.has_method("_update_responsive_layout"):
+        # Enhanced panel has built-in responsive behavior
+        info_panel._update_responsive_layout()
+    else:
+        # Legacy panels need manual positioning
+        info_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
+        info_panel.position.x -= 400  # Move it in from the right edge
+        info_panel.custom_minimum_size = Vector2(380, 500)
+    
     # Connect panel signals
     _connect_panel_signals()
     
-    # Display the data
-    if info_panel.has_method("display_structure_data"):
+    # Display the data using the appropriate method
+    if info_panel.has_method("display_structure_info"):
+        # Enhanced panel method
+        info_panel.display_structure_info(structure_data)
+    elif info_panel.has_method("display_structure_data"):
+        # Legacy panel method
         info_panel.display_structure_data(structure_data)
         info_panel.visible = true
     else:
-        print("[ERROR] Info panel missing display_structure_data method")
+        print("[ERROR] Info panel missing display methods")
 
 func _find_structure_id(mesh_name: String) -> String:
     """Find structure ID by mesh name"""
@@ -420,6 +436,10 @@ func _print_instructions() -> void:
     print("========================\n")
 
 # Enhanced UI Panel Signal Handlers
+func _on_section_toggled(section_name: String, expanded: bool) -> void:
+    print("[ENHANCED_UI] Section '%s' %s" % [section_name, "expanded" if expanded else "collapsed"])
+    # Optional: Save section state preferences
+
 func _on_structure_bookmarked(structure_id: String, bookmarked: bool) -> void:
     print("[ENHANCED_UI] Structure %s bookmark status: %s" % [structure_id, bookmarked])
     # TODO: Save bookmark state to persistent storage

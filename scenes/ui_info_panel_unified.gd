@@ -4,7 +4,7 @@ class_name UnifiedStructureInfoPanel
 extends PanelContainer
 
 # Required dependencies
-const UIThemeManager = preload("res://scripts/ui/UIThemeManager.gd")
+const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
 
 # === CORE UI COMPONENTS ===
 # Header section
