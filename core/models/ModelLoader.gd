@@ -45,16 +45,16 @@ var _is_initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the {{CLASS_NAME}} component"""
-	_initialize()
+	"""Initialize the ModelLoader component"""
+	_is_initialized = true
 
 func _process(delta: float) -> void:
-	"""Called every frame"""
+	"""Called every frame to check loading progress"""
 	if not _is_initialized:
 		return
 	
-	# Process logic here
-	pass
+	if _active_loads.size() > 0:
+		_check_loading_progress()
 
 # === PUBLIC METHODS ===
 ## Load a 3D model asynchronously
