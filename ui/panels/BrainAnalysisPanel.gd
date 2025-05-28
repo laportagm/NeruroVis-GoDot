@@ -92,10 +92,9 @@ func _setup_ui_components() -> void:
 	"""Setup UI components and layout"""
 	_info_label = RichTextLabel.new()
 	_detail_button = Button.new()
-	_tween = Tween.new()
 	
 	if enable_animations:
-		add_child(_tween)
+		_tween = create_tween()
 	
 	add_child(_info_label)
 	add_child(_detail_button)
