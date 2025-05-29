@@ -1,15 +1,15 @@
 class_name TestFramework
 extends RefCounted
 
-static var instance: TestFramework
+static var instance = null # Not using strong typing to avoid self-reference
 var current_test_name: String = ""
 var assertions_passed: int = 0
 var assertions_failed: int = 0
 var test_results: Array = []
 
-static func get_instance() -> TestFramework:
+static func get_instance():
 	if instance == null:
-		instance = TestFramework.new()
+		instance = new()
 	return instance
 
 func start_test(test_name: String):
@@ -164,6 +164,12 @@ static func create_minimal_test_scene() -> Node3D:
 # Utility methods for test setup/teardown
 func setup_test_environment():
 	print("🔧 Setting up test environment...")
+	
+	# Check if we're in core development mode
+	if Engine.has_singleton("FeatureFlags"):
+		var FeatureFlagsRef = Engine.get_singleton("FeatureFlags")
+		if FeatureFlagsRef.call("is_core_development_mode"):
+			print("   Core development mode: Using simplified test environment")
 
 func cleanup_test_environment():
 	print("🧹 Cleaning up test environment...")

@@ -82,6 +82,9 @@ var mock_responses = {
     }
 }
 
+# === GEMINI INTEGRATION ===
+var gemini_service: GeminiAIService
+
 func _ready() -> void:
     """Initialize the AI Assistant Service"""
     _initialize_ai_service()
@@ -96,6 +99,9 @@ func _initialize_ai_service() -> void:
     http_request.request_completed.connect(_on_api_response_received)
     http_request.timeout = request_timeout
 
+    # Initialize Gemini service if needed
+    _initialize_gemini_service()
+
     # Load API configuration if available
     _load_api_configuration()
 
@@ -106,6 +112,17 @@ func _initialize_ai_service() -> void:
     conversation_started.emit()
 
     print("[AI] AI Assistant initialized with provider: %s" % AIProvider.keys()[ai_provider])
+
+func _initialize_gemini_service() -> void:
+    """Initialize Gemini AI service for integration"""
+    # Check if GeminiService is already available as autoload
+    gemini_service = get_node_or_null("/root/GeminiService")
+    
+    # If not available as autoload, create instance
+    if not gemini_service and ai_provider == AIProvider.GOOGLE_GEMINI:
+        print("[AI] Creating local Gemini service instance")
+        gemini_service = GeminiAIService.new()
+        add_child(gemini_service)
 
 func _load_api_configuration() -> void:
     """Load API configuration from environment or config file"""
@@ -273,26 +290,36 @@ func _send_claude_request(question: String) -> void:
 
 func _send_gemini_request(question: String) -> void:
     """Send request to Google Gemini API"""
-    if api_key.is_empty():
-        _handle_mock_response(question) # Fallback to mock
-        return
+    if not gemini_service or not gemini_service.is_api_key_valid():
+        if api_key.is_empty():
+            _handle_mock_response(question) # Fallback to mock
+            return
+            
+        # Use built-in implementation if GeminiService not available
+        var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + api_key
+        var headers = ["Content-Type: application/json"]
 
-    var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + api_key
-    var headers = ["Content-Type: application/json"]
-
-    var prompt = _build_gemini_prompt(question)
-    var body = {
-        "contents": [ {
-            "parts": [ {"text": prompt}]
-        }],
-        "generationConfig": {
-            "maxOutputTokens": max_tokens,
-            "temperature": temperature
+        var prompt = _build_gemini_prompt(question)
+        var body = {
+            "contents": [ {
+                "parts": [ {"text": prompt}]
+            }],
+            "generationConfig": {
+                "maxOutputTokens": max_tokens,
+                "temperature": temperature
+            }
         }
-    }
 
-    var json_body = JSON.stringify(body)
-    http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+        var json_body = JSON.stringify(body)
+        http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+    else:
+        # Use dedicated GeminiService
+        var prompt = _build_gemini_prompt(question)
+        var result = gemini_service.generate_content(prompt)
+        if result != "PENDING":
+            # If immediate error occurred
+            error_occurred.emit("Gemini API error: " + result)
+            return
 
 # === RESPONSE PROCESSING ===
 func _on_api_response_received(result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -347,6 +374,16 @@ func _parse_gemini_response(data: Dictionary) -> String:
         if candidate.has("content") and candidate.content.has("parts"):
             return candidate.content.parts[0].text
     return ""
+    
+func _on_gemini_response_received(response_text: String) -> void:
+    """Handle response from GeminiAIService"""
+    if response_text.is_empty():
+        error_occurred.emit("Empty response from Gemini AI")
+        return
+        
+    var last_question = conversation_history[-1].content if conversation_history.size() > 0 else ""
+    _add_to_history("assistant", response_text)
+    response_received.emit(last_question, response_text)
 
 # === CONVERSATION MANAGEMENT ===
 func _add_to_history(role: String, content: String) -> void:

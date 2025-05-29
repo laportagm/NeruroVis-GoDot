@@ -18,13 +18,25 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+; === CORE EDUCATIONAL SERVICES (KEEP ACTIVE) ===
 KB="*res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
 KnowledgeService="*res://core/knowledge/KnowledgeService.gd"
 StructureAnalysisManager="*res://core/systems/StructureAnalysisManager.gd"
 AIAssistant="*res://core/ai/AIAssistantService.gd"
 UIThemeManager="*res://ui/panels/UIThemeManager.gd"
+AccessibilityManager="*res://core/systems/AccessibilityManager.gd"
 ModelSwitcherGlobal="*res://core/models/ModelVisibilityManager.gd"
 DebugCmd="*res://core/systems/DebugCommands.gd"
+
+; === SYSTEM MANAGEMENT ===
+FeatureFlags="*res://core/features/FeatureFlags.gd"
+
+; === COMPLEX SYSTEMS (DISABLED DURING CORE DEVELOPMENT) ===
+; Uncomment these lines when ready to re-enable advanced features
+;ComponentRegistry="*res://ui/core/ComponentRegistry.gd"
+;EventBus="*res://core/events/EventBus.gd"
+
+; === DEVELOPMENT TOOLS (DISABLED - ENABLE AS NEEDED) ===
 ;ProjectProfiler="*res://scripts/dev_utils/ProjectProfiler.gd"
 ;DevConsole="*res://scripts/dev_utils/DevConsole.gd"
 ;TestRunner="*res://scripts/tests/TestRunner.gd"

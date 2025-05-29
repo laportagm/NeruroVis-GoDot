@@ -92,10 +92,34 @@ var error_log: Array = []
 var is_showing_error: bool = false
 
 # === ERROR NOTIFICATION UI ===
-const ErrorNotificationScript = preload("res://ui/components/ErrorNotification.gd")
+# Use load instead of preload for more flexibility in testing environments
+var ErrorNotificationScript = null
 var notification_container: CanvasLayer
+var is_headless_mode: bool = false
 
 func _ready() -> void:
+    # Check if we're in headless mode (testing environment)
+    # In headless mode, we should skip UI setup
+    if OS.has_feature("headless"):
+        is_headless_mode = true
+        print("[ErrorHandler] Running in headless mode, skipping UI setup")
+        return
+    
+    # Check if we're in core development mode (simplified systems)
+    if Engine.has_singleton("FeatureFlags"):
+        var FeatureFlagsRef = Engine.get_singleton("FeatureFlags")
+        if FeatureFlagsRef.call("is_core_development_mode"):
+            print("[ErrorHandler] Core development mode - using simplified error handling")
+            is_headless_mode = true  # Use simple logging only
+            return
+    
+    # Safely load the ErrorNotificationScript
+    if ResourceLoader.exists("res://ui/components/ErrorNotification.gd"):
+        ErrorNotificationScript = load("res://ui/components/ErrorNotification.gd")
+        print("[ErrorHandler] Successfully loaded ErrorNotification script")
+    else:
+        push_warning("[ErrorHandler] Could not load ErrorNotification script")
+    
     # Create notification container
     notification_container = CanvasLayer.new()
     notification_container.name = "ErrorNotificationLayer"
@@ -197,7 +221,26 @@ func _determine_severity(error_type: ErrorType, error_key: String) -> ErrorSever
 # === ERROR DISPLAY ===
 func _show_error_notification(error_data: Dictionary) -> void:
     """Show error notification UI"""
+    # Skip UI notifications in headless mode
+    if is_headless_mode:
+        print("[ErrorHandler] Headless mode: " + error_data.title + " - " + error_data.message)
+        return
+    
+    # Skip if notification container isn't ready
+    if not notification_container or not notification_container.get_child_count():
+        push_warning("[ErrorHandler] Notification container not ready")
+        return
+        
+    # Skip if ErrorNotificationScript is not available
+    if not ErrorNotificationScript:
+        push_warning("[ErrorHandler] ErrorNotificationScript not available")
+        return
+    
     var notification = _create_notification_ui(error_data)
+    if not notification:
+        push_warning("[ErrorHandler] Failed to create notification UI")
+        return
+        
     notification_container.get_child(0).add_child(notification)
     
     # Animate entrance
@@ -216,6 +259,39 @@ func _show_error_notification(error_data: Dictionary) -> void:
 
 func _create_notification_ui(error_data: Dictionary) -> Control:
     """Create notification UI element"""
+    # If ErrorNotificationScript is available, use that for a better UI experience
+    if ErrorNotificationScript and not is_headless_mode:
+        var notification = ErrorNotificationScript.new()
+        
+        # Use severity-appropriate notification type
+        var notification_type = ErrorNotificationScript.NotificationType.ERROR
+        match error_data.severity:
+            ErrorSeverity.INFO:
+                notification_type = ErrorNotificationScript.NotificationType.INFO
+            ErrorSeverity.WARNING:
+                notification_type = ErrorNotificationScript.NotificationType.WARNING
+            ErrorSeverity.ERROR, ErrorSeverity.CRITICAL:
+                notification_type = ErrorNotificationScript.NotificationType.ERROR
+        
+        # Configure notification
+        notification.auto_dismiss = (error_data.severity != ErrorSeverity.CRITICAL)
+        notification.notification_type = notification_type
+        
+        # Connect signals
+        notification.notification_dismissed.connect(
+            func(): dismiss_error(error_data.id)
+        )
+        notification.notification_clicked.connect(
+            func(): error_action_taken.emit(error_data.id, "click")
+        )
+        
+        # Show notification with message
+        notification.show_notification(error_data.message, notification_type)
+        notification.set_meta("error_id", error_data.id)
+        
+        return notification
+    
+    # Fallback to basic UI if ErrorNotificationScript is not available
     var panel = PanelContainer.new()
     panel.custom_minimum_size = Vector2(350, 0)
     
@@ -243,7 +319,10 @@ func _create_notification_ui(error_data: Dictionary) -> Control:
     var title = Label.new()
     title.text = error_data.title
     title.add_theme_font_size_override("font_size", 16)
-    title.add_theme_font_override("font", load("res://assets/fonts/Inter-SemiBold.ttf"))
+    # Safely load font or use default
+    var font_path = "res://assets/fonts/Inter-SemiBold.ttf"
+    if ResourceLoader.exists(font_path):
+        title.add_theme_font_override("font", load(font_path))
     header.add_child(title)
     
     header.add_spacer(false)

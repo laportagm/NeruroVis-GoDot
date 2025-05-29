@@ -24,12 +24,17 @@ var question_input: LineEdit
 var send_button: Button
 var quick_questions_container: HBoxContainer
 var status_label: Label
+var model_selector_container: HBoxContainer
+var model_selector: GeminiModelSelector
+var provider_selector: OptionButton
 
 # === STATE ===
 var current_structure: String = ""
 var ai_service: AIAssistantService
+var gemini_service: GeminiAIService
 var message_count: int = 0
 var is_waiting_for_response: bool = false
+var gemini_setup_dialog: GeminiSetupDialog
 
 # === QUICK QUESTION TEMPLATES ===
 var quick_questions = [
@@ -43,8 +48,9 @@ func _setup_component() -> void:
     """Setup the AI assistant panel"""
     super._setup_component()
     
-    # Get reference to AI service
+    # Get reference to AI services
     ai_service = get_node("/root/AIAssistant") if get_node_or_null("/root/AIAssistant") else null
+    gemini_service = get_node("/root/GeminiService") if get_node_or_null("/root/GeminiService") else null
     
     _create_panel_structure()
     _setup_ai_connections()
@@ -67,6 +73,10 @@ func _create_panel_structure() -> void:
     # Create sections
     _create_title_bar()
     main_container.add_child(title_bar)
+    
+    # AI provider selection
+    _create_provider_selection()
+    main_container.add_child(model_selector_container)
     
     if show_context_info:
         _create_context_indicator()
@@ -106,6 +116,40 @@ func _create_title_bar() -> void:
     close_btn.tooltip_text = "Close AI Assistant"
     close_btn.pressed.connect(_on_close_pressed)
     title_bar.add_child(close_btn)
+
+func _create_provider_selection() -> void:
+    """Create AI provider selection controls"""
+    model_selector_container = HBoxContainer.new()
+    model_selector_container.name = "ProviderSelector"
+    model_selector_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
+    
+    # Provider label
+    var provider_label = UIComponentFactory.create_label("AI Provider:", "caption")
+    provider_label.custom_minimum_size.x = 100
+    model_selector_container.add_child(provider_label)
+    
+    # Provider dropdown
+    provider_selector = OptionButton.new()
+    provider_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    
+    # Add provider options
+    if ai_service:
+        var providers = ai_service.get_available_providers()
+        for i in range(providers.size()):
+            provider_selector.add_item(providers[i])
+            if i == ai_service.ai_provider:
+                provider_selector.select(i)
+    else:
+        provider_selector.add_item("MOCK_RESPONSES")
+    
+    provider_selector.item_selected.connect(_on_provider_selected)
+    model_selector_container.add_child(provider_selector)
+    
+    # Create and add Gemini model selector (initially hidden)
+    model_selector = GeminiModelSelector.new()
+    model_selector.visible = ai_service and ai_service.ai_provider == AIAssistantService.AIProvider.GOOGLE_GEMINI
+    model_selector.settings_requested.connect(_on_gemini_settings_requested)
+    model_selector_container.add_child(model_selector)
 
 func _create_context_indicator() -> void:
     """Create context indicator showing current structure"""
@@ -247,6 +291,70 @@ func ask_question(question: String) -> void:
     else:
         # Fallback for when AI service is not available
         _handle_offline_response(question)
+
+# === GEMINI INTEGRATION ===
+func _on_provider_selected(index: int) -> void:
+    """Handle AI provider selection"""
+    if not ai_service or index < 0:
+        return
+        
+    var provider_name = provider_selector.get_item_text(index)
+    var provider = AIAssistantService.AIProvider.get(provider_name)
+    
+    # Update AI service provider
+    ai_service.set_provider(provider)
+    
+    # Show/hide Gemini selector based on provider
+    if model_selector:
+        model_selector.visible = provider == AIAssistantService.AIProvider.GOOGLE_GEMINI
+        
+        # If switching to Gemini, check if it's configured
+        if provider == AIAssistantService.AIProvider.GOOGLE_GEMINI:
+            if not gemini_service or not gemini_service.is_api_key_valid():
+                # Show setup dialog on first use
+                _show_gemini_setup_dialog()
+
+func _on_gemini_settings_requested() -> void:
+    """Open Gemini settings dialog"""
+    _show_gemini_setup_dialog()
+
+func _show_gemini_setup_dialog() -> void:
+    """Show the Gemini setup dialog"""
+    if is_instance_valid(gemini_setup_dialog):
+        return
+        
+    gemini_setup_dialog = GeminiSetupDialog.new()
+    gemini_setup_dialog.setup_completed.connect(_on_gemini_setup_completed)
+    gemini_setup_dialog.setup_cancelled.connect(_on_gemini_setup_cancelled)
+    add_child(gemini_setup_dialog)
+    gemini_setup_dialog.show_dialog()
+
+func _on_gemini_setup_completed(successful: bool, api_key: String) -> void:
+    """Handle Gemini setup completion"""
+    if successful:
+        _update_status("Gemini API configured successfully")
+        
+        # Update model selector status
+        if model_selector:
+            model_selector.refresh_status()
+    else:
+        _update_status("Gemini API configuration failed")
+    
+    gemini_setup_dialog = null
+
+func _on_gemini_setup_cancelled() -> void:
+    """Handle Gemini setup cancellation"""
+    # If Gemini was not configured, switch back to mock responses
+    if ai_service and ai_service.ai_provider == AIAssistantService.AIProvider.GOOGLE_GEMINI:
+        if not gemini_service or not gemini_service.is_api_key_valid():
+            # Find MOCK_RESPONSES index
+            for i in range(provider_selector.item_count):
+                if provider_selector.get_item_text(i) == "MOCK_RESPONSES":
+                    provider_selector.select(i)
+                    ai_service.set_provider(AIAssistantService.AIProvider.MOCK_RESPONSES)
+                    break
+    
+    gemini_setup_dialog = null
 
 # === MESSAGE MANAGEMENT ===
 func _add_message(sender: String, content: String, title: String = "") -> void:
