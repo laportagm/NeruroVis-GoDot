@@ -5,7 +5,16 @@
 ## and accessibility features for the educational neuroscience platform.
 ##
 ## @educational_context: Error handling in educational environment
-## @version: 2.0
+## @version: 2.1
+
+# Preload UIThemeManager for direct access instead of autoload dependency
+# Use load() for more flexibility in testing environments
+var UIThemeManagerScript = null
+
+func _init():
+    # Safely load UIThemeManager
+    if ResourceLoader.exists("res://ui/panels/UIThemeManager.gd"):
+        UIThemeManagerScript = load("res://ui/panels/UIThemeManager.gd")
 
 class_name ErrorNotification
 extends Control
@@ -42,6 +51,12 @@ var _dismiss_timer: Timer
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
 	"""Initialize the error notification component"""
+	# Check if we're in core development mode
+	if Engine.has_singleton("FeatureFlags"):
+		var FeatureFlagsRef = Engine.get_singleton("FeatureFlags")
+		if FeatureFlagsRef.call("is_core_development_mode"):
+			print("[ErrorNotification] Core development mode - using minimal UI")
+	
 	_setup_ui_structure()
 	_apply_educational_theme()
 	_setup_interactions()
@@ -67,11 +82,30 @@ func show_notification(message: String, type: NotificationType = NotificationTyp
 	_apply_type_styling(type)
 	
 	# Animate entrance
-	UIThemeManager.animate_enhanced_entrance(self)
+	# Access UIThemeManager safely through script or autoload
+	if Engine.has_singleton("UIThemeManager"):
+		UIThemeManager.animate_enhanced_entrance(self)
+	elif UIThemeManagerScript != null:
+		# Use direct script reference if autoload is not available
+		UIThemeManagerScript.animate_enhanced_entrance(self)
+	else:
+		# Fallback animation if no UIThemeManager is available
+		_animate_entrance_fallback()
 	
 	# Reset dismiss timer
 	if auto_dismiss and _dismiss_timer:
 		_dismiss_timer.start(dismiss_duration)
+
+# Simple fallback animation when UIThemeManager is not available
+func _animate_entrance_fallback() -> void:
+	"""Fallback animation for testing environments"""
+	modulate = Color.TRANSPARENT
+	scale = Vector2(0.9, 0.9)
+	
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(self, "modulate", Color.WHITE, 0.4)
+	tween.tween_property(self, "scale", Vector2.ONE, 0.4)
 
 ## Dismiss the notification
 func dismiss_notification() -> void:
@@ -134,18 +168,7 @@ func _setup_ui_structure() -> void:
 
 func _apply_educational_theme() -> void:
 	"""Apply educational theme styling"""
-	# Apply panel styling
-	UIThemeManager.apply_enhanced_panel_style(_background_panel, "elevated")
-	
-	# Apply typography
-	UIThemeManager.apply_enhanced_typography(_icon_label, "heading")
-	UIThemeManager.apply_enhanced_typography(_label, "body")
-	UIThemeManager.apply_enhanced_typography(_close_button, "small")
-	
-	# Apply button styling
-	UIThemeManager.apply_enhanced_button_style(_close_button, "secondary")
-	
-	# Set size and position
+	# Set size and position regardless of theme availability
 	custom_minimum_size = Vector2(320, 80)
 	anchor_left = 1.0
 	anchor_right = 1.0
@@ -155,22 +178,87 @@ func _apply_educational_theme() -> void:
 	offset_right = -20
 	offset_top = 20
 	offset_bottom = 100
+	
+	# Check if UIThemeManager is available
+	if UIThemeManagerScript == null:
+		_apply_fallback_styling()
+		return
+	
+	# Access UIThemeManager safely through script or autoload
+	var theme_manager = UIThemeManagerScript
+	
+	# Apply panel styling
+	theme_manager.apply_enhanced_panel_style(_background_panel, "elevated")
+	
+	# Apply typography
+	theme_manager.apply_enhanced_typography(_icon_label, "heading")
+	theme_manager.apply_enhanced_typography(_label, "body")
+	theme_manager.apply_enhanced_typography(_close_button, "small")
+	
+	# Apply button styling
+	theme_manager.apply_enhanced_button_style(_close_button, "secondary")
+
+# Apply basic styling when UIThemeManager is not available (testing mode)
+func _apply_fallback_styling() -> void:
+	"""Apply minimal styling when UIThemeManager is unavailable"""
+	if _background_panel:
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color(0.15, 0.15, 0.15, 0.9)
+		style.border_width_bottom = 1
+		style.border_width_left = 1
+		style.border_width_right = 1
+		style.border_width_top = 1
+		style.border_color = Color(1, 0, 0, 0.5)
+		style.corner_radius_bottom_left = 8
+		style.corner_radius_bottom_right = 8
+		style.corner_radius_top_left = 8
+		style.corner_radius_top_right = 8
+		_background_panel.add_theme_stylebox_override("panel", style)
+	
+	if _label:
+		_label.add_theme_font_size_override("font_size", 14)
+		_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
+	
+	if _icon_label:
+		_icon_label.add_theme_font_size_override("font_size", 18)
+		_icon_label.add_theme_color_override("font_color", Color(1, 0, 0, 0.9))
+	
+	if _close_button:
+		_close_button.add_theme_font_size_override("font_size", 12)
+		_close_button.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
 
 func _apply_type_styling(type: NotificationType) -> void:
 	"""Apply styling based on notification type"""
 	var color: Color
 	
-	match type:
-		NotificationType.ERROR:
-			color = UIThemeManager.ACCENT_RED
-		NotificationType.WARNING:
-			color = UIThemeManager.ACCENT_ORANGE
-		NotificationType.INFO:
-			color = UIThemeManager.ACCENT_BLUE
-		NotificationType.SUCCESS:
-			color = UIThemeManager.ACCENT_GREEN
-		_:
-			color = UIThemeManager.ACCENT_RED
+	# Handle case when UIThemeManager is not available
+	if UIThemeManagerScript == null:
+		# Use fallback colors
+		match type:
+			NotificationType.ERROR:
+				color = Color(1.0, 0.0, 0.0, 1.0)  # Red
+			NotificationType.WARNING:
+				color = Color(1.0, 0.7, 0.0, 1.0)  # Orange
+			NotificationType.INFO:
+				color = Color(0.0, 0.7, 1.0, 1.0)  # Blue
+			NotificationType.SUCCESS:
+				color = Color(0.0, 1.0, 0.4, 1.0)  # Green
+			_:
+				color = Color(1.0, 0.0, 0.0, 1.0)  # Red
+	else:
+		# Use theme manager colors
+		var theme_manager = UIThemeManagerScript
+		match type:
+			NotificationType.ERROR:
+				color = theme_manager.ACCENT_RED
+			NotificationType.WARNING:
+				color = theme_manager.ACCENT_ORANGE
+			NotificationType.INFO:
+				color = theme_manager.ACCENT_BLUE
+			NotificationType.SUCCESS:
+				color = theme_manager.ACCENT_GREEN
+			_:
+				color = theme_manager.ACCENT_RED
 	
 	# Apply color to icon
 	if _icon_label:

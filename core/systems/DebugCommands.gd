@@ -226,6 +226,20 @@ func _ready() -> void:
 	register_command("syntax_check", cmd_syntax_check, "Quick syntax validation")
 	register_command("godot_check", cmd_godot_check, "Check Godot version and compatibility")
 	
+	# Register QA visualization commands
+	register_command("qa_viz", cmd_qa_viz_toggle, "Toggle QA debug visualization")
+	register_command("qa_viz_bounds", cmd_qa_viz_bounds, "Show structure bounds [structure_name]")
+	register_command("qa_viz_rays", cmd_qa_viz_rays, "Toggle selection ray visualization")
+	register_command("qa_viz_collisions", cmd_qa_viz_collisions, "Show collision shapes [structure_name]")
+	register_command("qa_viz_clicks", cmd_qa_viz_clicks, "Toggle click position markers")
+	register_command("qa_viz_status", cmd_qa_viz_status, "Show visualization status")
+	
+	# Multi-selection debug commands
+	register_command("multiselect_test", cmd_multiselect_test, "Test multi-selection system")
+	register_command("multiselect_debug", cmd_multiselect_debug, "Toggle multi-selection debug mode")
+	register_command("multiselect_report", cmd_multiselect_report, "Show current multi-selection state")
+	register_command("multiselect_clear", cmd_multiselect_clear, "Clear all selections")
+	
 	# Register commands from new debugging systems
 	# TODO: Re-enable once all systems are stable
 	# _register_advanced_debug_commands()
@@ -574,3 +588,195 @@ func _validate_main_scene_structure(scene_instance: Node) -> void:
 		log_success("   ✅ Scene structure validated")
 	else:
 		log_error("   Missing nodes: %s" % str(missing))
+
+# === QA VISUALIZATION COMMANDS ===
+
+# Reference to debug visualizer
+var _qa_debug_viz: Node3D = null
+
+func cmd_qa_viz_toggle(_args: String = "") -> void:
+	"""Toggle QA debug visualization"""
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		_qa_debug_viz.toggle_debug_draw()
+
+func cmd_qa_viz_bounds(args: String = "") -> void:
+	"""Show structure bounds visualization"""
+	if args.is_empty():
+		log_error("Usage: qa_viz_bounds <structure_name>")
+		return
+	
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		_qa_debug_viz.show_structure_bounds(args)
+
+func cmd_qa_viz_rays(_args: String = "") -> void:
+	"""Toggle selection ray visualization"""
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		var current = _qa_debug_viz._show_rays if "_show_rays" in _qa_debug_viz else false
+		_qa_debug_viz.set_show_rays(not current)
+		log_info("Ray visualization: %s" % ("ENABLED" if not current else "DISABLED"))
+
+func cmd_qa_viz_collisions(args: String = "") -> void:
+	"""Show collision shapes"""
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		_qa_debug_viz.show_collision_shapes(args)
+
+func cmd_qa_viz_clicks(_args: String = "") -> void:
+	"""Toggle click position markers"""
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		var current = _qa_debug_viz._show_click_positions if "_show_click_positions" in _qa_debug_viz else false
+		_qa_debug_viz.set_show_clicks(not current)
+		log_info("Click markers: %s" % ("ENABLED" if not current else "DISABLED"))
+
+func cmd_qa_viz_status(_args: String = "") -> void:
+	"""Show visualization status"""
+	_ensure_qa_viz_exists()
+	if _qa_debug_viz:
+		var status = _qa_debug_viz.get_status()
+		log_info("=== QA Visualization Status ===")
+		log_info("Enabled: %s" % str(status.get("enabled", false)))
+		log_info("Bounds: %s (%d active)" % [str(status.get("bounds", false)), status.get("active_bounds", 0)])
+		log_info("Rays: %s (%d active)" % [str(status.get("rays", false)), status.get("active_rays", 0)])
+		log_info("Collisions: %s" % str(status.get("collisions", false)))
+		log_info("Click Markers: %s (%d active)" % [str(status.get("clicks", false)), status.get("active_clicks", 0)])
+		log_info("==============================")
+
+func _ensure_qa_viz_exists() -> void:
+	"""Ensure QA debug visualizer exists"""
+	if _qa_debug_viz:
+		return
+	
+	# Find main scene
+	var main_scene = get_node_or_null("/root/Node3D")
+	if not main_scene:
+		log_error("Main scene not found - cannot create QA visualizer")
+		return
+	
+	# Load and create visualizer
+	var DebugVizScript = load("res://tests/qa/SelectionDebugVisualizer.gd")
+	if not DebugVizScript:
+		log_error("SelectionDebugVisualizer.gd not found")
+		return
+	
+	_qa_debug_viz = DebugVizScript.new()
+	main_scene.add_child(_qa_debug_viz)
+	_qa_debug_viz.initialize(main_scene)
+	
+	log_success("QA Debug Visualizer created")
+
+# === MULTI-SELECTION DEBUG COMMANDS ===
+func cmd_multiselect_test():
+	"""Test multi-selection system functionality"""
+	log_info("=== Multi-Selection System Test ===")
+	
+	# Find selection manager
+	var main_scene = get_node_or_null("/root/MainScene") 
+	if not main_scene:
+		main_scene = get_node_or_null("/root/Node3D")
+	
+	if not main_scene:
+		log_error("Main scene not found")
+		return
+	
+	var selection_manager = main_scene.get_node_or_null("MultiStructureSelectionManager")
+	if not selection_manager:
+		log_error("MultiStructureSelectionManager not found")
+		return
+	
+	log_success("✅ Multi-selection manager found")
+	log_info("Current selections: %d" % selection_manager.get_selection_count())
+	
+	# Test selection states
+	var selections = selection_manager.get_selection_info()
+	for sel in selections:
+		log_info("  - %s (%s)" % [sel["name"], sel["state"]])
+	
+	log_success("=== Test Complete ===")
+
+func cmd_multiselect_debug():
+	"""Toggle multi-selection debug visualization"""
+	var main_scene = get_node_or_null("/root/MainScene")
+	if not main_scene:
+		main_scene = get_node_or_null("/root/Node3D")
+	
+	if not main_scene:
+		log_error("Main scene not found")
+		return
+	
+	var selection_manager = main_scene.get_node_or_null("MultiStructureSelectionManager")
+	if not selection_manager:
+		log_error("MultiStructureSelectionManager not found")
+		return
+	
+	# Toggle debug mode (would need to implement this in MultiStructureSelectionManager)
+	if selection_manager.has_method("toggle_debug_mode"):
+		selection_manager.toggle_debug_mode()
+		log_success("Multi-selection debug mode toggled")
+	else:
+		log_warning("Debug mode not implemented in MultiStructureSelectionManager")
+
+func cmd_multiselect_report():
+	"""Show detailed multi-selection state"""
+	var main_scene = get_node_or_null("/root/MainScene")
+	if not main_scene:
+		main_scene = get_node_or_null("/root/Node3D")
+	
+	if not main_scene:
+		log_error("Main scene not found")
+		return
+	
+	var selection_manager = main_scene.get_node_or_null("MultiStructureSelectionManager")
+	if not selection_manager:
+		log_error("MultiStructureSelectionManager not found")
+		return
+	
+	log_info("=== Multi-Selection State Report ===")
+	
+	var count = selection_manager.get_selection_count()
+	log_info("Total selections: %d/%d" % [count, 3])
+	
+	var selections = selection_manager.get_selection_info()
+	for i in range(selections.size()):
+		var sel = selections[i]
+		var state_color = ""
+		match sel["state"]:
+			0: state_color = "FFD700"  # Gold
+			1: state_color = "00CED1"  # Turquoise
+			2: state_color = "9370DB"  # Purple
+		
+		log_info("[color=#%s]%d. %s (%s)[/color]" % [state_color, i+1, sel["name"], sel["state"]])
+	
+	# Check comparison mode
+	var mode = "SINGLE"
+	if selection_manager.has_method("is_comparison_mode"):
+		if selection_manager.is_comparison_mode():
+			mode = "COMPARISON"
+	elif selection_manager.get("_is_comparison_mode"):
+		if selection_manager._is_comparison_mode:
+			mode = "COMPARISON"
+	
+	log_info("Mode: " + mode)
+	
+	log_success("=== Report Complete ===")
+
+func cmd_multiselect_clear():
+	"""Clear all multi-selections"""
+	var main_scene = get_node_or_null("/root/MainScene")
+	if not main_scene:
+		main_scene = get_node_or_null("/root/Node3D")
+	
+	if not main_scene:
+		log_error("Main scene not found")
+		return
+	
+	var selection_manager = main_scene.get_node_or_null("MultiStructureSelectionManager")
+	if not selection_manager:
+		log_error("MultiStructureSelectionManager not found")
+		return
+	
+	selection_manager.clear_all_selections()
+	log_success("All selections cleared")

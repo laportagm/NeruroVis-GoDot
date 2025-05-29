@@ -1,7 +1,8 @@
 # Main Test Runner for NeuroVis
 extends Node
 
-const TestFramework = preload("res://tests/framework/TestFramework.gd")
+# First, preload TestFramework class for access to its methods
+const TestFrameworkScript = preload("res://tests/framework/TestFramework.gd")
 
 # Test suites to run
 const TEST_SUITES = [
@@ -12,7 +13,20 @@ const TEST_SUITES = [
     "res://tests/integration/test_full_pipeline.gd"
 ]
 
-var test_framework: TestFramework
+# Create a wrapper node to host test framework since TestFramework is RefCounted
+class TestFrameworkWrapper extends Node:
+    var framework: TestFrameworkScript
+    signal test_passed(test_name)
+    signal test_failed(test_name, reason)
+    signal suite_completed
+    
+    func _init():
+        self.framework = TestFrameworkScript.new()
+    
+    func add_child_suite(suite):
+        add_child(suite)
+
+var test_framework_wrapper: TestFrameworkWrapper
 var current_suite_index: int = 0
 var total_tests: int = 0
 var passed_tests: int = 0
@@ -24,13 +38,21 @@ func _ready() -> void:
     print("🧪 NeuroVis Test Suite Runner")
     print("=".repeat(60) + "\n")
     
-    test_framework = TestFramework.new()
-    add_child(test_framework)
+    # Check core development mode
+    if Engine.has_singleton("FeatureFlags"):
+        var FeatureFlagsRef = Engine.get_singleton("FeatureFlags")
+        if FeatureFlagsRef.call("is_core_development_mode"):
+            print("🔧 Core Development Mode Active")
+            print("   Simplified test suite for core architecture work\n")
+    
+    # Create wrapper node for TestFramework
+    test_framework_wrapper = TestFrameworkWrapper.new()
+    add_child(test_framework_wrapper)
     
     # Connect to test signals
-    test_framework.test_passed.connect(_on_test_passed)
-    test_framework.test_failed.connect(_on_test_failed)
-    test_framework.suite_completed.connect(_on_suite_completed)
+    test_framework_wrapper.test_passed.connect(_on_test_passed)
+    test_framework_wrapper.test_failed.connect(_on_test_failed)
+    test_framework_wrapper.suite_completed.connect(_on_suite_completed)
     
     # Start running test suites
     _run_next_suite()
@@ -47,16 +69,30 @@ func _run_next_suite() -> void:
     var suite_script = load(suite_path)
     if suite_script:
         var suite_instance = suite_script.new()
-        test_framework.add_child(suite_instance)
+        # Use the wrapper to add the suite
+        test_framework_wrapper.add_child_suite(suite_instance)
         
         # Run all test methods in the suite
         for method in suite_instance.get_method_list():
             if method.name.begins_with("test_"):
-                suite_instance.call(method.name)
+                # Call test method and forward results to our wrapper
+                var test_name = method.name
+                test_framework_wrapper.framework.start_test(test_name)
+                suite_instance.call(test_name)
+                var success = test_framework_wrapper.framework.end_test()
+                
+                # Forward result to appropriate signal
+                if success:
+                    test_framework_wrapper.test_passed.emit(test_name)
+                else:
+                    test_framework_wrapper.test_failed.emit(test_name, "Test assertions failed")
     else:
         push_error("Failed to load test suite: " + suite_path)
     
     current_suite_index += 1
+    
+    # Emit suite completion
+    test_framework_wrapper.suite_completed.emit()
 
 func _on_test_passed(test_name: String) -> void:
     total_tests += 1

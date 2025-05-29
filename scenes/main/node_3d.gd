@@ -2,25 +2,29 @@
 class_name NeuroVisMainScene
 extends Node3D
 
-# Essential preloads - cleaned syntax
-const BrainStructureSelectionManagerScript = preload("res://core/interaction/BrainStructureSelectionManager.gd")
-const CameraBehaviorControllerScript = preload("res://core/interaction/CameraBehaviorController.gd")
-const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
+# Essential preloads - use regular load to avoid parser issues
+var MultiStructureSelectionManagerScript = load("res://core/interaction/MultiStructureSelectionManager.gd")
+var CameraBehaviorControllerScript = load("res://core/interaction/CameraBehaviorController.gd")
+var ModelCoordinatorScene = load("res://core/models/ModelRegistry.gd")
+var ComparativeInfoPanelScript = load("res://ui/panels/ComparativeInfoPanel.gd")
 # UIThemeManager is now available as autoload
 
 # === NEW FOUNDATION LAYER ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const ComponentRegistry = preload("res://ui/core/ComponentRegistry.gd")
-const ComponentStateManager = preload("res://ui/state/ComponentStateManager.gd")
+var FeatureFlags = load("res://core/features/FeatureFlags.gd")
+var ComponentRegistry = load("res://ui/core/ComponentRegistry.gd")
+var ComponentStateManager = load("res://ui/state/ComponentStateManager.gd")
 
 # UI Component System preloads - PROGRESSIVE ENABLEMENT
-const SafeAutoloadAccess = preload("res://ui/components/core/SafeAutoloadAccess.gd")
-const BaseUIComponent = preload("res://ui/components/core/BaseUIComponent.gd")
-const UIComponentFactory = preload("res://ui/components/core/UIComponentFactory.gd")
-const ResponsiveComponent = preload("res://ui/components/core/ResponsiveComponent_Safe.gd")
+var SafeAutoloadAccess = load("res://ui/components/core/SafeAutoloadAccess.gd")
+var BaseUIComponent = load("res://ui/components/core/BaseUIComponent.gd")
+var UIComponentFactory = load("res://ui/components/core/UIComponentFactory.gd")
+var ResponsiveComponent = load("res://ui/components/core/ResponsiveComponent_Safe.gd")
 
 # Legacy support (will be migrated)
-const InfoPanelFactory = preload("res://ui/panels/InfoPanelFactory.gd")
+var InfoPanelFactory = load("res://ui/panels/InfoPanelFactory.gd")
+
+# QA Testing integration
+var SelectionTestRunner = load("res://tests/qa/SelectionTestRunner.gd")
 
 # Constants
 const RAY_LENGTH: float = 1000.0
@@ -40,11 +44,13 @@ const DEBUG_MODE: bool = true
 # New UI components (temporarily disabled for progressive enablement)
 # var ai_assistant_panel: AIAssistantPanel
 var ai_assistant_panel: Control  # Temporary generic type
+var comparative_panel: Control  # Comparative info panel for multi-selection
 
 # Components
 var selection_manager: Node
 var camera_controller: Node
 var model_coordinator: Node
+var selection_test_runner: Node  # SelectionTestRunner type loaded dynamically
 
 # System state
 var initialization_complete: bool = false
@@ -73,6 +79,9 @@ func _ready() -> void:
     # Register foundation debug commands
     _register_foundation_debug_commands()
     
+    # Initialize QA testing system
+    _initialize_qa_testing()
+    
     print("[INIT] NeuroVis ready!")
 
 func _initialize_ui_safety() -> void:
@@ -80,18 +89,23 @@ func _initialize_ui_safety() -> void:
     print("[INIT] Initializing UI safety framework...")
     
     # Log autoload status for debugging
-    SafeAutoloadAccess.log_autoload_status()
+    if SafeAutoloadAccess.has_method("log_autoload_status"):
+        SafeAutoloadAccess.call("log_autoload_status")
     
     # Test safety framework
     var framework_working = true
     
     # Test structure retrieval
-    var test_structure = SafeAutoloadAccess.get_structure_safely("Test")
+    var test_structure = {}
+    if SafeAutoloadAccess.has_method("get_structure_safely"):
+        test_structure = SafeAutoloadAccess.call("get_structure_safely", "Test")
     if not test_structure.has("id"):
         framework_working = false
         
     # Test component creation
-    var test_button = UIComponentFactory.create_button("Test", "primary")
+    var test_button = null
+    if UIComponentFactory.has_method("create_button"):
+        test_button = UIComponentFactory.call("create_button", "Test", "primary")
     if test_button:
         test_button.queue_free()
     else:
@@ -108,14 +122,17 @@ func _initialize_foundation_layer() -> void:
     
     # Load feature flags configuration
     var flags_loaded = true
-    if not FeatureFlags.is_enabled("__test_flag__"):  # This triggers initialization
-        flags_loaded = true
+    if FeatureFlags.has_method("is_enabled"):
+        if not FeatureFlags.call("is_enabled", "__test_flag__"):  # This triggers initialization
+            flags_loaded = true
     
     if flags_loaded:
         print("[INIT] ✓ FeatureFlags initialized")
         # Log current configuration
-        if FeatureFlags.is_enabled(FeatureFlags.DEBUG_COMPONENT_INSPECTOR):
-            FeatureFlags.print_flag_status()
+        if FeatureFlags.has_method("is_enabled") and FeatureFlags.has_method("print_flag_status"):
+            if FeatureFlags.get("DEBUG_COMPONENT_INSPECTOR") != null:
+                if FeatureFlags.call("is_enabled", FeatureFlags.get("DEBUG_COMPONENT_INSPECTOR")):
+                    FeatureFlags.call("print_flag_status")
     else:
         print("[INIT] ⚠ FeatureFlags initialization failed")
     
@@ -159,6 +176,21 @@ func _initialize_ui_components() -> void:
     #     print("[INIT] ✓ AccessibilityManager initialized")
     # else:
     print("[INIT] - AccessibilityManager temporarily disabled for progressive enablement")
+
+func _initialize_qa_testing() -> void:
+    """Initialize QA testing system for selection reliability"""
+    print("[INIT] Initializing QA testing system...")
+    
+    selection_test_runner = SelectionTestRunner.new()
+    add_child(selection_test_runner)
+    
+    # Initialize with main scene reference
+    selection_test_runner.initialize(self)
+    
+    print("[INIT] ✓ QA testing system ready - Use F1 console commands:"
+        + "\n  - qa_test [full|quick|structure] - Run selection tests"
+        + "\n  - qa_status - Check test progress"
+        + "\n  - qa_analyze - Analyze selection system")
 
 func initialize_core_systems() -> void:
     """Initialize core systems in proper order"""
@@ -213,15 +245,21 @@ func _validate_essential_nodes() -> bool:
     return valid
 
 func _setup_selection_manager() -> void:
-    """Setup structure selection manager"""
-    selection_manager = BrainStructureSelectionManagerScript.new()
+    """Setup multi-structure selection manager"""
+    selection_manager = MultiStructureSelectionManagerScript.new()
     add_child(selection_manager)
     
-    # Connect signals
+    # Connect signals for single selection (backwards compatibility)
     selection_manager.structure_selected.connect(_on_structure_selected)
     selection_manager.structure_deselected.connect(_on_structure_deselected)
     selection_manager.structure_hovered.connect(_on_structure_hovered)
     selection_manager.structure_unhovered.connect(_on_structure_unhovered)
+    
+    # Connect multi-selection signals
+    selection_manager.multi_selection_changed.connect(_on_multi_selection_changed)
+    selection_manager.comparison_mode_entered.connect(_on_comparison_mode_entered)
+    selection_manager.comparison_mode_exited.connect(_on_comparison_mode_exited)
+    selection_manager.selection_limit_reached.connect(_on_selection_limit_reached)
     
     # Configure appearance
     selection_manager.configure_highlight_colors(highlight_color, Color(1.0, 0.7, 0.0, 0.6))
@@ -348,7 +386,7 @@ func _connect_legacy_panel_signals() -> void:
 
 func _apply_modern_theme() -> void:
     """Apply modern glass morphism theme using UIThemeManager"""
-    var theme_manager = preload("res://ui/panels/UIThemeManager.gd")
+    var theme_manager = load("res://ui/panels/UIThemeManager.gd")
     
     # Apply glass styling to object label
     if object_name_label:
@@ -390,15 +428,16 @@ func _input(event: InputEvent) -> void:
     if event is InputEventMouseMotion:
         selection_manager.handle_hover_at_position(event.position)
     
-    # Right-click for structure selection
+    # Right-click for structure selection with multi-selection support
     if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+        # MultiStructureSelectionManager will check modifiers internally
         selection_manager.handle_selection_at_position(event.position)
         get_viewport().set_input_as_handled()
 
 # Signal handlers
 func _on_structure_selected(structure_name: String, _mesh: MeshInstance3D) -> void:
     # Update label with modern animation
-    preload("res://ui/panels/UIThemeManager.gd").animate_fade_text_change(object_name_label, "Selected: " + structure_name)
+    load("res://ui/panels/UIThemeManager.gd").animate_fade_text_change(object_name_label, "Selected: " + structure_name)
     
     # Display structure information
     _display_structure_info(structure_name)
@@ -724,8 +763,7 @@ func refresh_info_panel() -> void:
     if info_panel and info_panel.visible and not last_selected_structure.is_empty():
         print("[THEME] Refreshing panel for: " + last_selected_structure)
         # Let the old panel finish freeing before creating new one
-        await get_tree().process_frame
-        _display_structure_info(last_selected_structure)
+        call_deferred("_display_structure_info", last_selected_structure)
 
 func _print_instructions() -> void:
     print("\n=== NEUROVIS CONTROLS ===")
@@ -1216,3 +1254,128 @@ func _debug_test_phase3() -> void:
         print("✗ Failed to load Phase 3 test script")
     
     print("=== PHASE 3 TESTS COMPLETED ===\n")
+
+# === MULTI-SELECTION HANDLERS ===
+func _on_multi_selection_changed(selections: Array) -> void:
+    """Handle changes to multi-selection state"""
+    # Update UI based on number of selections
+    if selections.size() == 0:
+        # No selection - hide panels
+        if info_panel:
+            info_panel.hide()
+        if comparative_panel:
+            comparative_panel.hide()
+        object_name_label.text = "Selected: None"
+        
+    elif selections.size() == 1:
+        # Single selection - show traditional info panel
+        if comparative_panel:
+            comparative_panel.hide()
+        var selection = selections[0]
+        _display_structure_info(selection["name"])
+        object_name_label.text = "Selected: " + selection["name"]
+        
+    else:
+        # Multiple selections - show comparative panel
+        if info_panel:
+            info_panel.hide()
+        _show_comparative_panel(selections)
+        
+        # Update label to show multiple selections
+        var names = []
+        for sel in selections:
+            names.append(sel["name"])
+        object_name_label.text = "Comparing: " + ", ".join(names)
+    
+    print("[MultiSelect] Selection changed: %d structures" % selections.size())
+
+func _on_comparison_mode_entered() -> void:
+    """Handle entering comparison mode"""
+    print("[MultiSelect] Entered comparison mode")
+    
+    # Show comparison mode indicator (optional)
+    # Could add visual feedback here
+
+func _on_comparison_mode_exited() -> void:
+    """Handle exiting comparison mode"""
+    print("[MultiSelect] Exited comparison mode")
+    
+    # Hide comparative panel
+    if comparative_panel:
+        comparative_panel.hide()
+
+func _on_selection_limit_reached() -> void:
+    """Handle when selection limit is reached"""
+    print("[MultiSelect] Selection limit reached!")
+    
+    # Show user feedback
+    var notification = Label.new()
+    notification.text = "Maximum 3 structures can be selected for comparison"
+    notification.add_theme_color_override("font_color", Color(1, 0.8, 0))
+    notification.add_theme_font_size_override("font_size", 16)
+    
+    # Position at top center
+    notification.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+    notification.position.y = 100
+    notification.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    
+    # Add to UI layer
+    var ui_layer = get_node_or_null("UI_Layer")
+    if ui_layer:
+        ui_layer.add_child(notification)
+        
+        # Auto-remove after 3 seconds
+        await get_tree().create_timer(3.0).timeout
+        notification.queue_free()
+
+func _show_comparative_panel(selections: Array) -> void:
+    """Show the comparative information panel"""
+    var ui_layer = get_node_or_null("UI_Layer")
+    if not ui_layer:
+        push_error("[MultiSelect] UI_Layer not found!")
+        return
+    
+    # Create comparative panel if it doesn't exist
+    if not comparative_panel:
+        comparative_panel = ComparativeInfoPanelScript.new()
+        comparative_panel.name = "ComparativeInfoPanel"
+        
+        # Position on the right side
+        comparative_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
+        comparative_panel.position.x = -420
+        comparative_panel.custom_minimum_size = Vector2(400, 600)
+        
+        ui_layer.add_child(comparative_panel)
+        
+        # Connect signals
+        comparative_panel.structure_focused.connect(_on_comparative_structure_focused)
+        comparative_panel.comparison_cleared.connect(func(): selection_manager.clear_all_selections())
+    
+    # Update panel with selections
+    comparative_panel.update_selections(selections)
+    comparative_panel.show()
+
+func _on_comparative_structure_focused(structure_name: String) -> void:
+    """Handle focus request from comparative panel"""
+    # Find the mesh for this structure
+    var meshes = _get_all_brain_meshes()
+    for mesh in meshes:
+        if mesh.name == structure_name:
+            # Focus camera on this structure
+            if camera_controller and camera_controller.has_method("focus_on_mesh"):
+                camera_controller.focus_on_mesh(mesh)
+            break
+
+func _get_all_brain_meshes() -> Array:
+    """Get all brain mesh instances from the brain model parent"""
+    var meshes: Array = []
+    if brain_model_parent:
+        _collect_meshes_recursive(brain_model_parent, meshes)
+    return meshes
+
+func _collect_meshes_recursive(node: Node, meshes: Array) -> void:
+    """Recursively collect all MeshInstance3D nodes"""
+    if node is MeshInstance3D:
+        meshes.append(node)
+    for child in node.get_children():
+        _collect_meshes_recursive(child, meshes)
