@@ -1,15 +1,9 @@
-# GeminiAIService.gd
-# Specialized service for Google Gemini AI integration
-class_name GeminiAIService
+# Gemini AI Service for NeuroVis
+# Handles user's own Gemini API key and requests
 extends Node
+class_name GeminiAIService
 
-# === GEMINI SERVICE SIGNALS ===
-signal api_key_validated(success: bool, message: String)
-signal model_list_updated(available_models: Array)
-signal config_changed(model_name: String, settings: Dictionary)
-signal safety_settings_changed(settings: Dictionary)
-
-# === GEMINI SERVICE CONFIG ===
+# Models
 enum GeminiModel {
     GEMINI_PRO,
     GEMINI_PRO_VISION,
@@ -22,307 +16,353 @@ const MODEL_NAMES = {
     GeminiModel.GEMINI_FLASH: "gemini-flash"
 }
 
-# === CONFIGURATION ===
-@export var api_key: String = ""
-@export var model: GeminiModel = GeminiModel.GEMINI_PRO
-@export var temperature: float = 0.7
-@export var top_k: int = 40
-@export var top_p: float = 0.95
-@export var max_output_tokens: int = 2048
-@export var enable_safety_settings: bool = true
+# Signals
+signal response_received(response: String)
+signal error_occurred(error: String)
+signal rate_limit_updated(used: int, limit: int)
+signal setup_completed()
+signal api_key_validated(success: bool, message: String)
+signal model_list_updated(models: Array)
+signal config_changed(model_name: String, settings: Dictionary)
 
-# === HTTP CLIENT ===
+# Configuration
+const SETTINGS_PATH = "user://gemini_settings.dat"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+const RATE_LIMIT_PER_MINUTE = 60
+
+# State
+var api_key: String = ""
+var is_setup_complete: bool = false
+var rate_limit_used: int = 0
+var rate_limit_reset_time: float = 0
 var http_request: HTTPRequest
-
-# === STATE ===
-var is_initialized: bool = false
-var available_models: Array = []
+var current_model: GeminiModel = GeminiModel.GEMINI_PRO
+var temperature: float = 0.7
+var max_output_tokens: int = 2048
 var safety_settings: Dictionary = {
-    "HARASSMENT": 2,      # BLOCK_ONLY_HIGH
-    "HATE_SPEECH": 2,     # BLOCK_ONLY_HIGH
-    "SEXUALLY_EXPLICIT": 2, # BLOCK_ONLY_HIGH
-    "DANGEROUS_CONTENT": 2  # BLOCK_ONLY_HIGH
+    "HARASSMENT": 2,
+    "HATE_SPEECH": 2,
+    "SEXUALLY_EXPLICIT": 2, 
+    "DANGEROUS_CONTENT": 2
 }
+var available_models: Array = []
 
-func _ready() -> void:
-    """Initialize the Gemini AI Service"""
-    _initialize_service()
-
-func _initialize_service() -> void:
-    """Setup HTTP request and load configuration"""
-    print("[GeminiAI] Initializing Gemini AI Service...")
-    
-    # Create HTTP request node
+func _ready():
+    # Create HTTP client
     http_request = HTTPRequest.new()
     add_child(http_request)
-    http_request.request_completed.connect(_on_http_request_completed)
+    http_request.request_completed.connect(_on_request_completed)
+    http_request.timeout = 30.0
     
-    # Load API key from user configuration
-    _load_api_configuration()
+    # Load saved settings
+    _load_settings()
     
-    is_initialized = true
-    print("[GeminiAI] Initialized with model: " + MODEL_NAMES[model])
+    # Start rate limit timer
+    set_process(true)
+    
+    print("[GeminiAI] Service initialized")
 
-func _load_api_configuration() -> void:
-    """Load API key from user configuration"""
-    var config = ConfigFile.new()
-    var err = config.load("user://gemini_config.cfg")
-    
-    if err == OK:
-        if config.has_section_key("credentials", "api_key"):
-            api_key = config.get_value("credentials", "api_key")
-            print("[GeminiAI] API key loaded from configuration")
-            
-        if config.has_section_key("settings", "model"):
-            var model_value = config.get_value("settings", "model")
-            if model_value in GeminiModel.values():
-                model = model_value
-            
-        if config.has_section_key("settings", "temperature"):
-            temperature = config.get_value("settings", "temperature")
-            
-        if config.has_section_key("settings", "max_output_tokens"):
-            max_output_tokens = config.get_value("settings", "max_output_tokens")
-        
-        if config.has_section_key("settings", "enable_safety_settings"):
-            enable_safety_settings = config.get_value("settings", "enable_safety_settings")
-            
-        if config.has_section_key("safety", "settings"):
-            var saved_safety = config.get_value("safety", "settings")
-            if saved_safety is Dictionary:
-                safety_settings = saved_safety
-    else:
-        print("[GeminiAI] No configuration file found, using defaults")
+func _process(delta):
+    # Reset rate limit every minute
+    if Time.get_ticks_msec() / 1000.0 > rate_limit_reset_time:
+        rate_limit_reset_time = Time.get_ticks_msec() / 1000.0 + 60.0
+        rate_limit_used = 0
+        rate_limit_updated.emit(rate_limit_used, RATE_LIMIT_PER_MINUTE)
 
 # === PUBLIC API ===
-func validate_api_key(key: String) -> void:
-    """Validate API key by making a test request"""
-    if key.strip_edges() == "":
-        api_key_validated.emit(false, "API key cannot be empty")
-        return
-        
-    print("[GeminiAI] Validating API key...")
-    var test_url = "https://generativelanguage.googleapis.com/v1/models?key=" + key
+func setup_api_key(key: String) -> bool:
+    """Set up and validate API key"""
+    api_key = key.strip_edges()
     
-    http_request.request(test_url, [], HTTPClient.METHOD_GET)
-    # Results will be processed in _on_http_request_completed
-
-func save_configuration(new_key: String = "", new_model: GeminiModel = -1) -> void:
-    """Save API key and model configuration"""
-    if new_key != "":
-        api_key = new_key
-        
-    if new_model != -1:
-        model = new_model
+    # Basic validation
+    if api_key.length() < 30:
+        error_occurred.emit("Invalid API key format")
+        return false
     
-    var config = ConfigFile.new()
-    
-    # Save credentials
-    config.set_value("credentials", "api_key", api_key)
-    
-    # Save settings
-    config.set_value("settings", "model", model)
-    config.set_value("settings", "temperature", temperature)
-    config.set_value("settings", "max_output_tokens", max_output_tokens)
-    config.set_value("settings", "enable_safety_settings", enable_safety_settings)
-    
-    # Save safety settings
-    config.set_value("safety", "settings", safety_settings)
-    
-    var err = config.save("user://gemini_config.cfg")
-    if err != OK:
-        push_error("[GeminiAI] Failed to save configuration")
+    # Test the key
+    var test_successful = await _test_api_key()
+    if test_successful:
+        is_setup_complete = true
+        _save_settings()
+        setup_completed.emit()
+        return true
     else:
-        print("[GeminiAI] Configuration saved successfully")
-        config_changed.emit(MODEL_NAMES[model], {
-            "temperature": temperature,
-            "max_output_tokens": max_output_tokens,
-            "enable_safety_settings": enable_safety_settings
-        })
+        api_key = ""
+        is_setup_complete = false
+        return false
 
-func set_model(model_name: String) -> bool:
-    """Set the Gemini model by name"""
-    for key in MODEL_NAMES:
-        if MODEL_NAMES[key] == model_name:
-            model = key
-            print("[GeminiAI] Model set to: " + model_name)
-            return true
+func ask_question(question: String, context: Dictionary = {}) -> String:
+    """Send question to Gemini API"""
+    if not is_setup_complete:
+        error_occurred.emit("Gemini AI not set up. Please configure your API key.")
+        return ""
     
-    push_error("[GeminiAI] Unknown model name: " + model_name)
-    return false
-
-func get_model_name() -> String:
-    """Get the current model name"""
-    return MODEL_NAMES[model]
-
-func update_available_models() -> void:
-    """Update the list of available Gemini models"""
-    if api_key.strip_edges() == "":
-        push_error("[GeminiAI] Cannot fetch models without API key")
-        return
-        
-    var url = "https://generativelanguage.googleapis.com/v1/models?key=" + api_key
-    http_request.request(url, [], HTTPClient.METHOD_GET)
-    # Results will be processed in _on_http_request_completed
-
-func set_safety_settings(new_settings: Dictionary) -> void:
-    """Update safety settings for content generation"""
-    for key in new_settings:
-        if key in safety_settings:
-            safety_settings[key] = new_settings[key]
+    if rate_limit_used >= RATE_LIMIT_PER_MINUTE:
+        var wait_time = int(rate_limit_reset_time - Time.get_ticks_msec() / 1000.0)
+        error_occurred.emit("Rate limit reached. Please wait %d seconds." % wait_time)
+        return ""
     
-    safety_settings_changed.emit(safety_settings)
-    print("[GeminiAI] Safety settings updated")
-
-func generate_content(prompt: String) -> String:
-    """Generate content from Gemini API"""
-    if !is_api_key_valid():
-        return "ERROR: API key not configured."
+    # Build prompt with context
+    var prompt = _build_prompt(question, context)
     
-    var url = "https://generativelanguage.googleapis.com/v1/models/%s:generateContent?key=%s" % [
-        MODEL_NAMES[model],
-        api_key
-    ]
-    
+    # Send request
     var headers = ["Content-Type: application/json"]
-    
     var body = {
-        "contents": [
-            {
-                "parts": [
-                    {
-                        "text": prompt
-                    }
-                ]
-            }
-        ],
+        "contents": [{
+            "parts": [{"text": prompt}]
+        }],
         "generationConfig": {
-            "temperature": temperature,
-            "topK": top_k,
-            "topP": top_p,
-            "maxOutputTokens": max_output_tokens
+            "temperature": 0.7,
+            "maxOutputTokens": 500
         }
     }
     
-    # Add safety settings if enabled
-    if enable_safety_settings:
-        var safety_settings_array = []
-        for category in safety_settings:
-            safety_settings_array.append({
-                "category": category,
-                "threshold": safety_settings[category]
-            })
-        body["safetySettings"] = safety_settings_array
+    var error = http_request.request(
+        API_URL + "?key=" + api_key,
+        headers,
+        HTTPClient.METHOD_POST,
+        JSON.stringify(body)
+    )
     
-    var json_body = JSON.stringify(body)
-    http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+    if error != OK:
+        error_occurred.emit("Failed to send request")
+        return ""
     
-    return "PENDING"
+    # Update rate limit
+    rate_limit_used += 1
+    rate_limit_updated.emit(rate_limit_used, RATE_LIMIT_PER_MINUTE)
+    
+    # Wait for response
+    var result = await http_request.request_completed
+    return _parse_response(result)
 
+func check_setup_status() -> bool:
+    """Check if Gemini is set up"""
+    return is_setup_complete
+
+func needs_setup() -> bool:
+    """Check if setup is needed"""
+    return not is_setup_complete
+    
 func is_api_key_valid() -> bool:
     """Check if API key is valid"""
-    return api_key.strip_edges() != ""
+    return is_setup_complete and api_key.length() >= 30
+    
+func get_api_key() -> String:
+    """Get the API key (masked)"""
+    if api_key.length() > 0:
+        return "configured" # Return a placeholder instead of actual key for security
+    return ""
+    
+func validate_api_key(key: String) -> void:
+    """Validate API key and emit result signal"""
+    api_key = key.strip_edges()
+    
+    # Basic validation
+    if api_key.length() < 30:
+        api_key_validated.emit(false, "Invalid API key format")
+        return
+        
+    # Do the validation test
+    var test_successful = await _test_api_key()
+    api_key_validated.emit(test_successful, "API key validation " + ("succeeded" if test_successful else "failed"))
 
-func get_service_status() -> Dictionary:
-    """Get current service status"""
+func get_model_name() -> String:
+    """Get current model name"""
+    return MODEL_NAMES[current_model]
+    
+func get_model_list() -> Array:
+    """Get available models"""
+    if available_models.is_empty():
+        # Return default models if none available yet
+        var default_models = []
+        for key in MODEL_NAMES:
+            default_models.append(MODEL_NAMES[key])
+        return default_models
+    
+    return available_models
+    
+func update_available_models() -> void:
+    """Update list of available models"""
+    # In a real implementation, this would query the API
+    # For now, just use the predefined models
+    available_models = []
+    for key in MODEL_NAMES:
+        available_models.append(MODEL_NAMES[key])
+    
+    print("[GeminiAI] Updated available models: ", available_models)
+    model_list_updated.emit(available_models)
+    
+func set_model(model_name_or_id) -> void:
+    """Set model by name or enum value"""
+    var old_model = current_model
+    
+    # If it's a string, find the corresponding enum value
+    if model_name_or_id is String:
+        var model_name = model_name_or_id
+        for key in MODEL_NAMES:
+            if MODEL_NAMES[key] == model_name:
+                current_model = key
+                print("[GeminiAI] Model set to: " + model_name)
+                break
+    # If it's a number, use it directly
+    elif model_name_or_id is int:
+        if model_name_or_id in MODEL_NAMES:
+            current_model = model_name_or_id
+    
+    # Emit signal if model changed
+    if old_model != current_model:
+        config_changed.emit(MODEL_NAMES[current_model], get_configuration())
+    
+func get_configuration() -> Dictionary:
+    """Get current configuration"""
     return {
-        "initialized": is_initialized,
-        "model": get_model_name(),
-        "api_key_configured": is_api_key_valid(),
-        "safety_enabled": enable_safety_settings
+        "model": current_model,
+        "temperature": temperature,
+        "max_output_tokens": max_output_tokens,
+        "safety_settings": safety_settings
+    }
+    
+func save_configuration(key: String, model: int) -> void:
+    """Save configuration"""
+    if key.strip_edges() != "":
+        api_key = key.strip_edges()
+    current_model = model
+    
+    _save_settings()
+    
+    print("[GeminiAI] Configuration saved successfully")
+    config_changed.emit(MODEL_NAMES[current_model], get_configuration())
+    
+func set_safety_settings(settings: Dictionary) -> void:
+    """Update safety settings"""
+    for category in settings:
+        if category in safety_settings:
+            safety_settings[category] = settings[category]
+    
+    print("[GeminiAI] Safety settings updated")
+    config_changed.emit(MODEL_NAMES[current_model], get_configuration())
+    
+func get_safety_settings() -> Dictionary:
+    """Get current safety settings"""
+    return safety_settings
+
+func reset_settings():
+    """Clear API key and settings"""
+    api_key = ""
+    is_setup_complete = false
+    rate_limit_used = 0
+    
+    # Delete saved settings
+    if FileAccess.file_exists(SETTINGS_PATH):
+        DirAccess.remove_absolute(SETTINGS_PATH)
+    
+    print("[GeminiAI] Settings reset")
+
+func get_rate_limit_status() -> Dictionary:
+    """Get current rate limit status"""
+    return {
+        "used": rate_limit_used,
+        "limit": RATE_LIMIT_PER_MINUTE,
+        "reset_in": int(max(0, rate_limit_reset_time - Time.get_ticks_msec() / 1000.0))
     }
 
-# === RESPONSE PROCESSING ===
-func _on_http_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
-    """Handle HTTP request completion"""
-    if result != HTTPRequest.RESULT_SUCCESS:
-        _handle_request_error("HTTP request failed with error: " + str(result))
-        return
+# === PRIVATE METHODS ===
+func _build_prompt(question: String, context: Dictionary) -> String:
+    """Build prompt with educational context"""
+    var prompt = "You are NeuroBot, an expert neuroanatomy tutor. "
+    prompt += "Provide clear, educational explanations suitable for medical students. "
+    
+    if context.has("structure") and context.structure != "":
+        prompt += "The user is examining the %s. " % context.structure
+    
+    prompt += "\n\nQuestion: " + question
+    return prompt
+
+func _test_api_key() -> bool:
+    """Test if API key is valid"""
+    var test_prompt = "Respond with exactly: 'API key valid'"
+    var headers = ["Content-Type: application/json"]
+    var body = {
+        "contents": [{
+            "parts": [{"text": test_prompt}]
+        }],
+        "generationConfig": {
+            "temperature": 0,
+            "maxOutputTokens": 20
+        }
+    }
+    
+    var error = http_request.request(
+        API_URL + "?key=" + api_key,
+        headers,
+        HTTPClient.METHOD_POST,
+        JSON.stringify(body)
+    )
+    
+    if error != OK:
+        return false
+    
+    var result = await http_request.request_completed
+    var response = _parse_response(result)
+    return response != ""
+
+func _parse_response(result: Array) -> String:
+    """Parse Gemini API response"""
+    var response_code = result[1]
+    var body = result[3]
     
     if response_code != 200:
-        _handle_request_error("API returned error code: " + str(response_code))
-        return
+        error_occurred.emit("API error: HTTP " + str(response_code))
+        return ""
     
     var json = JSON.new()
     var parse_result = json.parse(body.get_string_from_utf8())
     
     if parse_result != OK:
-        _handle_request_error("Failed to parse API response")
-        return
-    
-    var response_data = json.get_data()
-    
-    # Handle different request types based on response structure
-    if response_data.has("models"):
-        _process_models_list_response(response_data)
-    elif response_data.has("candidates"):
-        _process_generation_response(response_data)
-    else:
-        # Simple validation response (e.g., API key validation)
-        api_key_validated.emit(true, "API key is valid")
-
-func _process_models_list_response(data: Dictionary) -> void:
-    """Process models list response"""
-    available_models.clear()
-    
-    for model_info in data.get("models", []):
-        if model_info.has("name"):
-            # Extract model name from full path (like "models/gemini-pro")
-            var full_name = model_info.name
-            var model_name = full_name.split("/")[-1]
-            available_models.append(model_name)
-    
-    model_list_updated.emit(available_models)
-    print("[GeminiAI] Updated available models: ", available_models)
-
-func _process_generation_response(data: Dictionary) -> void:
-    """Process content generation response"""
-    var candidates = data.get("candidates", [])
-    if candidates.size() > 0:
-        var candidate = candidates[0]
-        if candidate.has("content") and candidate.content.has("parts"):
-            var parts = candidate.content.parts
-            for part in parts:
-                if part.has("text"):
-                    var ai_service = get_node_or_null("/root/AIAssistant")
-                    if ai_service and ai_service.has_method("_on_gemini_response_received"):
-                        ai_service._on_gemini_response_received(part.text)
-                    break
-    else:
-        _handle_request_error("No content generated")
-
-func _handle_request_error(message: String) -> void:
-    """Handle API request errors"""
-    push_error("[GeminiAI] " + message)
-    
-    var ai_service = get_node_or_null("/root/AIAssistant")
-    if ai_service and ai_service.has_method("_on_ai_error"):
-        ai_service._on_ai_error("Gemini API error: " + message)
-
-# === UTILITY FUNCTIONS ===
-func get_model_list() -> Array:
-    """Get list of available Gemini models"""
-    return available_models
-
-func get_safety_settings() -> Dictionary:
-    """Get current safety settings"""
-    return safety_settings.duplicate()
-
-func get_configuration() -> Dictionary:
-    """Get current configuration"""
-    return {
-        "model": get_model_name(),
-        "temperature": temperature,
-        "max_output_tokens": max_output_tokens,
-        "safety_enabled": enable_safety_settings
-    }
-
-func get_api_key() -> String:
-    """Get API key (masked for UI display)"""
-    if api_key.strip_edges() == "":
+        error_occurred.emit("Failed to parse API response")
         return ""
     
-    if api_key.length() <= 8:
-        return "••••••••"
+    var data = json.data
+    if data.has("candidates") and data.candidates.size() > 0:
+        var candidate = data.candidates[0]
+        if candidate.has("content") and candidate.content.has("parts"):
+            var text = candidate.content.parts[0].text
+            response_received.emit(text)
+            return text
     
-    return api_key.substr(0, 4) + "••••" + api_key.substr(api_key.length() - 4)
+    error_occurred.emit("Invalid API response format")
+    return ""
+
+func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
+    """Handle HTTP request completion"""
+    # Response is handled through await in the calling function
+    pass
+
+func _save_settings():
+    """Save API key to encrypted file"""
+    var file = FileAccess.open_encrypted_with_pass(
+        SETTINGS_PATH, 
+        FileAccess.WRITE,
+        OS.get_unique_id()
+    )
+    if file:
+        file.store_string(api_key)
+        file.close()
+        print("[GeminiAI] Settings saved")
+
+func _load_settings():
+    """Load API key from encrypted file"""
+    if not FileAccess.file_exists(SETTINGS_PATH):
+        return
+    
+    var file = FileAccess.open_encrypted_with_pass(
+        SETTINGS_PATH,
+        FileAccess.READ,
+        OS.get_unique_id()
+    )
+    if file:
+        api_key = file.get_as_text()
+        file.close()
+        is_setup_complete = api_key.length() > 30
+        print("[GeminiAI] Settings loaded")
