@@ -246,6 +246,18 @@ func set_safety_settings(settings: Dictionary) -> void:
 func get_safety_settings() -> Dictionary:
     """Get current safety settings"""
     return safety_settings
+    
+func generate_content(prompt: String) -> String:
+    """Generate content with the specified prompt"""
+    if not is_setup_complete:
+        return "API not configured"
+    
+    # This is a simplified version - full implementation would use HTTP requests
+    var result = ask_question(prompt)
+    
+    if result.is_empty():
+        return "PENDING"  # To indicate that a request is in progress
+    return result
 
 func reset_settings():
     """Clear API key and settings"""
