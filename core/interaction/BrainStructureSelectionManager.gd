@@ -8,7 +8,6 @@
 ## @tutorial: Advanced selection techniques for educational 3D applications
 ## @version: 3.0
 
-class_name BrainStructureSelectionManager
 extends Node
 
 # Constants
