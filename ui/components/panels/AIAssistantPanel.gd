@@ -313,6 +313,13 @@ func _on_provider_selected(index: int) -> void:
             if not gemini_service or not gemini_service.is_api_key_valid():
                 # Show setup dialog on first use
                 _show_gemini_setup_dialog()
+        
+        # If switching to user's Gemini, check if it's configured
+        if provider == AIAssistantService.AIProvider.GEMINI_USER:
+            var user_gemini = get_node_or_null("/root/GeminiAI")
+            if user_gemini and user_gemini.has_method("needs_setup") and user_gemini.needs_setup():
+                # Show setup message for user's Gemini service
+                _show_user_gemini_setup_message()
 
 func _on_gemini_settings_requested() -> void:
     """Open Gemini settings dialog"""
@@ -328,6 +335,67 @@ func _show_gemini_setup_dialog() -> void:
     gemini_setup_dialog.setup_cancelled.connect(_on_gemini_setup_cancelled)
     add_child(gemini_setup_dialog)
     gemini_setup_dialog.show_dialog()
+    
+func _show_user_gemini_setup_message() -> void:
+    """Show message for setting up user's Gemini service"""
+    var setup_message = "Your Gemini AI service requires setup. Please enter your API key to continue."
+    _add_message("assistant", setup_message, "Gemini AI Setup Required")
+    
+    # Create API key input dialog
+    var api_key_dialog = _create_api_key_dialog()
+    add_child(api_key_dialog)
+    api_key_dialog.popup_centered()
+    
+func _create_api_key_dialog() -> ConfirmationDialog:
+    """Create a simple dialog for entering the API key"""
+    var dialog = ConfirmationDialog.new()
+    dialog.title = "Gemini API Key Setup"
+    dialog.dialog_text = "Enter your Google Gemini API key:"
+    dialog.min_size = Vector2(400, 200)
+    
+    # Create input field for API key
+    var vbox = VBoxContainer.new()
+    dialog.add_child(vbox)
+    
+    var label = Label.new()
+    label.text = "You can get a free API key from https://ai.google.dev/"
+    vbox.add_child(label)
+    
+    var input = LineEdit.new()
+    input.name = "APIKeyInput"
+    input.placeholder_text = "Enter your API key here"
+    input.secret = true
+    input.custom_minimum_size.y = 40
+    vbox.add_child(input)
+    
+    # Connect confirmation signal
+    dialog.confirmed.connect(func():
+        var key = input.text.strip_edges()
+        if key.is_empty():
+            return
+            
+        var gemini_ai = get_node_or_null("/root/GeminiAI")
+        if gemini_ai:
+            _handle_user_gemini_setup(gemini_ai, key)
+        else:
+            _add_message("assistant", "Unable to access GeminiAI service. Please restart the application.", "Error")
+    )
+    
+    return dialog
+    
+func _handle_user_gemini_setup(gemini_ai: Node, key: String) -> void:
+    """Handle user's Gemini API key setup"""
+    _add_message("assistant", "Setting up Gemini API... Please wait.", "Setup in Progress")
+    
+    # Use async/await to wait for the setup result
+    var setup_success = await gemini_ai.setup_api_key(key)
+    
+    if setup_success:
+        _add_message("assistant", "Gemini API configured successfully! You can now ask questions using your own API key.", "Setup Complete")
+        _update_status("Using your Gemini API key")
+    else:
+        _add_message("assistant", "Failed to configure Gemini API. Please check your API key and try again.", "Setup Failed")
+        _update_status("Gemini API setup failed")
 
 func _on_gemini_setup_completed(successful: bool, api_key: String) -> void:
     """Handle Gemini setup completion"""

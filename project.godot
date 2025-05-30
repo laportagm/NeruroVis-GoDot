@@ -18,34 +18,16 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-; === CORE EDUCATIONAL SERVICES (KEEP ACTIVE) ===
 KB="*res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
 KnowledgeService="*res://core/knowledge/KnowledgeService.gd"
 StructureAnalysisManager="*res://core/systems/StructureAnalysisManager.gd"
 AIAssistant="*res://core/ai/AIAssistantService.gd"
+GeminiAI="*res://core/ai/GeminiAIService.gd"
 UIThemeManager="*res://ui/panels/UIThemeManager.gd"
 AccessibilityManager="*res://core/systems/AccessibilityManager.gd"
 ModelSwitcherGlobal="*res://core/models/ModelVisibilityManager.gd"
 DebugCmd="*res://core/systems/DebugCommands.gd"
-
-; === SYSTEM MANAGEMENT ===
 FeatureFlags="*res://core/features/FeatureFlags.gd"
-
-; === COMPLEX SYSTEMS (DISABLED DURING CORE DEVELOPMENT) ===
-; Uncomment these lines when ready to re-enable advanced features
-;ComponentRegistry="*res://ui/core/ComponentRegistry.gd"
-;EventBus="*res://core/events/EventBus.gd"
-
-; === DEVELOPMENT TOOLS (DISABLED - ENABLE AS NEEDED) ===
-;ProjectProfiler="*res://scripts/dev_utils/ProjectProfiler.gd"
-;DevConsole="*res://scripts/dev_utils/DevConsole.gd"
-;TestRunner="*res://scripts/tests/TestRunner.gd"
-;ErrorTracker="*res://scripts/dev_utils/ErrorTracker.gd"
-;HealthMonitor="*res://scripts/dev_utils/HealthMonitor.gd"
-;TestFramework="*res://scripts/dev_utils/TestFramework.gd"
-;BrainVisDebugger="*res://scripts/dev_utils/BrainVisDebugger.gd"
-;ResourceDebugger="*res://scripts/dev_utils/ResourceDebugger.gd"
-;ResourceLoadTracer="*res://scripts/dev_utils/ResourceLoadTracer.gd"
 
 [debug]
 
@@ -53,7 +35,6 @@ settings/gdscript/include_language_server=true
 settings/gdscript/warnings/enable=true
 settings/gdscript/warnings/treat_warnings_as_errors=false
 settings/gdscript/warnings/exclude_addons=true
-settings/stdout/verbose_stdout=false
 
 [editor]
 

@@ -3,6 +3,9 @@
 class_name AIAssistantService
 extends Node
 
+# Preload the GeminiAIService class to ensure it's available
+const GeminiAIServiceClass = preload("res://core/ai/GeminiAIService.gd")
+
 # === AI SERVICE SIGNALS ===
 signal response_received(question: String, response: String)
 signal error_occurred(error_message: String)
@@ -14,6 +17,7 @@ enum AIProvider {
     OPENAI_GPT,
     ANTHROPIC_CLAUDE,
     GOOGLE_GEMINI,
+    GEMINI_USER, # User's own Gemini API key
     LOCAL_MODEL,
     MOCK_RESPONSES # For testing without API
 }
@@ -31,6 +35,7 @@ var current_structure: String = ""
 var conversation_history: Array = []
 var is_initialized: bool = false
 var request_timeout: float = 30.0
+var user_gemini_service: Node  # Reference to user's Gemini service
 
 # === HTTP CLIENT ===
 var http_request: HTTPRequest
@@ -83,7 +88,7 @@ var mock_responses = {
 }
 
 # === GEMINI INTEGRATION ===
-var gemini_service: GeminiAIService
+var gemini_service: GeminiAIServiceClass
 
 func _ready() -> void:
     """Initialize the AI Assistant Service"""
@@ -99,8 +104,9 @@ func _initialize_ai_service() -> void:
     http_request.request_completed.connect(_on_api_response_received)
     http_request.timeout = request_timeout
 
-    # Initialize Gemini service if needed
+    # Initialize Gemini services if needed
     _initialize_gemini_service()
+    _initialize_user_gemini_service()
 
     # Load API configuration if available
     _load_api_configuration()
@@ -121,8 +127,20 @@ func _initialize_gemini_service() -> void:
     # If not available as autoload, create instance
     if not gemini_service and ai_provider == AIProvider.GOOGLE_GEMINI:
         print("[AI] Creating local Gemini service instance")
-        gemini_service = GeminiAIService.new()
+        gemini_service = GeminiAIServiceClass.new()
         add_child(gemini_service)
+
+func _initialize_user_gemini_service() -> void:
+    """Initialize user's own Gemini AI service"""
+    # Get reference to the GeminiAI autoload
+    user_gemini_service = get_node_or_null("/root/GeminiAI")
+    
+    if user_gemini_service:
+        print("[AI] Connected to user's GeminiAI service")
+        user_gemini_service.response_received.connect(_on_user_gemini_response)
+        user_gemini_service.error_occurred.connect(_on_user_gemini_error)
+    else:
+        print("[AI] User's GeminiAI service not found")
 
 func _load_api_configuration() -> void:
     """Load API configuration from environment or config file"""
@@ -162,6 +180,8 @@ func ask_question(question: String) -> void:
             _send_claude_request(question)
         AIProvider.GOOGLE_GEMINI:
             _send_gemini_request(question)
+        AIProvider.GEMINI_USER:
+            _send_user_gemini_request(question)
         _:
             error_occurred.emit("Unsupported AI provider")
 
@@ -238,6 +258,29 @@ func _handle_mock_response(question: String) -> void:
     print("[AI] Mock response sent")
 
 # === API REQUEST HANDLERS ===
+func _send_user_gemini_request(question: String) -> void:
+    """Send request to user's Gemini AI service"""
+    if not user_gemini_service:
+        error_occurred.emit("User's Gemini AI service not available")
+        _handle_mock_response(question) # Fallback to mock
+        return
+        
+    if not user_gemini_service.check_setup_status():
+        if user_gemini_service.needs_setup():
+            error_occurred.emit("Gemini AI needs setup. Please configure your API key.")
+        else:
+            error_occurred.emit("Gemini AI not properly configured")
+        return
+    
+    # Create context with current structure
+    var context = {}
+    if not current_structure.is_empty():
+        context["structure"] = current_structure
+    
+    # Send request using user's Gemini service
+    print("[AI] Sending request to user's Gemini AI service")
+    user_gemini_service.ask_question(question, context)
+
 func _send_openai_request(question: String) -> void:
     """Send request to OpenAI GPT API"""
     if api_key.is_empty():
@@ -384,6 +427,20 @@ func _on_gemini_response_received(response_text: String) -> void:
     var last_question = conversation_history[-1].content if conversation_history.size() > 0 else ""
     _add_to_history("assistant", response_text)
     response_received.emit(last_question, response_text)
+    
+func _on_user_gemini_response(response_text: String) -> void:
+    """Handle response from user's GeminiAI service"""
+    if response_text.is_empty():
+        error_occurred.emit("Empty response from user's Gemini AI")
+        return
+        
+    var last_question = conversation_history[-1].content if conversation_history.size() > 0 else ""
+    _add_to_history("assistant", response_text)
+    response_received.emit(last_question, response_text)
+    
+func _on_user_gemini_error(error_message: String) -> void:
+    """Handle error from user's GeminiAI service"""
+    error_occurred.emit("Gemini API error: " + error_message)
 
 # === CONVERSATION MANAGEMENT ===
 func _add_to_history(role: String, content: String) -> void:
