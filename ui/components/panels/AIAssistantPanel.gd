@@ -50,7 +50,7 @@ func _setup_component() -> void:
     
     # Get reference to AI services
     ai_service = get_node("/root/AIAssistant") if get_node_or_null("/root/AIAssistant") else null
-    gemini_service = get_node("/root/GeminiService") if get_node_or_null("/root/GeminiService") else null
+    gemini_service = get_node("/root/GeminiAI") if get_node_or_null("/root/GeminiAI") else null
     
     _create_panel_structure()
     _setup_ai_connections()

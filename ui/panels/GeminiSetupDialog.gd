@@ -31,7 +31,7 @@ var safety_toggles: Dictionary = {}
 
 func _ready() -> void:
     """Setup dialog on ready"""
-    gemini_service = get_node_or_null("/root/GeminiService")
+    gemini_service = get_node_or_null("/root/GeminiAI")
     _setup_dialog()
     _setup_signals()
     _load_existing_configuration()
@@ -201,7 +201,7 @@ func _setup_dialog() -> void:
     save_button.disabled = true
     button_container.add_child(save_button)
 
-func _create_section(title: String, subtitle: String = "") -> VBoxContainer:
+func _create_section(title: String, subtitle: String = "") -> PanelContainer:
     """Create a section with title and content"""
     var section = VBoxContainer.new()
     section.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))

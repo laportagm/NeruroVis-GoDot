@@ -63,7 +63,7 @@ func _setup_signals() -> void:
 func _load_service_references() -> void:
     """Load references to required services"""
     # Try to get references to services
-    gemini_service = get_node_or_null("/root/GeminiService")
+    gemini_service = get_node_or_null("/root/GeminiAI")
     ai_assistant = get_node_or_null("/root/AIAssistant")
     
     # Update status based on service availability
