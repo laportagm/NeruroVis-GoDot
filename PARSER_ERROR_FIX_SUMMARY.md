@@ -85,3 +85,84 @@ static func create_with_config(config: Dictionary) -> ClassName:
 **Fixed by**: Claude Code
 **Date**: 2025-01-30
 **NeuroVis Version**: 2.1.0
+
+## Additional Parser Error Fix: GeminiSetupDialog.gd
+
+### Issue Identified (January 6, 2025)
+**Root Cause**: Functions were nested inside the `show_dialog()` method, which is not allowed in GDScript.
+
+### File Fixed
+**GeminiSetupDialog.gd** (`ui/panels/GeminiSetupDialog.gd`)
+- Parser error: Functions cannot be nested inside other functions
+- Multiple event handlers and helper functions were incorrectly placed inside `show_dialog()`
+
+### Technical Details
+
+**Functions Moved to Class Level:**
+1. `_on_test_pressed()` - Handles Test button click for API key validation
+2. `_on_save_pressed()` - Handles Save button click to persist settings
+3. `_on_cancel_pressed()` - Handles Cancel button click to close dialog
+4. `_test_api_key()` - Performs actual API key validation with Gemini service
+
+**Why This Causes Parser Errors:**
+- GDScript does not support nested function definitions
+- All functions must be defined at the class level
+- Signal handlers must be class-level methods to be properly connected
+
+**Before (Incorrect):**
+```gdscript
+func show_dialog():
+    # Dialog setup code...
+    
+    func _on_test_pressed():
+        # Nested function - PARSER ERROR!
+        _test_api_key()
+    
+    func _on_save_pressed():
+        # Another nested function - PARSER ERROR!
+        # Implementation...
+```
+
+**After (Correct):**
+```gdscript
+func show_dialog():
+    # Dialog setup code only...
+
+func _on_test_pressed():
+    # Now at class level - CORRECT!
+    _test_api_key()
+
+func _on_save_pressed():
+    # Now at class level - CORRECT!
+    # Implementation...
+```
+
+### Educational Impact
+- GeminiSetupDialog is critical for configuring AI-powered educational features
+- The dialog allows medical students to set up their Gemini API key for enhanced learning
+- Fixing this parser error ensures the AI assistant integration works properly
+
+### Verification Steps
+1. Open the file in Godot Script Editor
+2. Verify no parser errors are shown
+3. Test the dialog functionality:
+   - Open dialog from main scene
+   - Test API key validation
+   - Save settings and verify persistence
+
+### Prevention Strategy
+- Never define functions inside other functions in GDScript
+- Keep all methods at the class level
+- Use proper indentation to avoid accidentally nesting functions
+- Follow NeuroVis coding standards for method organization
+
+### Standards Compliance
+✅ Maintains snake_case for private methods (_on_*, _test_*)
+✅ Preserves signal connection functionality
+✅ No changes to dialog behavior, only code structure
+✅ Follows GDScript syntax requirements
+
+---
+**Additional Fix by**: Claude Code
+**Date**: January 6, 2025
+**NeuroVis Version**: 2.1.0
