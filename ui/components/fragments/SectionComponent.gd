@@ -398,7 +398,6 @@ func _apply_clinical_template(data: Dictionary) -> void:
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> SectionComponent:
 	"""Factory method to create configured section"""
-	var section_script = preload("res://ui/components/fragments/SectionComponent.gd")
-	var section = section_script.new()
+	var section = SectionComponent.new()
 	section.configure_section(config)
 	return section

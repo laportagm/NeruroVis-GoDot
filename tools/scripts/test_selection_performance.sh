@@ -5,7 +5,7 @@ echo "🔬 Selection System Performance Test"
 echo "===================================="
 
 # Set project path
-PROJECT_PATH="/Users/gagelaporta/11A-NeuroVis copy3"
+PROJECT_PATH="/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 cd "$PROJECT_PATH"
 
 # Check if Godot is available

@@ -66,7 +66,7 @@ const SMALL_STRUCTURE_THRESHOLD: float = 0.05 # 5% of screen
 ## Testing & Validation
 
 ### To Run Performance Test:
-1. Launch NeuroVis: `godot --path "/Users/gagelaporta/11A-NeuroVis copy3"`
+1. Launch NeuroVis: `godot --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"`
 2. Press F1 to open debug console
 3. Run: `qa_perf`
 4. Wait for 10-second test to complete

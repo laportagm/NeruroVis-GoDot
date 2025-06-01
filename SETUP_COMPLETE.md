@@ -73,7 +73,7 @@ I've successfully set up your **professional NeuroVis development environment** 
 
 ### **Step 1: Run the Setup Script**
 ```bash
-cd "/Users/gagelaporta/11A-NeuroVis copy3"
+cd "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 ./setup_vscode_enhancement.sh
 ```
 

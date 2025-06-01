@@ -1,5 +1,16 @@
-# GeminiSetupDialog.gd
-# Setup dialog for Google Gemini AI configuration in NeuroVis
+## GeminiSetupDialog.gd
+## Setup dialog for Google Gemini AI configuration in NeuroVis educational platform
+##
+## This dialog handles the initial configuration of the Google Gemini AI integration,
+## allowing users to set their API key, select models, and configure safety settings.
+## The dialog validates API keys before saving and provides feedback on configuration status.
+##
+## NOTE: Consider converting this to a scene-based approach for better performance
+## and easier maintenance. Dynamic UI creation can be slower and harder to debug.
+##
+## @tutorial: Gemini Integration Guide
+## @version: 1.0
+
 class_name GeminiSetupDialog
 extends Control
 
@@ -30,21 +41,35 @@ var selected_model_index: int = 0
 var safety_toggles: Dictionary = {}
 
 func _ready() -> void:
-    """Setup dialog on ready"""
+    """Setup dialog on ready with error handling"""
     gemini_service = get_node_or_null("/root/GeminiAI")
-    _setup_dialog()
+    if not gemini_service:
+        push_warning("[GeminiSetupDialog] GeminiAI service not found - some features may be limited")
+    
+    if not _setup_dialog():
+        push_error("[GeminiSetupDialog] Failed to setup dialog UI")
+        return
+    
     _setup_signals()
     _load_existing_configuration()
 
-func _setup_dialog() -> void:
-    """Create dialog UI structure"""
+func _setup_dialog() -> bool:
+    """Create dialog UI structure
+    @return: true if setup successful, false otherwise"""
     custom_minimum_size = Vector2(500, 600)
     
     # Apply modern dialog styling
-    UIThemeManager.apply_enhanced_panel_style(self, "elevated")
+    if UIThemeManager:
+        UIThemeManager.apply_enhanced_panel_style(self, "elevated")
+    else:
+        push_warning("[GeminiSetupDialog] UIThemeManager not available")
     
     # Main container
     var main_container = VBoxContainer.new()
+    if not main_container:
+        push_error("[GeminiSetupDialog] Failed to create main container")
+        return false
+    
     main_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 20)
     main_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("md"))
     add_child(main_container)
@@ -64,18 +89,39 @@ func _setup_dialog() -> void:
     
     # API key section
     var key_section = _create_section("API Key Configuration", "Required for Gemini integration")
+    if not key_section:
+        push_error("[GeminiSetupDialog] Failed to create API key section")
+        return false
     main_container.add_child(key_section)
     
     var api_key_container = VBoxContainer.new()
     api_key_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
-    key_section.add_child(api_key_container)
+    var key_content = key_section.get_meta("content_container")
+    if key_content:
+        key_content.add_child(api_key_container)
+    else:
+        push_error("[GeminiSetupDialog] No content container found for API key section")
     
     var key_label = UIComponentFactory.create_label("Gemini API Key:", "normal")
     api_key_container.add_child(key_label)
     
-    api_key_input = UIComponentFactory.create_text_input("Enter your API key here")
+    # Create API key input directly instead of using factory to avoid styling issues
+    api_key_input = LineEdit.new()
+    if not api_key_input:
+        push_error("[GeminiSetupDialog] Failed to create API key input")
+        return false
+    
+    api_key_input.placeholder_text = "Enter your API key here"
     api_key_input.secret = true
+    api_key_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    api_key_input.custom_minimum_size.y = 40
+    
+    # Apply direct styling (not using the problematic theming method)
+    if UIThemeManager:
+        UIThemeManager.apply_search_field_styling(api_key_input, "Enter your API key here")
+    
     api_key_container.add_child(api_key_input)
+    print("[GeminiSetupDialog] API key input created")
     
     var key_help = UIComponentFactory.create_label(
         "Your API key is stored locally and never shared.", 
@@ -85,20 +131,33 @@ func _setup_dialog() -> void:
     api_key_container.add_child(key_help)
     
     validate_button = UIComponentFactory.create_button("Validate Key", "primary")
+    if not validate_button:
+        push_error("[GeminiSetupDialog] Failed to create validate button")
+        return false
     validate_button.custom_minimum_size.x = 150
     api_key_container.add_child(validate_button)
     
     status_label = UIComponentFactory.create_label("Enter your API key above", "normal")
+    if not status_label:
+        push_error("[GeminiSetupDialog] Failed to create status label")
+        return false
     status_label.add_theme_color_override("font_color", UIThemeManager.get_color("text_secondary"))
     api_key_container.add_child(status_label)
     
     # Model selection section
     var model_section = _create_section("Model Selection", "Choose which Gemini model to use")
+    if not model_section:
+        push_error("[GeminiSetupDialog] Failed to create model section")
+        return false
     main_container.add_child(model_section)
     
     var model_container = VBoxContainer.new()
     model_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
-    model_section.add_child(model_container)
+    var model_content = model_section.get_meta("content_container")
+    if model_content:
+        model_content.add_child(model_container)
+    else:
+        push_error("[GeminiSetupDialog] No content container found for model section")
     
     var model_label = UIComponentFactory.create_label("Gemini Model:", "normal")
     model_container.add_child(model_label)
@@ -123,7 +182,11 @@ func _setup_dialog() -> void:
         
         var advanced_container = VBoxContainer.new()
         advanced_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("md"))
-        advanced_section.add_child(advanced_container)
+        var advanced_content = advanced_section.get_meta("content_container")
+        if advanced_content:
+            advanced_content.add_child(advanced_container)
+        else:
+            push_error("[GeminiSetupDialog] No content container found for advanced section")
         
         # Temperature
         var temp_container = HBoxContainer.new()
@@ -173,7 +236,11 @@ func _setup_dialog() -> void:
         
         var safety_container = VBoxContainer.new()
         safety_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
-        safety_section.add_child(safety_container)
+        var safety_content = safety_section.get_meta("content_container")
+        if safety_content:
+            safety_content.add_child(safety_container)
+        else:
+            push_error("[GeminiSetupDialog] No content container found for safety section")
         
         var safety_info = UIComponentFactory.create_label(
             "Safety settings help ensure appropriate educational content. Each category can be set to different thresholds.", 
@@ -200,31 +267,74 @@ func _setup_dialog() -> void:
     save_button = UIComponentFactory.create_button("Save Configuration", "primary")
     save_button.disabled = true
     button_container.add_child(save_button)
+    
+    return true
 
-func _create_section(title: String, subtitle: String = "") -> PanelContainer:
-    """Create a section with title and content"""
+func _create_section(title: String, subtitle: String = "") -> VBoxContainer:
+    """Create a section with title, optional subtitle, and content container.
+    
+    Returns a VBoxContainer with the following structure:
+    - VBoxContainer (main section container)
+      - Label (title)
+      - Label (subtitle, if provided)
+      - PanelContainer (styled background)
+        - VBoxContainer (content container for child nodes)
+    
+    Access the content container via: section.get_meta("content_container")
+    
+    @param title: Section header text
+    @param subtitle: Optional descriptive text below title
+    @return: VBoxContainer with content_container in metadata
+    """
     var section = VBoxContainer.new()
+    if not section:
+        push_error("[GeminiSetupDialog] Failed to create section container")
+        return null
+    
     section.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
     
+    # Add title
     var title_label = UIComponentFactory.create_label(title, "subheading")
-    section.add_child(title_label)
+    if title_label:
+        section.add_child(title_label)
+    else:
+        push_warning("[GeminiSetupDialog] Failed to create title label for section: " + title)
     
+    # Add subtitle if provided
     if subtitle != "":
         var subtitle_label = UIComponentFactory.create_label(subtitle, "caption")
-        subtitle_label.add_theme_color_override("font_color", UIThemeManager.get_color("text_secondary"))
-        section.add_child(subtitle_label)
+        if subtitle_label:
+            subtitle_label.add_theme_color_override("font_color", UIThemeManager.get_color("text_secondary"))
+            section.add_child(subtitle_label)
     
+    # Create styled panel
     var panel = PanelContainer.new()
+    if not panel:
+        push_error("[GeminiSetupDialog] Failed to create panel container")
+        return section
+    
     var style = UIThemeManager.create_enhanced_glass_style(0.5)
-    panel.add_theme_stylebox_override("panel", style)
+    if style:
+        panel.add_theme_stylebox_override("panel", style)
+    
     panel.add_theme_constant_override("margin_left", UIThemeManager.get_spacing("md"))
     panel.add_theme_constant_override("margin_right", UIThemeManager.get_spacing("md"))
     panel.add_theme_constant_override("margin_top", UIThemeManager.get_spacing("md"))
     panel.add_theme_constant_override("margin_bottom", UIThemeManager.get_spacing("md"))
     
-    section.add_child(panel)
+    # Create content container for the panel
+    var content_container = VBoxContainer.new()
+    if not content_container:
+        push_error("[GeminiSetupDialog] Failed to create content container")
+        return section
     
-    return panel
+    content_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
+    panel.add_child(content_container)
+    
+    section.add_child(panel)
+    section.set_meta("content_container", content_container)
+    
+    return section
 
 func _create_safety_settings() -> void:
     """Create safety settings UI based on available options"""
@@ -264,14 +374,43 @@ func _create_safety_settings() -> void:
         safety_toggles[category_id] = option
 
 func _setup_signals() -> void:
-    """Connect signals for dialog interaction"""
-    validate_button.pressed.connect(_on_validate_pressed)
-    save_button.pressed.connect(_on_save_pressed)
-    cancel_button.pressed.connect(_on_cancel_pressed)
+    """Connect signals for dialog interaction with null checks"""
+    print("[GeminiSetupDialog] Setting up signals")
+    
+    if validate_button:
+        validate_button.pressed.connect(_on_validate_pressed)
+        print("[GeminiSetupDialog] ✓ Validate button connected")
+    else:
+        push_warning("[GeminiSetupDialog] Validate button not available for signal connection")
+    
+    if save_button:
+        save_button.pressed.connect(_on_save_pressed)
+        print("[GeminiSetupDialog] ✓ Save button connected")
+    else:
+        push_warning("[GeminiSetupDialog] Save button not available for signal connection")
+    
+    if cancel_button:
+        # Disconnect any existing connections first
+        if cancel_button.pressed.is_connected(_on_cancel_pressed):
+            cancel_button.pressed.disconnect(_on_cancel_pressed)
+        
+        cancel_button.pressed.connect(_on_cancel_pressed)
+        print("[GeminiSetupDialog] ✓ Cancel button connected")
+    else:
+        push_warning("[GeminiSetupDialog] Cancel button not available for signal connection")
     
     if gemini_service:
+        # Disconnect any existing connections first
+        if gemini_service.api_key_validated.is_connected(_on_api_key_validated):
+            gemini_service.api_key_validated.disconnect(_on_api_key_validated)
+        if gemini_service.model_list_updated.is_connected(_on_model_list_updated):
+            gemini_service.model_list_updated.disconnect(_on_model_list_updated)
+        
         gemini_service.api_key_validated.connect(_on_api_key_validated)
         gemini_service.model_list_updated.connect(_on_model_list_updated)
+        print("[GeminiSetupDialog] ✓ GeminiAI service connected")
+    else:
+        push_warning("[GeminiSetupDialog] GeminiAI service not available for signal connection")
 
 func _load_existing_configuration() -> void:
     """Load existing Gemini configuration if available"""
@@ -369,7 +508,11 @@ func _on_model_list_updated(models: Array) -> void:
             model_option.selected = selected_model_index
 
 func _on_save_pressed() -> void:
-    """Save configuration and close dialog"""
+    """Save configuration and close dialog
+    
+    Validates that all required fields are filled and saves configuration
+    to user preferences before emitting setup_completed signal.
+    """
     if !is_api_key_valid and api_key_input.text.strip_edges() != "":
         status_label.text = "Please validate your API key first"
         status_label.add_theme_color_override("font_color", UIThemeManager.get_color("text_error"))
@@ -407,7 +550,11 @@ func _on_save_pressed() -> void:
     queue_free()
 
 func _on_cancel_pressed() -> void:
-    """Cancel setup and close dialog"""
+    """Cancel setup and close dialog
+    
+    Emits setup_cancelled signal and closes dialog without
+    modifying any existing configuration.
+    """
     setup_cancelled.emit()
     queue_free()
 

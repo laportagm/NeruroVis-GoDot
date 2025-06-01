@@ -1,5 +1,22 @@
-# Enhanced Information Panel - Figma-Spec Compliant
-# Modern glassmorphism panel with proper information hierarchy
+## EnhancedInformationPanel.gd
+## Primary educational information display panel for brain structure learning
+##
+## This panel provides the main interface for displaying anatomical information
+## about brain structures in an educational context. It follows modern UI design
+## principles with glassmorphism effects and responsive layouts while maintaining
+## educational accessibility standards for diverse learners.
+##
+## Educational Learning Objectives:
+## - Present anatomical information in a clear, hierarchical manner
+## - Support progressive disclosure of complex medical information  
+## - Enable interactive learning through collapsible sections
+## - Maintain accessibility for students with diverse needs
+## - Track learning engagement through interaction analytics
+##
+## @tutorial: Educational UI Patterns
+## @tutorial: Accessibility in Medical Education
+## @version: 2.0
+
 class_name EnhancedInformationPanel
 extends PanelContainer
 
@@ -63,7 +80,7 @@ func _ready() -> void:
 	visible = false
 	
 func _setup_panel_structure() -> void:
-	"""Create the enhanced panel structure following Figma specs"""
+	"""Create the enhanced panel structure following Figma specs for educational UI"""
 	
 	# Apply enhanced panel styling
 	UIThemeManager.apply_enhanced_panel_style(self, "default")

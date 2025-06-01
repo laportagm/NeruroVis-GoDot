@@ -5,7 +5,7 @@ echo "===================================="
 
 # Configuration
 GODOT_PATH="/Applications/Godot.app/Contents/MacOS/Godot"
-PROJECT_PATH="/Users/gagelaporta/11A-NeuroVis copy3"
+PROJECT_PATH="/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 ERROR_LOG="syntax_errors.log"
 TEMP_PROJECT="temp_syntax_check"
 

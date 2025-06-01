@@ -502,10 +502,16 @@ func is_api_key_configured() -> bool:
 
 func get_service_status() -> Dictionary:
     """Get current service status"""
-    return {
+    var status = {
         "initialized": is_initialized,
         "provider": AIProvider.keys()[ai_provider],
         "api_configured": is_api_key_configured(),
         "current_structure": current_structure,
         "conversation_length": conversation_history.size()
     }
+    
+    # Add Gemini-specific status if using user's Gemini
+    if ai_provider == AIProvider.GEMINI_USER and user_gemini_service:
+        status["gemini_status"] = user_gemini_service.get_rate_limit_status()
+    
+    return status

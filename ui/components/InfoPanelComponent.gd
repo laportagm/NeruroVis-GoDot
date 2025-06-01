@@ -607,7 +607,6 @@ func _exit_tree() -> void:
 # === STATIC FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> InfoPanelComponent:
 	"""Static factory method for creating configured panels"""
-	var panel_script = preload("res://ui/components/InfoPanelComponent.gd")
-	var panel = panel_script.new()
+	var panel = InfoPanelComponent.new()
 	panel.configure(config)
 	return panel

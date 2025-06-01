@@ -268,7 +268,6 @@ func _setup_accessibility() -> void:
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> HeaderComponent:
 	"""Factory method to create configured header"""
-	var header_script = preload("res://ui/components/fragments/HeaderComponent.gd")
-	var header = header_script.new()
+	var header = HeaderComponent.new()
 	header.configure_header(config)
 	return header

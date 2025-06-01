@@ -82,7 +82,7 @@ The fixes have been tested and confirmed working using both:
 ./run_tests.sh safe
 
 # Direct script execution
-/Applications/Godot.app/Contents/MacOS/Godot --path "/Users/gagelaporta/11A-NeuroVis copy3" --headless --script res://run_neurovis_tests.gd
+/Applications/Godot.app/Contents/MacOS/Godot --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy" --headless --script res://run_neurovis_tests.gd
 ```
 
 Tests now report successful execution of:

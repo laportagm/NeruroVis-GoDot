@@ -316,7 +316,6 @@ func clear_highlights() -> void:
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> ContentComponent:
 	"""Factory method to create configured content"""
-	var content_script = preload("res://ui/components/fragments/ContentComponent.gd")
-	var content = content_script.new()
+	var content = ContentComponent.new()
 	content.configure_content(config)
 	return content

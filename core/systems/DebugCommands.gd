@@ -142,6 +142,13 @@ func log_warning(message: String) -> void:
 func get_visual_debugger():
 	return load("res://core/visualization/VisualDebugger.gd")
 
+# AI test response handlers
+func _on_test_response(question: String, response: String) -> void:
+	log_success("AI Response: " + response.left(200) + ("..." if response.length() > 200 else ""))
+
+func _on_test_error(error: String) -> void:
+	log_error("AI Error: " + error)
+
 # Register built-in commands
 func _ready() -> void:
 	# Toggle debug mode
@@ -152,6 +159,92 @@ func _ready() -> void:
 		else:
 			log_error("VisualDebugger not available"),
 		"Toggle debug visualization mode")
+	
+	# AI Assistant commands
+	register_command("ai_status", func():
+		var ai_service = get_node_or_null("/root/AIAssistant")
+		if ai_service:
+			var status = ai_service.get_service_status()
+			log_info("=== AI Assistant Status ===")
+			log_info("Provider: %s" % status.provider)
+			log_info("Initialized: %s" % str(status.initialized))
+			log_info("API configured: %s" % str(status.api_configured))
+			if status.current_structure != "":
+				log_info("Current structure: %s" % status.current_structure)
+			if status.has("gemini_status"):
+				var gemini = status.gemini_status
+				log_info("Gemini rate limit: %d/%d (resets in %ds)" % [
+					gemini.used, gemini.limit, gemini.reset_in
+				])
+		else:
+			log_error("AI Assistant service not found"),
+		"Show AI Assistant status")
+	
+	register_command("ai_provider", func(provider: String):
+		var ai_service = get_node_or_null("/root/AIAssistant")
+		if ai_service:
+			var providers = {
+				"openai": AIAssistantService.AIProvider.OPENAI_GPT,
+				"claude": AIAssistantService.AIProvider.ANTHROPIC_CLAUDE,
+				"gemini": AIAssistantService.AIProvider.GOOGLE_GEMINI,
+				"gemini_user": AIAssistantService.AIProvider.GEMINI_USER,
+				"mock": AIAssistantService.AIProvider.MOCK_RESPONSES
+			}
+			if providers.has(provider.to_lower()):
+				ai_service.ai_provider = providers[provider.to_lower()]
+				log_success("AI provider set to: " + provider)
+			else:
+				log_error("Unknown provider. Available: " + str(providers.keys()))
+		else:
+			log_error("AI Assistant service not found"),
+		"Set AI provider (openai, claude, gemini, gemini_user, mock)")
+	
+	register_command("ai_test", func(question: String = ""):
+		var ai_service = get_node_or_null("/root/AIAssistant")
+		if ai_service:
+			if question == "":
+				question = "What is the hippocampus?"
+			log_info("Testing AI with: " + question)
+			ai_service.ask_question(question)
+			# Connect to see response
+			if not ai_service.response_received.is_connected(_on_test_response):
+				ai_service.response_received.connect(_on_test_response, CONNECT_ONE_SHOT)
+				ai_service.error_occurred.connect(_on_test_error, CONNECT_ONE_SHOT)
+		else:
+			log_error("AI Assistant service not found"),
+		"Test AI with a question")
+	
+	register_command("ai_gemini_status", func():
+		var gemini = get_node_or_null("/root/GeminiAI")
+		if gemini:
+			log_info("=== Gemini AI Status ===")
+			log_info("Setup complete: %s" % ("Yes" if gemini.check_setup_status() else "No"))
+			var rate = gemini.get_rate_limit_status()
+			log_info("Rate limit: %d/%d" % [rate.used, rate.limit])
+			if rate.reset_in > 0:
+				log_info("Resets in: %d seconds" % rate.reset_in)
+			log_info("API key: %s" % ("Configured" if gemini.check_setup_status() else "Not configured"))
+		else:
+			log_error("GeminiAI service not found"),
+		"Show Gemini AI service status")
+	
+	register_command("ai_gemini_setup", func():
+		log_info("Opening Gemini setup dialog...")
+		var main_scene = get_node_or_null("/root/Node3D")
+		if main_scene and main_scene.has_method("_show_gemini_setup_dialog"):
+			main_scene._show_gemini_setup_dialog()
+		else:
+			log_error("Cannot open setup dialog from here. Please restart the app."),
+		"Open Gemini AI setup dialog")
+	
+	register_command("ai_gemini_reset", func():
+		var gemini = get_node_or_null("/root/GeminiAI")
+		if gemini:
+			gemini.reset_settings()
+			log_success("Gemini settings reset. Run ai_gemini_setup to reconfigure.")
+		else:
+			log_error("GeminiAI service not found"),
+		"Reset Gemini AI configuration")
 	
 	# Show scene tree5
 	register_command("tree", func(node_path: String = "/root"):
@@ -239,6 +332,9 @@ func _ready() -> void:
 	register_command("multiselect_debug", cmd_multiselect_debug, "Toggle multi-selection debug mode")
 	register_command("multiselect_report", cmd_multiselect_report, "Show current multi-selection state")
 	register_command("multiselect_clear", cmd_multiselect_clear, "Clear all selections")
+	
+	# AI and Gemini test commands (moved to lambdas above)
+	register_command("ai_gemini_test", cmd_ai_gemini_test, "Test Gemini AI integration")
 	
 	# Register commands from new debugging systems
 	# TODO: Re-enable once all systems are stable
@@ -780,3 +876,113 @@ func cmd_multiselect_clear():
 	
 	selection_manager.clear_all_selections()
 	log_success("All selections cleared")
+
+# === AI ASSISTANT TEST COMMANDS ===
+func cmd_ai_test(_args: String = "") -> void:
+	"""Test AI Assistant integration"""
+	log_info("=== Testing AI Assistant Integration ===")
+	
+	var ai_assistant = get_node_or_null("/root/AIAssistant")
+	if not ai_assistant:
+		log_error("AIAssistant service not found!")
+		return
+	
+	log_success("✅ AIAssistant service found")
+	
+	# Show current status
+	var status = ai_assistant.get_service_status()
+	log_info("📊 Service Status:")
+	for key in status:
+		log_info("  - %s: %s" % [key, status[key]])
+	
+	# Connect to signals for test
+	if not ai_assistant.response_received.is_connected(_on_ai_response_test):
+		ai_assistant.response_received.connect(_on_ai_response_test)
+	if not ai_assistant.error_occurred.is_connected(_on_ai_error_test):
+		ai_assistant.error_occurred.connect(_on_ai_error_test)
+	
+	# Test with a simple question
+	log_info("📝 Sending test question...")
+	ai_assistant.update_context("Hippocampus")
+	ai_assistant.ask_question("What is the main function of the hippocampus?")
+
+func cmd_ai_gemini_test(_args: String = "") -> void:
+	"""Test Gemini AI integration specifically"""
+	log_info("=== Testing Gemini AI Integration ===")
+	
+	# Check GeminiAI service
+	var gemini_service = get_node_or_null("/root/GeminiAI")
+	if not gemini_service:
+		log_error("GeminiAI service not found!")
+		return
+	
+	log_success("✅ GeminiAI service found")
+	
+	# Check setup status
+	if not gemini_service.check_setup_status():
+		log_warning("⚠️ Gemini needs setup - use 'ai_gemini_setup' command")
+		return
+	
+	log_success("✅ Gemini is configured and ready")
+	
+	# Check rate limit status
+	var rate_status = gemini_service.get_rate_limit_status()
+	log_info("📊 Rate Limit Status:")
+	for key in rate_status:
+		log_info("  - %s: %s" % [key, rate_status[key]])
+	
+	# Test AI Assistant with GEMINI_USER provider
+	var ai_assistant = get_node_or_null("/root/AIAssistant")
+	if ai_assistant:
+		# Set provider to GEMINI_USER
+		ai_assistant.ai_provider = AIAssistantService.AIProvider.GEMINI_USER
+		log_info("🔄 Set AI provider to GEMINI_USER")
+		
+		# Connect signals if needed
+		if not ai_assistant.response_received.is_connected(_on_ai_response_test):
+			ai_assistant.response_received.connect(_on_ai_response_test)
+		if not ai_assistant.error_occurred.is_connected(_on_ai_error_test):
+			ai_assistant.error_occurred.connect(_on_ai_error_test)
+		
+		# Test question
+		log_info("📝 Sending test question via Gemini...")
+		ai_assistant.ask_question("Hello, this is a test. Please respond briefly.")
+	else:
+		log_error("AIAssistant not found for testing")
+
+func cmd_ai_status(_args: String = "") -> void:
+	"""Show detailed AI service status"""
+	log_info("=== AI Services Status ===")
+	
+	# Check AIAssistant
+	var ai_assistant = get_node_or_null("/root/AIAssistant")
+	if ai_assistant:
+		log_success("✅ AIAssistant service: ACTIVE")
+		var status = ai_assistant.get_service_status()
+		for key in status:
+			log_info("  - %s: %s" % [key, status[key]])
+	else:
+		log_error("❌ AIAssistant service: NOT FOUND")
+	
+	# Check GeminiAI
+	var gemini_service = get_node_or_null("/root/GeminiAI")
+	if gemini_service:
+		log_success("✅ GeminiAI service: ACTIVE")
+		if gemini_service.check_setup_status():
+			log_info("  - Setup: COMPLETE")
+			var rate_status = gemini_service.get_rate_limit_status()
+			for key in rate_status:
+				log_info("  - %s: %s" % [key, rate_status[key]])
+		else:
+			log_warning("  - Setup: INCOMPLETE (use 'ai_gemini_setup')")
+	else:
+		log_error("❌ GeminiAI service: NOT FOUND")
+
+# Helper functions for AI testing
+func _on_ai_response_test(question: String, response: String) -> void:
+	log_success("✅ AI Response received!")
+	log_info("❓ Question: %s" % question)
+	log_info("💬 Response: %s" % (response.substr(0, 200) + "..." if response.length() > 200 else response))
+
+func _on_ai_error_test(error: String) -> void:
+	log_error("❌ AI Error: %s" % error)

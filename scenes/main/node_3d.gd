@@ -55,6 +55,7 @@ var selection_test_runner: Node  # SelectionTestRunner type loaded dynamically
 # System state
 var initialization_complete: bool = false
 var last_selected_structure: String = ""
+var _gemini_setup_shown: bool = false
 
 # Signals
 signal structure_selected(structure_name: String)
@@ -221,6 +222,9 @@ func initialize_core_systems() -> void:
     
     initialization_complete = true
     _print_instructions()
+    
+    # Check if Gemini needs setup (deferred to avoid initialization conflicts)
+    call_deferred("_check_gemini_setup")
 
 func _validate_essential_nodes() -> bool:
     """Validate that essential nodes exist"""
@@ -390,7 +394,7 @@ func _apply_modern_theme() -> void:
     
     # Apply glass styling to object label
     if object_name_label:
-        theme_manager.apply_modern_label(object_name_label, theme_manager.FONT_SIZE_MEDIUM, theme_manager.TEXT_PRIMARY, "default")
+        theme_manager.apply_modern_label(object_name_label, theme_manager.FONT_SIZE_MEDIUM, theme_manager.TEXT_PRIMARY)
     
     # Note: Info panel styling is handled when it's created
     
@@ -1013,6 +1017,13 @@ func _register_foundation_debug_commands() -> void:
     DebugCmd.register_command("migration_test", _debug_migration_test, "Test migration between systems")
     DebugCmd.register_command("test_new_components", _debug_test_new_components, "Test new component system (Phase 2)")
     DebugCmd.register_command("test_phase3", _debug_test_phase3, "Test Phase 3: StyleEngine & Advanced Interactions")
+    
+    # AI integration commands
+    DebugCmd.register_command("force_gemini_setup", func():
+        _gemini_setup_shown = false
+        call_deferred("_check_gemini_setup")
+        return "Forcing Gemini setup check"
+    , "Force Gemini setup dialog check")
 
 # Feature flag debug commands
 func _debug_show_flags() -> void:
@@ -1379,3 +1390,79 @@ func _collect_meshes_recursive(node: Node, meshes: Array) -> void:
         meshes.append(node)
     for child in node.get_children():
         _collect_meshes_recursive(child, meshes)
+
+func _check_gemini_setup() -> void:
+    """Check if Gemini needs setup on first launch"""
+    if _gemini_setup_shown:
+        return
+    
+    var gemini = get_node_or_null("/root/GeminiAI")
+    if not gemini or not gemini.has_method("needs_setup"):
+        print("[Gemini] Service not available or missing needs_setup method")
+        return
+    
+    # Check if setup is needed
+    if gemini.needs_setup():
+        print("[Gemini] Setup needed, showing dialog after short delay")
+        # Add a small delay to ensure UI is fully ready
+        await get_tree().create_timer(0.5).timeout
+        _show_gemini_setup_dialog()
+        _gemini_setup_shown = true
+    else:
+        print("[Gemini] Setup not needed, already configured")
+
+func _show_gemini_setup_dialog() -> void:
+    """Show the Gemini setup wizard"""
+    var ui_layer = get_node_or_null("UI_Layer")
+    if not ui_layer:
+        ui_layer = self  # Fallback to adding to self
+    
+    # Load and create dialog
+    print("[Gemini] Loading setup dialog scene")
+    var dialog_scene = load("res://ui/panels/GeminiSetupDialog.tscn")
+    if not dialog_scene:
+        push_error("[Gemini] Setup dialog scene not found")
+        return
+    
+    var dialog = dialog_scene.instantiate()
+    if not dialog:
+        push_error("[Gemini] Failed to instantiate dialog")
+        return
+        
+    dialog.name = "GeminiSetupDialog"
+    
+    # Connect signals before adding to scene tree
+    if dialog.has_signal("setup_completed"):
+        dialog.setup_completed.connect(_on_gemini_setup_completed.bind(dialog))
+    else:
+        push_warning("[Gemini] Dialog missing setup_completed signal")
+        
+    if dialog.has_signal("setup_cancelled"):
+        dialog.setup_cancelled.connect(_on_gemini_setup_cancelled.bind(dialog))
+    else:
+        push_warning("[Gemini] Dialog missing setup_cancelled signal")
+    
+    # Add to scene after connecting signals
+    ui_layer.add_child(dialog)
+    
+    # Ensure dialog is visible and call show method if available
+    dialog.visible = true
+    if dialog.has_method("show_dialog"):
+        dialog.call_deferred("show_dialog")
+    
+    print("[Gemini] Setup dialog shown")
+
+func _on_gemini_setup_completed(dialog: Control) -> void:
+    """Handle successful Gemini setup"""
+    print("[Gemini] Setup completed successfully")
+    dialog.queue_free()
+    
+    # Update AI provider
+    var ai_service = get_node_or_null("/root/AIAssistant")
+    if ai_service:
+        ai_service.set_provider(AIAssistantService.AIProvider.GEMINI_USER)
+
+func _on_gemini_setup_cancelled(dialog: Control) -> void:
+    """Handle cancelled Gemini setup"""
+    print("[Gemini] Setup cancelled")
+    dialog.queue_free()

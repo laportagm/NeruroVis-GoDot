@@ -43,7 +43,7 @@ cat > "$DESKTOP_CONFIG" << 'EOF'
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/gagelaporta/11A-NeuroVis copy3"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"],
       "env": {
         "ALLOWED_EXTENSIONS": ".gd,.tscn,.tres,.cs,.md,.json,.txt,.sh"
       }
@@ -57,13 +57,13 @@ cat > "$DESKTOP_CONFIG" << 'EOF'
     },
     "sqlite": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sqlite", "--db-path", "/Users/gagelaporta/11A-NeuroVis copy3/neurovis.db"]
+      "args": ["-y", "@modelcontextprotocol/server-sqlite", "--db-path", "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy/neurovis.db"]
     },
     "godot": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-godot"],
       "env": {
-        "GODOT_PROJECT_PATH": "/Users/gagelaporta/11A-NeuroVis copy3",
+        "GODOT_PROJECT_PATH": "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy",
         "GODOT_EXECUTABLE": "/Applications/Godot.app/Contents/MacOS/Godot"
       }
     },

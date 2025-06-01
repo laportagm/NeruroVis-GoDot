@@ -35,6 +35,9 @@ var gemini_service: GeminiAIService
 var message_count: int = 0
 var is_waiting_for_response: bool = false
 var gemini_setup_dialog: GeminiSetupDialog
+var rate_limit_container: Control
+var rate_limit_bar: ProgressBar
+var rate_limit_label: Label
 
 # === QUICK QUESTION TEMPLATES ===
 var quick_questions = [
@@ -81,6 +84,11 @@ func _create_panel_structure() -> void:
     if show_context_info:
         _create_context_indicator()
         main_container.add_child(context_indicator)
+    
+    # Add rate limit indicator for Gemini
+    if ai_service and ai_service.ai_provider == AIAssistantService.AIProvider.GEMINI_USER:
+        _create_rate_limit_indicator()
+        main_container.add_child(rate_limit_container)
     
     _create_chat_area()
     main_container.add_child(chat_container)
@@ -171,6 +179,30 @@ func _create_context_indicator() -> void:
     var context_bg = PanelContainer.new()
     context_bg.add_theme_stylebox_override("panel", style)
     context_bg.add_child(context_indicator)
+    
+func _create_rate_limit_indicator() -> void:
+    """Create rate limit indicator for Gemini"""
+    rate_limit_container = VBoxContainer.new()
+    rate_limit_container.name = "RateLimitContainer"
+    
+    # Create progress bar
+    rate_limit_bar = ProgressBar.new()
+    rate_limit_bar.max_value = 60
+    rate_limit_bar.value = 0
+    rate_limit_bar.custom_minimum_size.y = 20
+    UIThemeManager.apply_progress_bar_styling(rate_limit_bar, UIThemeManager.ACCENT_GREEN)
+    
+    # Create label
+    rate_limit_label = UIComponentFactory.create_label("60 queries remaining", "small")
+    rate_limit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    
+    rate_limit_container.add_child(rate_limit_bar)
+    rate_limit_container.add_child(rate_limit_label)
+    
+    # Connect to Gemini for updates
+    var gemini = get_node_or_null("/root/GeminiAI")
+    if gemini:
+        gemini.rate_limit_updated.connect(_on_rate_limit_updated)
 
 func _create_chat_area() -> void:
     """Create scrollable chat message area"""
@@ -246,6 +278,13 @@ func _setup_ai_connections() -> void:
     ai_service.response_received.connect(_on_ai_response_received)
     ai_service.error_occurred.connect(_on_ai_error)
     ai_service.context_updated.connect(_on_ai_context_updated)
+    
+    # Check if using Gemini
+    if ai_service.ai_provider == AIAssistantService.AIProvider.GEMINI_USER:
+        var gemini = get_node_or_null("/root/GeminiAI")
+        if gemini:
+            if not gemini.check_setup_status():
+                _update_status("Gemini AI not configured - run ai_gemini_setup")
     
     _update_status("Connected to AI Assistant")
 
@@ -555,7 +594,12 @@ func _on_ai_response_received(question: String, response: String) -> void:
 
 func _on_ai_error(error_message: String) -> void:
     """Handle AI service error"""
-    _add_message("assistant", "Sorry, I'm having trouble right now. " + error_message, "Error")
+    if "Rate limit" in error_message:
+        _add_message("assistant", error_message, "Rate Limit")
+    elif "not set up" in error_message:
+        _add_message("assistant", error_message + "\n\nUse the command 'ai_gemini_setup' to configure.", "Setup Required")
+    else:
+        _add_message("assistant", "Sorry, I'm having trouble right now. " + error_message, "Error")
     is_waiting_for_response = false
     _update_status("Error occurred")
     send_button.disabled = false
@@ -563,6 +607,21 @@ func _on_ai_error(error_message: String) -> void:
 func _on_ai_context_updated(structure_name: String) -> void:
     """Handle AI context update"""
     set_current_structure(structure_name)
+    
+func _on_rate_limit_updated(used: int, limit: int) -> void:
+    """Handle Gemini rate limit updates"""
+    if rate_limit_bar:
+        rate_limit_bar.value = limit - used
+        rate_limit_label.text = "%d queries remaining" % (limit - used)
+        
+        # Change color based on remaining
+        var color = UIThemeManager.ACCENT_GREEN
+        if used > limit * 0.8:
+            color = UIThemeManager.ACCENT_RED
+        elif used > limit * 0.5:
+            color = UIThemeManager.ACCENT_ORANGE
+        
+        UIThemeManager.apply_progress_bar_styling(rate_limit_bar, color)
 
 # === OFFLINE FALLBACK ===
 func _handle_offline_response(question: String) -> void:

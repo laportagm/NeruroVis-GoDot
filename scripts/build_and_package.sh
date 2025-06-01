@@ -10,7 +10,7 @@ echo ""
 
 # Configuration
 PROJECT_NAME="NeuroVis"
-PROJECT_PATH="/Users/gagelaporta/11A-NeuroVis copy3"
+PROJECT_PATH="/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 BUILD_PATH="$PROJECT_PATH/builds"
 GODOT_PATH="/Applications/Godot.app/Contents/MacOS/Godot"
 VERSION="1.0.0"

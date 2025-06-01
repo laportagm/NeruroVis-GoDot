@@ -150,7 +150,7 @@ Successfully implemented comprehensive development standards framework with the 
 ### **1. Install and Test (Today)**
 ```bash
 # Navigate to project
-cd "/Users/gagelaporta/11A-NeuroVis copy3"
+cd "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 
 # Install git hooks
 ./tools/git-hooks/install-hooks.sh

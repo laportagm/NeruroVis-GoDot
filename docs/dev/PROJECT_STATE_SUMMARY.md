@@ -107,13 +107,13 @@ Based on the original improvement goals, the following areas are ready for enhan
 ### Recommended Commands
 ```bash
 # Open project in Godot
-godot -e --path "/Users/gagelaporta/11A-NeuroVis copy3"
+godot -e --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 
 # Run project
-godot --path "/Users/gagelaporta/11A-NeuroVis copy3"
+godot --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 
 # Run main scene
-godot "/Users/gagelaporta/11A-NeuroVis copy3/scenes/node_3d.tscn"
+godot "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy/scenes/node_3d.tscn"
 ```
 
 ## Files Updated in Modular Reorganization

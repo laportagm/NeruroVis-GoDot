@@ -459,7 +459,7 @@ InfoPanelFactory.create_info_panel() → AdaptiveInfoPanel
 
 ```bash
 # Primary development launch
-godot --path \"/Users/gagelaporta/11A-NeuroVis copy3\"
+godot --path \"/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy\"
 
 # Quick test suite (validates educational features)
 ./tools/scripts/quick_test.sh
@@ -730,7 +730,7 @@ test infrastructure         # Check educational model system
 
 ```bash
 # Launch educational platform
-godot --path \"/Users/gagelaporta/11A-NeuroVis copy3\"
+godot --path \"/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy\"
 
 # Validate educational systems
 ./tools/scripts/quick_test.sh
@@ -782,7 +782,7 @@ UIThemeManager.set_theme_mode(UIThemeManager.ThemeMode.MINIMAL)   # Clinical/pro
 **Version:** 2.1.0
 **Maintainer:** Gage LaPorta
 **Last Updated:** 2024-05-28
-**Project Path:** `/Users/gagelaporta/11A-NeuroVis copy3`
+**Project Path:** `/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy`
 **Godot Version:** 4.4.1
 
 > WHY: Version tracking prevents confusion about which documentation applies to current codebase.
@@ -794,7 +794,7 @@ UIThemeManager.set_theme_mode(UIThemeManager.ThemeMode.MINIMAL)   # Clinical/pro
 pre-commit install
 
 # Run project
-godot --path \"/Users/gagelaporta/11A-NeuroVis copy3\"
+godot --path \"/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy\"
 
 # Test suite
 ./tools/scripts/quick_test.sh

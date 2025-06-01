@@ -127,7 +127,7 @@ qa_status           # Check test progress
 
 1. **Launch NeuroVis** and validate performance:
    ```bash
-   godot --path "/Users/gagelaporta/11A-NeuroVis copy3"
+   godot --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
    ```
 
 2. **Run Performance Test** (F1 console):

@@ -1,0 +1,11 @@
+# NeuroVis Project Path Reference
+# This file contains the correct paths for this project instance
+
+PROJECT_ROOT="/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
+PROJECT_NAME="NeuroVis Educational Platform"
+
+# Use these paths in scripts and documentation:
+# For Godot: godot --path "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
+# For scripts: cd "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
+
+# This helps ensure all tools and AI assistants use the correct project location.

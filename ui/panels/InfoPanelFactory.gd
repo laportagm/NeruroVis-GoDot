@@ -1,18 +1,37 @@
-# Info Panel Factory - Manages theme selection for UI panels
-# This factory allows switching between different UI styles without breaking existing code
+## InfoPanelFactory.gd
+## Factory for creating educational information panels with theme support
+##
+## This factory manages the creation of educational information panels that display
+## anatomical brain structure data. It supports multiple theme modes to accommodate
+## different learning environments and user preferences while maintaining a consistent
+## educational interface. The factory pattern ensures backward compatibility while
+## allowing flexible UI evolution for diverse educational contexts.
+##
+## Educational Learning Objectives:
+## - Support multiple learning environments (gaming vs clinical)
+## - Maintain consistent educational content presentation
+## - Enable adaptive UI for different learner preferences
+## - Preserve educational functionality across theme changes
+##
+## @tutorial: Educational Factory Pattern
+## @tutorial: Adaptive UI for Medical Education
+## @version: 2.0
+
 class_name InfoPanelFactory
 extends RefCounted
 
-# Theme modes
+# === EDUCATIONAL THEME MODES ===
 enum ThemeMode {
-	ENHANCED,  # Current gaming/colorful style
-	MINIMAL    # Clean Apple/OpenAI style
+	ENHANCED,  # Gaming-style for engaging student learning
+	MINIMAL    # Professional style for clinical education
 }
 
-# Current theme preference (default to existing style)
+# === STATE MANAGEMENT ===
+## Current educational theme preference (default to engaging style)
 static var current_theme: ThemeMode = ThemeMode.ENHANCED
 
-# Create info panel based on current theme
+## Create educational info panel based on current theme preference
+## @returns: Control - The appropriate educational panel for current theme
 static func create_info_panel() -> Control:
 	print("[InfoPanelFactory] Current theme: %s" % ["ENHANCED", "MINIMAL"][current_theme])
 	

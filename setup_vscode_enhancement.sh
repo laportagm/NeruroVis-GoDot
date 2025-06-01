@@ -16,7 +16,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-PROJECT_ROOT="/Users/gagelaporta/11A-NeuroVis copy3"
+PROJECT_ROOT="/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy"
 VSCODE_DIR="$PROJECT_ROOT/.vscode"
 
 echo -e "${BLUE}📍 Project Root: $PROJECT_ROOT${NC}"

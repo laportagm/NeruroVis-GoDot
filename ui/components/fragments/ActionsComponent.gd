@@ -330,14 +330,12 @@ func apply_preset(preset_name: String) -> void:
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> ActionsComponent:
 	"""Factory method to create configured actions"""
-	var actions_script = preload("res://ui/components/fragments/ActionsComponent.gd")
-	var actions = actions_script.new()
+	var actions = ActionsComponent.new()
 	actions.configure_actions(config)
 	return actions
 
 static func create_with_preset(preset_name: String) -> ActionsComponent:
 	"""Factory method to create actions with preset"""
-	var actions_script = preload("res://ui/components/fragments/ActionsComponent.gd")
-	var actions = actions_script.new()
+	var actions = ActionsComponent.new()
 	actions.apply_preset(preset_name)
 	return actions
