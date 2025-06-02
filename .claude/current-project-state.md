@@ -1,4 +1,4 @@
-# NeuroVis Current Project State - Mon Jun  2 10:49:32 EDT 2025
+# NeuroVis Current Project State - Mon Jun  2 14:00:52 EDT 2025
 ## ALWAYS REFERENCE THIS FOR MAXIMUM CLAUDE EFFECTIVENESS
 
 ## 🎯 PROJECT OVERVIEW
@@ -9,10 +9,10 @@
 
 ## 📊 CURRENT CODEBASE ANALYSIS
 ### File Statistics:
-- GDScript files: 286
-- Scene files: 41
+- GDScript files: 279
+- Scene files: 59
 - Educational components: 0
-- Total lines of code: 82161
+- Total lines of code: 82195
 
 ## 🏗️ ARCHITECTURE OVERVIEW
 ### Directory Structure:
@@ -22,53 +22,24 @@
 - .github
 - .godot
 - .vscode
+- ai
 - archive
 - assets
 - config
-- core
-- data
 - docs
-- Godot
-- logs
-- patches
-- path_fix_backup
-- scenes
-- scripts
-- shaders
-- specs
-- test_logs
-- test_reports
+- src
 - tests
-- tmp
 - tools
-- ui
 
 ### Core Components:
-- core/visualization/RenderingOptimizer.gd
-- core/visualization/PerformanceDebugger.gd
-- core/visualization/VisualDebugger.gd
-- core/visualization/DebugVisualizer.gd
-- core/visualization/MeshDiagnostic.gd
-- core/visualization/MedicalLighting.gd
-- core/visualization/SelectionVisualizer.gd
-- core/visualization/EducationalVisualFeedback.gd
-- core/resources/ResourceManager.gd
-- core/features/FeatureFlags.gd
 
 ### UI Components:
-- ui/core/ComponentRegistryCompat.gd
-- ui/core/SimplifiedComponentFactory.gd
-- ui/core/ComponentRegistry.gd
-- ui/integration/FoundationDemo.gd
-- ui/panels/BrainAnalysisPanel.gd
-- ui/panels/AccessibilitySettingsPanel.gd
-- ui/panels/UIThemeManager.gd
-- ui/panels/LoadingOverlay.gd
-- ui/panels/ThemeToggle.gd
-- ui/panels/EducationalNotificationSystem.gd
 
 ## 📈 RECENT DEVELOPMENT
 ### Git History (Last 10 commits):
+- 21c8619 fix: remove duplicate NeuroVisMainSceneCore class to resolve parser error
+- 3f84662 refactor: complete architecture migration cleanup
+- 5b1e7ee refactor: major architecture refactor and file reorganization
 - 4f0bb69 fix: Remove duplicate BrainStructureSelectionManager class_name to resolve parser error
 - ac05ec5 Merge remote-tracking branch 'origin/Branch-1-NeuroVis4' and resolve conflicts
 - b6c21e4 refactor: project-wide reorganization and file consolidation
@@ -76,9 +47,6 @@
 - 9fa8b08 feat(ui): comprehensive UI transformation and code quality improvements
 - 39ff7c1 fix: Remove duplicate BrainStructureSelectionManager class_name to resolve conflict
 - 5b5c3a2 fix(ai): Fix Gemini integration service references and type issues
-- 0bf0f0b feat(ai): Implement Gemini integration for enhanced educational AI
-- 0928340 fix(ai): Add GeminiService to core_development autoload config
-- bbbacb0 fix(ai): Add missing generate_content method to GeminiAIService
 
 ## 🔧 ACTIVE FEATURES
 ### Educational Components:
@@ -220,6 +188,7 @@
 - ServiceLocator
 - SimplifiedComponentFactory
 - StartupValidator
+- StartupValidatorCodeQuality
 - StateManager
 - StructureInfoPanel
 - StructureLabeler
@@ -240,8 +209,8 @@
 - UnifiedStructureInfoPanel
 - UpdatedInputHandlerFixed
 - VisualDebugger
+./src/ui/panels/UIDiagnostic.gd:	# Note: Using is operator might not work if MainScene is not a class_name
 ./tests/integration/RenderingValidationTest.gd:func _find_node_by_class(class_name: String) -> Node:
-./ui/panels/UIDiagnostic.gd:	# Note: Using is operator might not work if MainScene is not a class_name
 
 ## ⚠️ KNOWN ISSUES TO WATCH
 ### Common NeuroVis Development Challenges:
@@ -262,8 +231,8 @@
 ## 📊 PERFORMANCE INDICATORS
 ### Code Quality Metrics:
 - Classes with educational documentation: 0
-- Functions with type hints: 3719
-- Signal declarations: 500
+- Functions with type hints: 3747
+- Signal declarations: 518
 
 ## 🛡️ CLAUDE OPTIMIZATION NOTES
 ### For Maximum Effectiveness:

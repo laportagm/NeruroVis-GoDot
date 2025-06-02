@@ -9,7 +9,7 @@
 ## @tutorial: Startup validation patterns for educational software
 ## @version: 2.0
 
-class_name StartupValidator
+class_name StartupValidatorCodeQuality
 extends Node
 
 # === CONSTANTS ===

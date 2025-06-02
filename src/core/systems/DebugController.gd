@@ -413,7 +413,7 @@ func _create_model_switcher_test() -> void:
 	
 	# Create model switcher test script
 	var script_path = "res://tests/model_switcher_test.gd"
-	var script_content = ## 
+	var script_content = """
 class_name ModelSwitcherTest
 extends Node
 
@@ -558,7 +558,7 @@ func _report_failure(message: String) -> void:
 	printerr("\\n❌ TEST SUITE FAILED: " + message)
 	print("===== END OF MODEL SWITCHER TEST SUITE =====\\n")
 	emit_signal("test_completed", false, message)
-
+"""
 	
 	# Save the script
 	var script_file = FileAccess.open(script_path, FileAccess.WRITE)
@@ -569,13 +569,13 @@ func _report_failure(message: String) -> void:
 	var scene_path = "res://tests/model_switcher_test.tscn"
 	
 	# Create the scene programmatically since we can't use Godot's scene editor here
-	var scene_content = ## [gd_scene load_steps=2 format=3]
+	var scene_content = """[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://tests/model_switcher_test.gd" id="1_jcwed"]
 
 [node name="ModelSwitcherTest" type="Node"]
 script = ExtResource("1_jcwed")
-
+"""
 	
 	# Save the scene
 	var scene_file = FileAccess.open(scene_path, FileAccess.WRITE)

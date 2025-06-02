@@ -18,7 +18,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-KB="*res://src/core/knowledge/AnatomicalKnowledgeDatabase.gd"
+;KB="*res://archive/legacy_knowledge/AnatomicalKnowledgeDatabase.gd" # Legacy - use KnowledgeService instead
 KnowledgeService="*res://src/core/knowledge/KnowledgeService.gd"
 StructureAnalysisManager="*res://src/core/systems/StructureAnalysisManager.gd"
 AIAssistant="*res://src/core/ai/AIAssistantService.gd"

@@ -191,13 +191,13 @@ func _provide_integration_instructions() -> void:
 		print("\\n1️⃣  Add Architecture Demo (Easiest):")
 		print("   • In Godot editor, open your main scene")
 		print("   • Add a new Node as child of MainScene")
-		print("   • Attach script: res://scenes/ArchitectureDemo.gd")
+		print("   • Attach script: res://src/scenes/ArchitectureDemo.gd")
 		print("   • Run the project")
 		print("   • Press F2 for demo instructions")
 		
 		print("\\n2️⃣  Add Architecture Tester (Recommended):")
 		print("   • Add another Node as child of MainScene")
-		print("   • Attach script: res://scenes/ArchitectureTester.gd")
+		print("   • Attach script: res://src/scenes/ArchitectureTester.gd")
 		print("   • Press F3 to run comprehensive tests")
 		
 		print("\\n3️⃣  Test the New Features:")
