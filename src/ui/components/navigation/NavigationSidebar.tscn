@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dxnb51qa0xpw5"]
 
-[ext_resource type="Script" path="res://ui/components/navigation/NavigationSidebar.gd" id="1_0yoyo"]
+[ext_resource type="Script" path="res://src/ui/components/navigation/NavigationSidebar.gd" id="1_0yoyo"]
 
 [node name="NavigationSidebar" type="PanelContainer"]
 custom_minimum_size = Vector2(260, 0)

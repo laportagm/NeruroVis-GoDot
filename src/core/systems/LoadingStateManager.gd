@@ -3,7 +3,7 @@ class_name LoadingStateManager
 extends Node
 
 # Preload UIThemeManager for styling
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
 
 # === LOADING STATES ===
 enum LoadingState {

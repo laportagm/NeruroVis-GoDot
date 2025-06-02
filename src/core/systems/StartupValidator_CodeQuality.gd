@@ -190,7 +190,7 @@ func _validate_ui_components() -> void:
 	validation_progress.emit(ValidationCategory.UI_COMPONENTS, 0.0)
 	
 	# Test critical UI factories
-	var InfoPanelFactory: GDScript = load("res://ui/panels/InfoPanelFactory.gd") as GDScript
+	var InfoPanelFactory: GDScript = load("res://src/ui/panels/InfoPanelFactory.gd") as GDScript
 	if not InfoPanelFactory:
 		_critical_errors.append("InfoPanelFactory not found")
 		critical_error.emit(ValidationCategory.UI_COMPONENTS, "Cannot load InfoPanelFactory")

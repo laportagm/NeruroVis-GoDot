@@ -67,19 +67,19 @@ func _test_component_loading() -> void:
 	print("\\n🧪 Testing Component Loading...")
 	
 	# Test SelectionSystem loading
-	_test_component_load("SelectionSystem", "res://scenes/visualization_systems/SelectionSystem.tscn")
+	_test_component_load("SelectionSystem", "res://src/scenes/visualization_systems/SelectionSystem.tscn")
 	
 	# Test BrainVisualization loading
-	_test_component_load("BrainVisualization", "res://scenes/visualization_systems/BrainVisualization.tscn")
+	_test_component_load("BrainVisualization", "res://src/scenes/visualization_systems/BrainVisualization.tscn")
 	
 	# Test EducationalUI loading
-	_test_component_load("EducationalUI", "res://scenes/interface_systems/EducationalUI.tscn")
+	_test_component_load("EducationalUI", "res://src/scenes/interface_systems/EducationalUI.tscn")
 	
 	# Test EducationalCoordinator loading
-	_test_component_load("EducationalCoordinator", "res://scenes/educational_systems/EducationalCoordinator.tscn")
+	_test_component_load("EducationalCoordinator", "res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 	
 	# Test EventBus script loading
-	_test_script_load("EventBus", "res://scenes/coordination/EventBus.gd")
+	_test_script_load("EventBus", "res://src/scenes/coordination/EventBus.gd")
 
 func _test_component_load(component_name: String, scene_path: String) -> bool:
 	"""Test loading of a specific component scene"""
@@ -147,7 +147,7 @@ func _test_educational_events() -> void:
 	print("\\n🧪 Testing Educational Events...")
 	
 	# Create temporary EventBus for testing
-	var EventBusScript = load("res://scenes/coordination/EventBus.gd")
+	var EventBusScript = load("res://src/scenes/coordination/EventBus.gd")
 	var test_event_bus = EventBusScript.new()
 	test_event_bus.name = "TestEventBus"
 	add_child(test_event_bus)
@@ -189,7 +189,7 @@ func _test_educational_workflows() -> void:
 	print("\\n🧪 Testing Educational Workflows...")
 	
 	# Test EducationalCoordinator workflow
-	var CoordinatorScene = load("res://scenes/educational_systems/EducationalCoordinator.tscn")
+	var CoordinatorScene = load("res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 	var coordinator = CoordinatorScene.instantiate()
 	add_child(coordinator)
 	
@@ -229,7 +229,7 @@ func _test_ui_system() -> void:
 	print("\\n🧪 Testing UI System...")
 	
 	# Test EducationalUI component
-	var UIScene = load("res://scenes/interface_systems/EducationalUI.tscn")
+	var UIScene = load("res://src/scenes/interface_systems/EducationalUI.tscn")
 	var ui_system = UIScene.instantiate()
 	get_tree().root.add_child(ui_system)
 	
@@ -299,7 +299,7 @@ func _test_full_integration_workflow() -> bool:
 	try:
 		# This would require actual 3D scene setup
 		# For now, test that components can be created together
-		var CoordinatorScene = load("res://scenes/educational_systems/EducationalCoordinator.tscn")
+		var CoordinatorScene = load("res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 		var coordinator = CoordinatorScene.instantiate()
 		add_child(coordinator)
 		

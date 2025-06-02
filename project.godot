@@ -12,22 +12,22 @@ config_version=5
 
 config/name="A1-NeuroVis"
 config/description="Advanced Neural Visualization System for Interactive Brain Anatomy"
-run/main_scene="res://scenes/core/main.tscn"
+run/main_scene="res://src/scenes/core/main.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-KB="*res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
-KnowledgeService="*res://core/knowledge/KnowledgeService.gd"
-StructureAnalysisManager="*res://core/systems/StructureAnalysisManager.gd"
-AIAssistant="*res://core/ai/AIAssistantService.gd"
-GeminiAI="*res://core/ai/GeminiAIService.gd"
-UIThemeManager="*res://ui/panels/UIThemeManager.gd"
-AccessibilityManager="*res://core/systems/AccessibilityManager.gd"
-ModelSwitcherGlobal="*res://core/models/ModelVisibilityManager.gd"
-DebugCmd="*res://core/systems/DebugCommands.gd"
-FeatureFlags="*res://core/features/FeatureFlags.gd"
+KB="*res://src/core/knowledge/AnatomicalKnowledgeDatabase.gd"
+KnowledgeService="*res://src/core/knowledge/KnowledgeService.gd"
+StructureAnalysisManager="*res://src/core/systems/StructureAnalysisManager.gd"
+AIAssistant="*res://src/core/ai/AIAssistantService.gd"
+GeminiAI="*res://src/core/ai/GeminiAIService.gd"
+UIThemeManager="*res://src/ui/panels/UIThemeManager.gd"
+AccessibilityManager="*res://src/core/systems/AccessibilityManager.gd"
+ModelSwitcherGlobal="*res://src/core/models/ModelVisibilityManager.gd"
+DebugCmd="*res://src/core/systems/DebugCommands.gd"
+FeatureFlags="*res://src/core/features/FeatureFlags.gd"
 
 [debug]
 

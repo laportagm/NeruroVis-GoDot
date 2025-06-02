@@ -4,7 +4,7 @@ class_name AIAssistantService
 extends Node
 
 # Preload the GeminiAIService class to ensure it's available
-const GeminiAIServiceClass = preload("res://core/ai/GeminiAIService.gd")
+const GeminiAIServiceClass = preload("res://src/core/ai/GeminiAIService.gd")
 
 # === AI SERVICE SIGNALS ===
 signal response_received(question: String, response: String)

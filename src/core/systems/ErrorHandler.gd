@@ -114,8 +114,8 @@ func _ready() -> void:
             return
     
     # Safely load the ErrorNotificationScript
-    if ResourceLoader.exists("res://ui/components/ErrorNotification.gd"):
-        ErrorNotificationScript = load("res://ui/components/ErrorNotification.gd")
+    if ResourceLoader.exists("res://src/ui/components/ErrorNotification.gd"):
+        ErrorNotificationScript = load("res://src/ui/components/ErrorNotification.gd")
         print("[ErrorHandler] Successfully loaded ErrorNotification script")
     else:
         push_warning("[ErrorHandler] Could not load ErrorNotification script")

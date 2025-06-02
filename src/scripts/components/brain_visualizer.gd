@@ -8,7 +8,7 @@ class_name BrainVisualizer
 extends Node
 
 # Import ComponentBase
-const ComponentBase = preload("res://scripts/components/component_base.gd")
+const ComponentBase = preload("res://src/scripts/components/component_base.gd")
 
 # ComponentBase implementation
 var is_initialized: bool = false
@@ -43,9 +43,9 @@ var neural_net = null
 var model_switcher = null
 
 # Preloaded scripts
-const ModelCoordinatorScene = preload("res://core/models/ModelRegistry.gd")
-const BrainVisualizationCoreScript = preload("res://core/systems/BrainVisualizationCore.gd")
-const ModelVisibilityManagerScript = preload("res://core/models/ModelVisibilityManager.gd")
+const ModelCoordinatorScene = preload("res://src/core/models/ModelRegistry.gd")
+const BrainVisualizationCoreScript = preload("res://src/core/systems/BrainVisualizationCore.gd")
+const ModelVisibilityManagerScript = preload("res://src/core/models/ModelVisibilityManager.gd")
 
 func _ready() -> void:
 	# Defer initialization to allow scene tree to settle

@@ -25,7 +25,7 @@ func _ready() -> void:
 func _setup_demo() -> void:
 	"""Setup the architecture demonstration"""
 	# Load and create educational coordinator
-	var CoordinatorScene = load("res://scenes/educational_systems/EducationalCoordinator.tscn")
+	var CoordinatorScene = load("res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 	educational_coordinator = CoordinatorScene.instantiate()
 	educational_coordinator.name = "EducationalCoordinator_Demo"
 	add_child(educational_coordinator)

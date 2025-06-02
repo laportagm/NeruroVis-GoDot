@@ -4,7 +4,7 @@ class_name EducationalTooltipManager
 extends Control
 
 # === DEPENDENCIES ===
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
 
 # Tooltip components
 @onready var tooltip_panel: PanelContainer

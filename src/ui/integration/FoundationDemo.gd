@@ -3,9 +3,9 @@
 extends Control
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const ComponentRegistry = preload("res://ui/core/ComponentRegistry.gd")
-const ComponentStateManager = preload("res://ui/state/ComponentStateManager.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
+const ComponentRegistry = preload("res://src/ui/core/ComponentRegistry.gd")
+const ComponentStateManager = preload("res://src/ui/state/ComponentStateManager.gd")
 const TestFramework = preload("res://tests/integration/test_component_foundation.gd")
 
 # === UI NODES ===
@@ -338,7 +338,7 @@ static func create_demo_window() -> Window:
 	window.title = "NeuroVis Foundation Demo"
 	window.size = Vector2i(800, 600)
 	
-	var demo_script = preload("res://ui/integration/FoundationDemo.gd")
+	var demo_script = preload("res://src/ui/integration/FoundationDemo.gd")
 	var demo = demo_script.new()
 	window.add_child(demo)
 	

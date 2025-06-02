@@ -242,38 +242,38 @@ func _create_system_instance(system_name: String) -> Node:
     
     match system_name:
         "event_bus":
-            script_path = "res://core/events/EventBus.gd"
+            script_path = "res://src/core/events/EventBus.gd"
         
         "app_state":
-            script_path = "res://core/state/AppState.gd"
+            script_path = "res://src/core/state/AppState.gd"
         
         "service_locator":
-            script_path = "res://core/services/ServiceLocator.gd"
+            script_path = "res://src/core/services/ServiceLocator.gd"
         
         "resource_manager":
-            script_path = "res://core/resources/ResourceManager.gd"
+            script_path = "res://src/core/resources/ResourceManager.gd"
         
         "accessibility":
-            script_path = "res://core/accessibility/AccessibilityManager.gd"
+            script_path = "res://src/core/accessibility/AccessibilityManager.gd"
             # Fallback to existing autoload
             if not ResourceLoader.exists(script_path) and Engine.has_singleton("AccessibilityManager"):
                 return Engine.get_singleton("AccessibilityManager")
         
         "visual_feedback":
-            script_path = "res://core/visualization/EducationalVisualFeedback.gd"
+            script_path = "res://src/core/visualization/EducationalVisualFeedback.gd"
         
         "selection_system":
             # Use factory pattern for selection system
             return _create_selection_system()
         
         "camera_controller":
-            script_path = "res://core/interaction/CameraBehaviorController.gd"
+            script_path = "res://src/core/interaction/CameraBehaviorController.gd"
         
         "model_coordinator":
-            script_path = "res://core/models/ModelRegistry.gd"
+            script_path = "res://src/core/models/ModelRegistry.gd"
         
         "ui_theme_manager":
-            script_path = "res://ui/panels/UIThemeManager.gd"
+            script_path = "res://src/ui/panels/UIThemeManager.gd"
             # Fallback to existing autoload
             if not ResourceLoader.exists(script_path) and Engine.has_singleton("UIThemeManager"):
                 return Engine.get_singleton("UIThemeManager")
@@ -285,7 +285,7 @@ func _create_system_instance(system_name: String) -> Node:
             return panel_registry
         
         "knowledge_service":
-            script_path = "res://core/knowledge/KnowledgeService.gd"
+            script_path = "res://src/core/knowledge/KnowledgeService.gd"
             # Fallback to existing autoload
             if not ResourceLoader.exists(script_path) and Engine.has_singleton("KnowledgeService"):
                 return Engine.get_singleton("KnowledgeService")
@@ -315,13 +315,13 @@ func _create_selection_system() -> Node:
     var use_multi_selection = true
     
     # Try loading FeatureFlags
-    var feature_flags = load("res://core/features/FeatureFlags.gd")
+    var feature_flags = load("res://src/core/features/FeatureFlags.gd")
     if feature_flags and feature_flags.has_method("is_enabled"):
         if feature_flags.has_method("is_enabled"):
             use_multi_selection = feature_flags.is_enabled("MULTI_SELECTION_SYSTEM")
     
     # Load appropriate script
-    var script_path = use_multi_selection ? "res://core/interaction/MultiStructureSelectionManager.gd" : "res://core/interaction/BrainStructureSelectionManager.gd"
+    var script_path = use_multi_selection ? "res://src/core/interaction/MultiStructureSelectionManager.gd" : "res://src/core/interaction/BrainStructureSelectionManager.gd"
     
     if ResourceLoader.exists(script_path):
         var script = load(script_path)

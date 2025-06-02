@@ -195,7 +195,7 @@ func show_labels(show: bool) -> void:
 func _load_dependencies() -> void:
     ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
-    var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
+    var safe_autoload_script = load("res://src/ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
         _safe_autoload_access = safe_autoload_script.new()
     
@@ -271,7 +271,7 @@ func _create_item_ui(item_id: String) -> void:
     var item_data = _items[item_id]
     
     # Try to instantiate via script
-    var item_script = load("res://ui/components/navigation/NavigationItem.gd")
+    var item_script = load("res://src/ui/components/navigation/NavigationItem.gd")
     var item
     
     if item_script:

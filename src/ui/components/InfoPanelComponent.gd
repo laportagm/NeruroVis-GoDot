@@ -4,12 +4,12 @@ class_name InfoPanelComponent
 extends Control
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const ComponentRegistry = preload("res://ui/core/ComponentRegistry.gd")
-const ComponentStateManager = preload("res://ui/state/ComponentStateManager.gd")
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
-const StyleEngine = preload("res://ui/theme/StyleEngine.gd")
-const AdvancedInteractionSystem = preload("res://core/interaction/AdvancedInteractionSystem.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
+const ComponentRegistry = preload("res://src/ui/core/ComponentRegistry.gd")
+const ComponentStateManager = preload("res://src/ui/state/ComponentStateManager.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
+const StyleEngine = preload("res://src/ui/theme/StyleEngine.gd")
+const AdvancedInteractionSystem = preload("res://src/core/interaction/AdvancedInteractionSystem.gd")
 
 # === SIGNALS ===
 signal panel_closed()

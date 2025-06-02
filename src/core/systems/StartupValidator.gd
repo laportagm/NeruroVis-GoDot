@@ -163,7 +163,7 @@ func _validate_resources() -> void:
 		"res://assets/data/anatomical_data.json",
 		"res://assets/models/Half_Brain.glb",
 		"res://assets/models/Internal_Structures.glb",
-		"res://scenes/main/node_3d.tscn",
+		"res://src/scenes/main/node_3d.tscn",
 		"res://project.godot"
 	]
 	
@@ -189,7 +189,7 @@ func _validate_ui_components() -> void:
 	var results = {}
 	
 	# Test UIThemeManager
-	var UIThemeManager = load("res://ui/panels/UIThemeManager.gd")
+	var UIThemeManager = load("res://src/ui/panels/UIThemeManager.gd")
 	if UIThemeManager:
 		var test_style = UIThemeManager.create_enhanced_glass_style()
 		if test_style:
@@ -202,7 +202,7 @@ func _validate_ui_components() -> void:
 	validation_progress.emit(ValidationCategory.UI_COMPONENTS, 0.5)
 	
 	# Test InfoPanelFactory
-	var InfoPanelFactory = load("res://ui/panels/InfoPanelFactory.gd")
+	var InfoPanelFactory = load("res://src/ui/panels/InfoPanelFactory.gd")
 	if InfoPanelFactory:
 		results["InfoPanelFactory"] = ValidationResult.PASS
 	else:

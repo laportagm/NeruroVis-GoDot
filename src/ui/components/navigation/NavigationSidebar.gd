@@ -254,7 +254,7 @@ func restore_state() -> void:
 func _load_dependencies() -> void:
     ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
-    var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
+    var safe_autoload_script = load("res://src/ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
         _safe_autoload_access = safe_autoload_script.new()
     
@@ -358,7 +358,7 @@ func _create_section_ui(section_id: String) -> void:
     
     # Fallback to direct instantiation
     if not section_node:
-        var section_script = load("res://ui/components/navigation/NavigationSection.gd")
+        var section_script = load("res://src/ui/components/navigation/NavigationSection.gd")
         if section_script:
             section_node = section_script.new()
             section_node.name = "Section_" + section_id

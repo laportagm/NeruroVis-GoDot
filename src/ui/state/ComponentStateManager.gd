@@ -4,7 +4,7 @@ class_name ComponentStateManager
 extends RefCounted
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
 
 # === STATE STORAGE ===
 static var _component_states: Dictionary = {}

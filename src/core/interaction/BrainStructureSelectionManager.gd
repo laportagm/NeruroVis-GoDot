@@ -733,7 +733,7 @@ func _initialize_modern_colors() -> void:
 func _initialize_visual_feedback() -> void:
     ## Initialize the educational visual feedback system
     # Create visual feedback instance
-    var VisualFeedbackClass = load("res://core/visualization/EducationalVisualFeedback.gd")
+    var VisualFeedbackClass = load("res://src/core/visualization/EducationalVisualFeedback.gd")
     if VisualFeedbackClass:
         visual_feedback = VisualFeedbackClass.new()
         visual_feedback.name = "VisualFeedback"

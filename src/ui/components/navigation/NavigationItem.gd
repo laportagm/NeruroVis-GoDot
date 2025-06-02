@@ -138,7 +138,7 @@ func get_id() -> String:
 func _load_dependencies() -> void:
     ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
-    var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
+    var safe_autoload_script = load("res://src/ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
         _safe_autoload_access = safe_autoload_script.new()
     

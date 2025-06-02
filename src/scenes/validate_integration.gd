@@ -51,10 +51,10 @@ func validate_integration() -> bool:
 	print("\\n--- Testing New Architecture Components ---")
 	
 	var component_tests = {
-		"SelectionSystem": "res://scenes/visualization_systems/SelectionSystem.tscn",
-		"BrainVisualization": "res://scenes/visualization_systems/BrainVisualization.tscn",
-		"EducationalUI": "res://scenes/interface_systems/EducationalUI.tscn",
-		"EducationalCoordinator": "res://scenes/educational_systems/EducationalCoordinator.tscn"
+		"SelectionSystem": "res://src/scenes/visualization_systems/SelectionSystem.tscn",
+		"BrainVisualization": "res://src/scenes/visualization_systems/BrainVisualization.tscn",
+		"EducationalUI": "res://src/scenes/interface_systems/EducationalUI.tscn",
+		"EducationalCoordinator": "res://src/scenes/educational_systems/EducationalCoordinator.tscn"
 	}
 	
 	for component_name in component_tests.keys():
@@ -92,7 +92,7 @@ func validate_integration() -> bool:
 func _test_coordinator_integration(camera: Camera3D, brain_model: Node3D) -> bool:
 	"""Test that EducationalCoordinator can integrate with existing components"""
 	try:
-		var CoordinatorScene = load("res://scenes/educational_systems/EducationalCoordinator.tscn")
+		var CoordinatorScene = load("res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 		var coordinator = CoordinatorScene.instantiate()
 		coordinator.name = "TestCoordinator"
 		add_child(coordinator)
@@ -125,10 +125,10 @@ func run_validation_standalone():
 	
 	# Test component loading only
 	var component_tests = {
-		"SelectionSystem": "res://scenes/visualization_systems/SelectionSystem.tscn",
-		"BrainVisualization": "res://scenes/visualization_systems/BrainVisualization.tscn", 
-		"EducationalUI": "res://scenes/interface_systems/EducationalUI.tscn",
-		"EducationalCoordinator": "res://scenes/educational_systems/EducationalCoordinator.tscn"
+		"SelectionSystem": "res://src/scenes/visualization_systems/SelectionSystem.tscn",
+		"BrainVisualization": "res://src/scenes/visualization_systems/BrainVisualization.tscn", 
+		"EducationalUI": "res://src/scenes/interface_systems/EducationalUI.tscn",
+		"EducationalCoordinator": "res://src/scenes/educational_systems/EducationalCoordinator.tscn"
 	}
 	
 	var all_success = true

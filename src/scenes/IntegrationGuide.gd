@@ -97,11 +97,11 @@ func _check_required_components() -> void:
 	print("\\n🧩 Step 2: Checking New Architecture Components...")
 	
 	var components_to_check = {
-		"SelectionSystem": "res://scenes/visualization_systems/SelectionSystem.tscn",
-		"BrainVisualization": "res://scenes/visualization_systems/BrainVisualization.tscn",
-		"EducationalUI": "res://scenes/interface_systems/EducationalUI.tscn",
-		"EducationalCoordinator": "res://scenes/educational_systems/EducationalCoordinator.tscn",
-		"EventBus": "res://scenes/coordination/EventBus.gd"
+		"SelectionSystem": "res://src/scenes/visualization_systems/SelectionSystem.tscn",
+		"BrainVisualization": "res://src/scenes/visualization_systems/BrainVisualization.tscn",
+		"EducationalUI": "res://src/scenes/interface_systems/EducationalUI.tscn",
+		"EducationalCoordinator": "res://src/scenes/educational_systems/EducationalCoordinator.tscn",
+		"EventBus": "res://src/scenes/coordination/EventBus.gd"
 	}
 	
 	var component_status = {}
@@ -148,7 +148,7 @@ func _test_integration_compatibility() -> void:
 	# Test creating EducationalCoordinator
 	var compatibility_success = false
 	try:
-		var CoordinatorScene = load("res://scenes/educational_systems/EducationalCoordinator.tscn")
+		var CoordinatorScene = load("res://src/scenes/educational_systems/EducationalCoordinator.tscn")
 		var coordinator = CoordinatorScene.instantiate()
 		coordinator.name = "CompatibilityTest"
 		add_child(coordinator)
@@ -318,7 +318,7 @@ func auto_add_architecture_demo() -> bool:
 		demo_node.name = "ArchitectureDemo"
 		
 		# Load and attach demo script
-		var demo_script = load("res://scenes/ArchitectureDemo.gd")
+		var demo_script = load("res://src/scenes/ArchitectureDemo.gd")
 		demo_node.set_script(demo_script)
 		
 		# Add to main scene
@@ -357,7 +357,7 @@ func auto_add_architecture_tester() -> bool:
 		tester_node.name = "ArchitectureTester"
 		
 		# Load and attach tester script
-		var tester_script = load("res://scenes/ArchitectureTester.gd")
+		var tester_script = load("res://src/scenes/ArchitectureTester.gd")
 		tester_node.set_script(tester_script)
 		
 		# Add to main scene

@@ -21,7 +21,7 @@ class_name EnhancedInformationPanel
 extends PanelContainer
 
 # === DEPENDENCIES ===
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
 
 # === SIGNALS ===
 signal panel_closed()

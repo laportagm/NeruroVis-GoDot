@@ -71,13 +71,13 @@ func initialize(model_parent: Node3D, cam: Camera3D, sel_manager: Node) -> void:
 func _load_shaders() -> void:
     ## Load custom shaders for advanced effects
     # Cross-section shader
-    slice_shader = load("res://shaders/cross_section.gdshader")
+    slice_shader = load("res://assets/shaders/cross_section.gdshader")
     
     # Neural pathway shader
-    pathway_shader = load("res://shaders/neural_pathway.gdshader")
+    pathway_shader = load("res://assets/shaders/neural_pathway.gdshader")
     
     # Highlight shader
-    highlight_shader = load("res://shaders/structure_highlight.gdshader")
+    highlight_shader = load("res://assets/shaders/structure_highlight.gdshader")
 
 # === CROSS-SECTIONAL VIEWS ===
 func _create_slice_planes() -> void:

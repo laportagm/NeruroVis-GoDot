@@ -140,7 +140,7 @@ func log_warning(message: String) -> void:
 
 # Helper function to safely load VisualDebugger
 func get_visual_debugger():
-	return load("res://core/visualization/VisualDebugger.gd")
+	return load("res://src/core/visualization/VisualDebugger.gd")
 
 # AI test response handlers
 func _on_test_response(question: String, response: String) -> void:
@@ -511,7 +511,7 @@ func cmd_dependency_check(_args: String = "") -> void:
 
 func cmd_scene_validate(args: String = "") -> void:
 	## Validate scene structure
-	var scene_path = args if args != "" else "res://scenes/main/node_3d.tscn"
+	var scene_path = args if args != "" else "res://src/scenes/main/node_3d.tscn"
 	
 	log_info("🎬 Validating scene: %s" % scene_path)
 	
@@ -549,9 +549,9 @@ func cmd_resource_check(_args: String = "") -> void:
 		"res://project.godot",
 		"res://icon.svg",
 		"res://assets/data/anatomical_data.json",
-		"res://scenes/main/node_3d.tscn",
-		"res://core/knowledge/KnowledgeService.gd",
-		"res://core/models/ModelVisibilityManager.gd"
+		"res://src/scenes/main/node_3d.tscn",
+		"res://src/core/knowledge/KnowledgeService.gd",
+		"res://src/core/models/ModelVisibilityManager.gd"
 	]
 	
 	var missing = []
@@ -569,7 +569,7 @@ func cmd_resource_check(_args: String = "") -> void:
 
 func cmd_preload_test(args: String = "") -> void:
 	## Test resource preloading
-	var test_path = args if args != "" else "res://scenes/main/node_3d.tscn"
+	var test_path = args if args != "" else "res://src/scenes/main/node_3d.tscn"
 	
 	log_info("⚡ Testing preload: %s" % test_path)
 	
@@ -592,10 +592,10 @@ func cmd_syntax_check(_args: String = "") -> void:
 	log_info("📝 Quick syntax check...")
 	
 	var core_files = [
-		"res://scenes/main/node_3d.gd",
-		"res://core/knowledge/KnowledgeService.gd",
-		"res://core/models/ModelVisibilityManager.gd",
-		"res://ui/panels/UIThemeManager.gd"
+		"res://src/scenes/main/node_3d.gd",
+		"res://src/core/knowledge/KnowledgeService.gd",
+		"res://src/core/models/ModelVisibilityManager.gd",
+		"res://src/ui/panels/UIThemeManager.gd"
 	]
 	
 	var errors = 0

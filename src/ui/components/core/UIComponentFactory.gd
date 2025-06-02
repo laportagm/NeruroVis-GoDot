@@ -4,7 +4,7 @@ class_name UIComponentFactory
 extends RefCounted
 
 # === DEPENDENCIES ===
-const SafeAutoloadAccess = preload("res://ui/components/core/SafeAutoloadAccess.gd")
+const SafeAutoloadAccess = preload("res://src/ui/components/core/SafeAutoloadAccess.gd")
 
 # === COMPONENT TYPES ===
 enum ComponentType {

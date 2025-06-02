@@ -11,7 +11,7 @@ class_name StyleEngine
 extends RefCounted
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
 
 # === STYLE CONSTANTS ===
 const EDUCATIONAL_COLORS = {

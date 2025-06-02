@@ -4,7 +4,7 @@ class_name BaseUIComponent
 extends Control
 
 # === DEPENDENCIES ===
-const SafeAutoloadAccess = preload("res://ui/components/core/SafeAutoloadAccess.gd")
+const SafeAutoloadAccess = preload("res://src/ui/components/core/SafeAutoloadAccess.gd")
 
 # === COMPONENT LIFECYCLE ===
 signal component_ready
@@ -323,7 +323,7 @@ func disconnect_from_signal(signal_name: String, target: Object, method: String)
 # === FACTORY HELPER ===
 static func create_component(component_class: String, config: Dictionary = {}) -> BaseUIComponent:
 	## Factory method to create components
-	var component_script = load("res://ui/components/" + component_class + ".gd")
+	var component_script = load("res://src/ui/components/" + component_class + ".gd")
 	if component_script:
 		var component = component_script.new()
 		if component is BaseUIComponent:

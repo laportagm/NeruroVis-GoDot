@@ -235,12 +235,12 @@ func _setup_navigation_sidebar(parent_node: Node) -> void:
     print("[UI Transformation] Setting up navigation sidebar...")
     
     # Create navigation sidebar
-    var sidebar_scene = load("res://ui/components/navigation/NavigationSidebar.tscn")
+    var sidebar_scene = load("res://src/ui/components/navigation/NavigationSidebar.tscn")
     if sidebar_scene:
         navigation_sidebar = sidebar_scene.instantiate()
     else:
         # Fallback to creating instance directly
-        var sidebar_script = load("res://ui/components/navigation/NavigationSidebar.gd")
+        var sidebar_script = load("res://src/ui/components/navigation/NavigationSidebar.gd")
         if sidebar_script:
             navigation_sidebar = sidebar_script.new()
         else:

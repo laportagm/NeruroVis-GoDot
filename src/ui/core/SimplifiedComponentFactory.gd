@@ -37,7 +37,7 @@ static func _create_info_panel_direct(_config: Dictionary) -> Control:
 	## Create info panel using existing factory
 	
 	# Use existing InfoPanelFactory - this is the most reliable approach
-	var factory_script = _safe_load_script("res://ui/panels/InfoPanelFactory.gd")
+	var factory_script = _safe_load_script("res://src/ui/panels/InfoPanelFactory.gd")
 	if factory_script and factory_script.has_method("create_info_panel"):
 		var panel = factory_script.create_info_panel()
 		if panel:
@@ -45,7 +45,7 @@ static func _create_info_panel_direct(_config: Dictionary) -> Control:
 			return panel
 	
 	# Fallback to EnhancedInformationPanel directly
-	var enhanced_script = _safe_load_script("res://ui/panels/EnhancedInformationPanel.gd")
+	var enhanced_script = _safe_load_script("res://src/ui/panels/EnhancedInformationPanel.gd")
 	if enhanced_script:
 		var panel = enhanced_script.new()
 		print("[SimplifiedFactory] Created info panel via EnhancedInformationPanel")

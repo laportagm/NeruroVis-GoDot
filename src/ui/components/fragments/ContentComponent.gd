@@ -4,9 +4,9 @@ class_name ContentComponent
 extends VBoxContainer
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const ComponentRegistry = preload("res://ui/core/ComponentRegistry.gd")
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
+const ComponentRegistry = preload("res://src/ui/core/ComponentRegistry.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
 
 # === SIGNALS ===
 signal section_toggled(section_name: String, expanded: bool)

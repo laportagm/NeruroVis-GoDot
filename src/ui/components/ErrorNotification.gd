@@ -13,8 +13,8 @@ var UIThemeManagerScript = null
 
 func _init():
     # Safely load UIThemeManager
-    if ResourceLoader.exists("res://ui/panels/UIThemeManager.gd"):
-        UIThemeManagerScript = load("res://ui/panels/UIThemeManager.gd")
+    if ResourceLoader.exists("res://src/ui/panels/UIThemeManager.gd"):
+        UIThemeManagerScript = load("res://src/ui/panels/UIThemeManager.gd")
 
 class_name ErrorNotification
 extends Control

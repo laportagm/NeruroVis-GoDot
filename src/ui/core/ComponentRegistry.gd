@@ -4,7 +4,7 @@ class_name ComponentRegistry
 extends RefCounted
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
 
 # === COMPONENT FACTORIES ===
 static var _factories: Dictionary = {}
@@ -152,14 +152,14 @@ static func _create_modular_info_panel(config: Dictionary) -> Control:
 	## Create new modular info panel
 
 	# Try to load the new InfoPanelComponent
-	var component_script = _safe_load_script("res://ui/components/InfoPanelComponent.gd")
+	var component_script = _safe_load_script("res://src/ui/components/InfoPanelComponent.gd")
 	if component_script:
 		var panel = component_script.new()
 		panel.configure(config)
 		return panel
 
 	# Fallback to enhanced panel if available
-	var enhanced_script = _safe_load_script("res://ui/panels/EnhancedInformationPanel.gd")
+	var enhanced_script = _safe_load_script("res://src/ui/panels/EnhancedInformationPanel.gd")
 	if enhanced_script:
 		return enhanced_script.new()
 
@@ -169,7 +169,7 @@ static func _create_modular_info_panel(config: Dictionary) -> Control:
 static func _create_legacy_info_panel(config: Dictionary) -> Control:
 	## Create legacy info panel using existing factory
 
-	var factory_script = _safe_load_script("res://ui/panels/InfoPanelFactory.gd")
+	var factory_script = _safe_load_script("res://src/ui/panels/InfoPanelFactory.gd")
 	if factory_script and factory_script.has_method("create_info_panel"):
 		return factory_script.create_info_panel()
 
@@ -190,7 +190,7 @@ static func _create_ai_assistant_panel(config: Dictionary) -> Control:
 	## Create AI assistant panel component
 
 	# Try to load AI assistant component
-	var ai_script = _safe_load_script("res://ui/components/panels/AIAssistantPanel.gd")
+	var ai_script = _safe_load_script("res://src/ui/components/panels/AIAssistantPanel.gd")
 	if ai_script:
 		var panel = ai_script.new()
 		if panel.has_method("configure"):
@@ -211,7 +211,7 @@ static func _create_ai_assistant_panel(config: Dictionary) -> Control:
 static func _create_header_component(config: Dictionary) -> Control:
 	## Create header component
 	# Try to load the new HeaderComponent
-	var component_script = _safe_load_script("res://ui/components/fragments/HeaderComponent.gd")
+	var component_script = _safe_load_script("res://src/ui/components/fragments/HeaderComponent.gd")
 	if component_script:
 		var header = component_script.new()
 		header.configure_header(config)
@@ -241,7 +241,7 @@ static func _create_header_component(config: Dictionary) -> Control:
 static func _create_content_component(config: Dictionary) -> Control:
 	## Create content component
 	# Try to load the new ContentComponent
-	var component_script = _safe_load_script("res://ui/components/fragments/ContentComponent.gd")
+	var component_script = _safe_load_script("res://src/ui/components/fragments/ContentComponent.gd")
 	if component_script:
 		var content = component_script.new()
 		if content.has_method("configure_content"):
@@ -262,7 +262,7 @@ static func _create_content_component(config: Dictionary) -> Control:
 static func _create_actions_component(config: Dictionary) -> Control:
 	## Create actions component
 	# Try to load the new ActionsComponent
-	var component_script = _safe_load_script("res://ui/components/fragments/ActionsComponent.gd")
+	var component_script = _safe_load_script("res://src/ui/components/fragments/ActionsComponent.gd")
 	if component_script:
 		var actions = component_script.new()
 		if actions.has_method("configure_actions"):
@@ -285,7 +285,7 @@ static func _create_actions_component(config: Dictionary) -> Control:
 static func _create_section_component(config: Dictionary) -> Control:
 	## Create section component
 	# Try to load the new SectionComponent
-	var component_script = _safe_load_script("res://ui/components/fragments/SectionComponent.gd")
+	var component_script = _safe_load_script("res://src/ui/components/fragments/SectionComponent.gd")
 	if component_script:
 		var section = component_script.new()
 		section.configure_section(config)

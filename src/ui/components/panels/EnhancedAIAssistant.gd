@@ -78,7 +78,7 @@ func _setup_component() -> void:
 func _initialize_services() -> void:
     ## Initialize AI and support services
     # AI Service
-    ai_service = preload("res://core/services/AIService.gd").new()
+    ai_service = preload("res://src/core/services/AIService.gd").new()
     add_child(ai_service)
     
     # Context Builder

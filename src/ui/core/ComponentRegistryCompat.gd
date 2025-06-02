@@ -6,7 +6,7 @@ class_name ComponentRegistryCompat
 extends RefCounted
 
 # Load the simplified factory
-const SimplifiedComponentFactory = preload("res://ui/core/SimplifiedComponentFactory.gd")
+const SimplifiedComponentFactory = preload("res://src/ui/core/SimplifiedComponentFactory.gd")
 
 # === STATIC INTERFACE (Drop-in replacement for ComponentRegistry) ===
 static func create_component(component_type: String, config: Dictionary = {}) -> Control:

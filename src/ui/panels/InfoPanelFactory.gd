@@ -38,7 +38,7 @@ static func create_info_panel() -> Control:
 	match current_theme:
 		ThemeMode.MINIMAL:
 			# Try to load minimal panel
-			var minimal_path = "res://ui/panels/minimal_info_panel.gd"
+			var minimal_path = "res://src/ui/panels/minimal_info_panel.gd"
 			if ResourceLoader.exists(minimal_path):
 				var MinimalPanelScript = load(minimal_path)
 				print("[InfoPanelFactory] Creating MINIMAL panel")
@@ -50,7 +50,7 @@ static func create_info_panel() -> Control:
 		
 		ThemeMode.ENHANCED, _:
 			# Use the new enhanced panel as primary option
-			var enhanced_path = "res://ui/panels/EnhancedInformationPanel.gd"
+			var enhanced_path = "res://src/ui/panels/EnhancedInformationPanel.gd"
 			if ResourceLoader.exists(enhanced_path):
 				var EnhancedPanelScript = load(enhanced_path)
 				print("[InfoPanelFactory] Creating ENHANCED panel (Figma-compliant)")
@@ -59,7 +59,7 @@ static func create_info_panel() -> Control:
 				return panel
 			else:
 				# Fallback to unified panel
-				var unified_path = "res://scenes/ui_info_panel_unified.gd"
+				var unified_path = "res://src/scenes/ui_info_panel_unified.gd"
 				if ResourceLoader.exists(unified_path):
 					var UnifiedPanelScript = load(unified_path)
 					print("[InfoPanelFactory] Creating ENHANCED/unified panel")
@@ -68,7 +68,7 @@ static func create_info_panel() -> Control:
 					return panel
 				else:
 					# Fallback to basic panel
-					var basic_path = "res://scenes/ui_info_panel.gd"
+					var basic_path = "res://src/scenes/ui_info_panel.gd"
 					if ResourceLoader.exists(basic_path):
 						var BasicPanelScript = load(basic_path)
 						print("[InfoPanelFactory] Creating basic panel")

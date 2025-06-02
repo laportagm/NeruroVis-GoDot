@@ -4,8 +4,8 @@ class_name HeaderComponent
 extends HBoxContainer
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
+const UIThemeManager = preload("res://src/ui/panels/UIThemeManager.gd")
 
 # === SIGNALS ===
 signal action_triggered(action: String, data: Dictionary)

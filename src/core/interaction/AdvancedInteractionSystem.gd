@@ -11,8 +11,8 @@ class_name AdvancedInteractionSystem
 extends Node
 
 # === DEPENDENCIES ===
-const FeatureFlags = preload("res://core/features/FeatureFlags.gd")
-const StyleEngine = preload("res://ui/theme/StyleEngine.gd")
+const FeatureFlags = preload("res://src/core/features/FeatureFlags.gd")
+const StyleEngine = preload("res://src/ui/theme/StyleEngine.gd")
 
 # === INTERACTION CONSTANTS ===
 const DRAG_THRESHOLD: float = 10.0         # Pixels before drag starts
