@@ -44,7 +44,7 @@ var is_portrait_orientation: bool = false
 var layout_configs: Dictionary = {}
 
 func _ready() -> void:
-	"""Setup responsive system"""
+	## Setup responsive system
 	# Set component ID if not provided
 	if component_id.is_empty():
 		component_id = get_class() + "_" + str(get_instance_id())
@@ -60,7 +60,7 @@ func _ready() -> void:
 		get_viewport().size_changed.connect(_on_viewport_changed)
 
 func _setup_responsive_layouts() -> void:
-	"""Setup layout configurations for different breakpoints"""
+	## Setup layout configurations for different breakpoints
 	layout_configs = {
 		"mobile": {
 			"padding": {"top": 8, "bottom": 8, "left": 8, "right": 8},
@@ -115,7 +115,7 @@ func _setup_responsive_layouts() -> void:
 	}
 
 func _adapt_to_viewport() -> void:
-	"""Adapt component to current viewport size"""
+	## Adapt component to current viewport size
 	if not responsive_enabled:
 		return
 	
@@ -145,7 +145,7 @@ func _adapt_to_viewport() -> void:
 	_apply_responsive_layout()
 
 func _calculate_breakpoint(width: float) -> Breakpoint:
-	"""Calculate breakpoint based on width"""
+	## Calculate breakpoint based on width
 	if width < BREAKPOINT_WIDTHS[Breakpoint.MOBILE]:
 		return Breakpoint.MOBILE
 	elif width < BREAKPOINT_WIDTHS[Breakpoint.TABLET_PORTRAIT]:
@@ -160,7 +160,7 @@ func _calculate_breakpoint(width: float) -> Breakpoint:
 		return Breakpoint.WIDE_DESKTOP
 
 func _apply_responsive_layout() -> void:
-	"""Apply layout for current breakpoint"""
+	## Apply layout for current breakpoint
 	var breakpoint_name = BREAKPOINT_NAMES[current_breakpoint]
 	var layout_config = layout_configs.get(breakpoint_name, {})
 	
@@ -189,7 +189,7 @@ func _apply_responsive_layout() -> void:
 	layout_adapted.emit(breakpoint_name)
 
 func _apply_spacing(layout_config: Dictionary) -> void:
-	"""Apply responsive spacing"""
+	## Apply responsive spacing
 	# Padding
 	if layout_config.has("padding"):
 		var padding = layout_config.padding
@@ -214,7 +214,7 @@ func _apply_spacing(layout_config: Dictionary) -> void:
 		_apply_container_spacing(spacing)
 
 func _apply_container_spacing(spacing: int) -> void:
-	"""Apply spacing to container children"""
+	## Apply spacing to container children
 	for child in get_children():
 		if child is VBoxContainer:
 			child.add_theme_constant_override("separation", spacing)
@@ -225,11 +225,11 @@ func _apply_container_spacing(spacing: int) -> void:
 			child.add_theme_constant_override("v_separation", spacing)
 
 func _apply_typography_scaling(font_scale: float) -> void:
-	"""Apply typography scaling"""
+	## Apply typography scaling
 	_apply_typography_to_children(self, font_scale)
 
 func _apply_typography_to_children(node: Node, scale: float) -> void:
-	"""Recursively apply typography scaling"""
+	## Recursively apply typography scaling
 	if node is Label:
 		var current_size = node.get_theme_font_size("font_size")
 		if current_size <= 0:
@@ -251,11 +251,11 @@ func _apply_typography_to_children(node: Node, scale: float) -> void:
 		_apply_typography_to_children(child, scale)
 
 func _apply_touch_friendly_sizing(button_height: int) -> void:
-	"""Apply touch-friendly sizing"""
+	## Apply touch-friendly sizing
 	_apply_touch_sizing_to_children(self, button_height)
 
 func _apply_touch_sizing_to_children(node: Node, button_height: int) -> void:
-	"""Recursively apply touch-friendly sizing"""
+	## Recursively apply touch-friendly sizing
 	if node is Button:
 		node.custom_minimum_size.y = button_height
 	elif node is LineEdit:
@@ -268,7 +268,7 @@ func _apply_touch_sizing_to_children(node: Node, button_height: int) -> void:
 		_apply_touch_sizing_to_children(child, button_height)
 
 func _apply_responsive_positioning(layout_config: Dictionary) -> void:
-	"""Apply responsive positioning"""
+	## Apply responsive positioning
 	if not layout_config.has("position") or not layout_config.has("panel_width_percent"):
 		return
 	
@@ -298,7 +298,7 @@ func _apply_responsive_positioning(layout_config: Dictionary) -> void:
 			offset_bottom = -16
 
 func _apply_layout_structure(layout_config: Dictionary) -> void:
-	"""Apply layout structure changes"""
+	## Apply layout structure changes
 	if not layout_config.has("stack_vertical"):
 		return
 	
@@ -306,7 +306,7 @@ func _apply_layout_structure(layout_config: Dictionary) -> void:
 	_apply_stacking_to_children(self, should_stack_vertical)
 
 func _apply_stacking_to_children(node: Node, vertical: bool) -> void:
-	"""Apply vertical/horizontal stacking"""
+	## Apply vertical/horizontal stacking
 	for child in node.get_children():
 		if child is HBoxContainer and vertical:
 			# Convert HBox to VBox
@@ -319,7 +319,7 @@ func _apply_stacking_to_children(node: Node, vertical: bool) -> void:
 		_apply_stacking_to_children(child, vertical)
 
 func _convert_container_orientation(container: Container, to_vertical: bool) -> void:
-	"""Convert container orientation"""
+	## Convert container orientation
 	var parent = container.get_parent()
 	if not parent:
 		return
@@ -346,54 +346,55 @@ func _convert_container_orientation(container: Container, to_vertical: bool) -> 
 
 # === EVENT HANDLERS ===
 func _on_viewport_changed() -> void:
-	"""Handle viewport size change"""
+	## Handle viewport size change
 	call_deferred("_adapt_to_viewport")
 
 func _handle_resize() -> void:
-	"""Handle component resize"""
+	## Handle component resize
 	_adapt_to_viewport()
 
 # === PUBLIC API ===
 func set_responsive_enabled(enabled: bool) -> void:
-	"""Enable/disable responsive behavior"""
+	## Enable/disable responsive behavior
 	responsive_enabled = enabled
 	if enabled:
 		_adapt_to_viewport()
 
 func get_current_breakpoint() -> String:
-	"""Get current breakpoint name"""
+	## Get current breakpoint name
 	return BREAKPOINT_NAMES[current_breakpoint]
 
 func get_current_breakpoint_enum() -> Breakpoint:
-	"""Get current breakpoint enum"""
+	## Get current breakpoint enum
 	return current_breakpoint
 
 func is_mobile_size() -> bool:
-	"""Check if current size is mobile"""
+	## Check if current size is mobile
 	return current_breakpoint == Breakpoint.MOBILE
 
 func is_tablet_size() -> bool:
-	"""Check if current size is tablet"""
-	return current_breakpoint in [Breakpoint.TABLET_PORTRAIT, Breakpoint.TABLET_LANDSCAPE]
+	## Check if current size is tablet
+	return current_breakpoint == Breakpoint.TABLET_PORTRAIT or current_breakpoint == Breakpoint.TABLET_LANDSCAPE
 
 func is_desktop_size() -> bool:
-	"""Check if current size is desktop"""
-	return current_breakpoint in [Breakpoint.DESKTOP, Breakpoint.WIDE_DESKTOP]
+	## Check if current size is desktop
+	return current_breakpoint == Breakpoint.DESKTOP or current_breakpoint == Breakpoint.WIDE_DESKTOP
 
-func set_custom_layout_config(breakpoint: String, config: Dictionary) -> void:
-	"""Set custom layout configuration for a breakpoint"""
+func set_custom_layout_config(breakpoint: String, config: Dictionary):
 	layout_configs[breakpoint] = config
-	if get_current_breakpoint() == breakpoint:
-		_apply_responsive_layout()
 
-func get_layout_config(breakpoint: String = "") -> Dictionary:
-	"""Get layout configuration for breakpoint"""
+func get_layout_config(breakpoint: String) -> Dictionary:
+	## Get layout configuration for breakpoint
 	if breakpoint.is_empty():
 		breakpoint = get_current_breakpoint()
 	return layout_configs.get(breakpoint, {})
 
+func get_current_layout_config() -> Dictionary:
+	## Get layout configuration for current breakpoint
+	return get_layout_config(get_current_breakpoint())
+
 func force_breakpoint(breakpoint: String) -> void:
-	"""Force a specific breakpoint for testing"""
+	## Force a specific breakpoint for testing
 	if breakpoint in BREAKPOINT_NAMES.values():
 		for bp in BREAKPOINT_NAMES:
 			if BREAKPOINT_NAMES[bp] == breakpoint:
@@ -403,7 +404,7 @@ func force_breakpoint(breakpoint: String) -> void:
 
 # === UTILITY METHODS ===
 func _log(message: String, level: String = "info") -> void:
-	"""Component logging"""
+	## Component logging
 	if not enable_logging:
 		return
 	

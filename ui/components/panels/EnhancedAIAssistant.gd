@@ -61,7 +61,7 @@ var context_builder: ContextBuilder
 var response_formatter: ResponseFormatter
 
 func _setup_component() -> void:
-    """Setup enhanced AI assistant interface"""
+    ## Setup enhanced AI assistant interface
     super._setup_component()
     
     panel_title = "AI Assistant"
@@ -76,7 +76,7 @@ func _setup_component() -> void:
     _update_suggestions()
 
 func _initialize_services() -> void:
-    """Initialize AI and support services"""
+    ## Initialize AI and support services
     # AI Service
     ai_service = preload("res://core/services/AIService.gd").new()
     add_child(ai_service)
@@ -90,7 +90,7 @@ func _initialize_services() -> void:
     add_child(response_formatter)
 
 func _create_enhanced_ui() -> void:
-    """Create enhanced UI with all features"""
+    ## Create enhanced UI with all features
     var main_container = VBoxContainer.new()
     main_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     main_container.add_theme_constant_override("separation", 8)
@@ -117,7 +117,7 @@ func _create_enhanced_ui() -> void:
     add_child(source_panel)
 
 func _create_header() -> Control:
-    """Create header with mode selector"""
+    ## Create header with mode selector
     var header = HBoxContainer.new()
     header.add_theme_constant_override("separation", 12)
     
@@ -155,7 +155,7 @@ func _create_header() -> Control:
     return header
 
 func _create_chat_area() -> ScrollContainer:
-    """Create scrollable chat area"""
+    ## Create scrollable chat area
     var scroll = ScrollContainer.new()
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.custom_minimum_size.y = 400
@@ -171,7 +171,7 @@ func _create_chat_area() -> ScrollContainer:
     return scroll
 
 func _create_suggestions_area() -> HBoxContainer:
-    """Create question suggestions area"""
+    ## Create question suggestions area
     var container = HBoxContainer.new()
     container.add_theme_constant_override("separation", 8)
     
@@ -186,7 +186,7 @@ func _create_suggestions_area() -> HBoxContainer:
     return container
 
 func _create_input_area() -> Control:
-    """Create input area with text field and buttons"""
+    ## Create input area with text field and buttons
     var container = HBoxContainer.new()
     container.add_theme_constant_override("separation", 8)
     
@@ -215,7 +215,7 @@ func _create_input_area() -> Control:
     return container
 
 func _create_source_panel() -> Panel:
-    """Create panel for showing sources"""
+    ## Create panel for showing sources
     var panel = Panel.new()
     panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
     panel.custom_minimum_size.y = 100
@@ -253,27 +253,27 @@ func _create_source_panel() -> Panel:
 
 # === PUBLIC API ===
 func set_educational_mode(mode: EducationalMode) -> void:
-    """Set the educational mode"""
+    ## Set the educational mode
     current_mode = mode
     mode_selector.selected = mode
     _update_suggestions()
     mode_changed.emit(_get_mode_name(mode))
 
 func set_current_structure(structure_id: String) -> void:
-    """Set the current brain structure context"""
+    ## Set the current brain structure context
     if current_structure != structure_id:
         current_structure = structure_id
         _add_system_message("Now viewing: " + _get_structure_name(structure_id))
         _update_suggestions()
 
 func ask_question(question: String, auto_send: bool = true) -> void:
-    """Ask a question programmatically"""
+    ## Ask a question programmatically
     input_field.text = question
     if auto_send:
         _on_send_pressed()
 
 func clear_history() -> void:
-    """Clear conversation history"""
+    ## Clear conversation history
     conversation_history.clear()
     for child in chat_messages.get_children():
         child.queue_free()
@@ -281,7 +281,7 @@ func clear_history() -> void:
 
 # === QUESTION HANDLING ===
 func _on_send_pressed() -> void:
-    """Handle send button press"""
+    ## Handle send button press
     var question = input_field.text.strip_edges()
     if question.is_empty() or is_processing:
         return
@@ -290,11 +290,11 @@ func _on_send_pressed() -> void:
     input_field.clear()
 
 func _on_input_submitted(text: String) -> void:
-    """Handle enter key in input field"""
+    ## Handle enter key in input field
     _on_send_pressed()
 
 func _process_question(question: String) -> void:
-    """Process user question"""
+    ## Process user question
     is_processing = true
     send_button.disabled = true
     
@@ -327,7 +327,7 @@ func _process_question(question: String) -> void:
     _update_suggestions()
 
 func _build_context(question: String) -> Dictionary:
-    """Build context for AI request"""
+    ## Build context for AI request
     return context_builder.build_context({
         "structure": current_structure,
         "mode": current_mode,
@@ -338,7 +338,7 @@ func _build_context(question: String) -> Dictionary:
     })
 
 func _detect_question_type(question: String) -> QuestionType:
-    """Detect the type of question being asked"""
+    ## Detect the type of question being asked
     var lower_question = question.to_lower()
     
     if "how does" in lower_question or "function" in lower_question:
@@ -357,7 +357,7 @@ func _detect_question_type(question: String) -> QuestionType:
         return QuestionType.GENERAL
 
 func _process_response(response: Dictionary) -> void:
-    """Process AI response and display"""
+    ## Process AI response and display
     var formatted_response = response_formatter.format_response(response, current_mode)
     
     # Add AI message
@@ -379,7 +379,7 @@ func _process_response(response: Dictionary) -> void:
 
 # === SUGGESTIONS SYSTEM ===
 func _update_suggestions() -> void:
-    """Update question suggestions based on context"""
+    ## Update question suggestions based on context
     if not auto_suggest:
         return
     
@@ -401,7 +401,7 @@ func _update_suggestions() -> void:
         suggestions_container.add_child(btn)
 
 func _generate_suggestions() -> Array:
-    """Generate contextual question suggestions"""
+    ## Generate contextual question suggestions
     var suggestions = []
     
     if current_structure.is_empty():
@@ -454,26 +454,26 @@ func _generate_suggestions() -> Array:
     return suggestions
 
 func _on_suggestion_pressed(suggestion: String) -> void:
-    """Handle suggestion button press"""
+    ## Handle suggestion button press
     input_field.text = suggestion
     _on_send_pressed()
     suggestion_selected.emit(suggestion)
 
 # === UI HELPERS ===
 func _add_user_message(text: String) -> void:
-    """Add user message to chat"""
+    ## Add user message to chat
     var message = _create_message_bubble(text, true)
     chat_messages.add_child(message)
     _scroll_to_bottom()
 
 func _add_ai_message(text: String) -> void:
-    """Add AI message to chat"""
+    ## Add AI message to chat
     var message = _create_message_bubble(text, false)
     chat_messages.add_child(message)
     _scroll_to_bottom()
 
 func _add_system_message(text: String) -> void:
-    """Add system message to chat"""
+    ## Add system message to chat
     var message = Label.new()
     message.text = text
     message.add_theme_color_override("font_color", DesignSystem.get_color("text_muted"))
@@ -483,7 +483,7 @@ func _add_system_message(text: String) -> void:
     _scroll_to_bottom()
 
 func _create_message_bubble(text: String, is_user: bool) -> Control:
-    """Create a chat message bubble"""
+    ## Create a chat message bubble
     var container = HBoxContainer.new()
     
     if is_user:
@@ -525,7 +525,7 @@ func _create_message_bubble(text: String, is_user: bool) -> Control:
     return container
 
 func _add_typing_indicator() -> Control:
-    """Add typing indicator"""
+    ## Add typing indicator
     var indicator = _create_message_bubble("...", false)
     chat_messages.add_child(indicator)
     
@@ -540,19 +540,19 @@ func _add_typing_indicator() -> Control:
     return indicator
 
 func _scroll_to_bottom() -> void:
-    """Scroll chat to bottom"""
+    ## Scroll chat to bottom
     await get_tree().process_frame
     chat_container.scroll_vertical = chat_container.get_v_scroll_bar().max_value
 
 # === VOICE INPUT ===
 func _on_voice_pressed() -> void:
-    """Handle voice input button"""
+    ## Handle voice input button
     # TODO: Implement voice input
     _add_system_message("Voice input not yet implemented")
 
 # === SETTINGS ===
 func _on_settings_pressed() -> void:
-    """Open AI settings dialog"""
+    ## Open AI settings dialog
     var dialog = AcceptDialog.new()
     dialog.title = "AI Assistant Settings"
     dialog.dialog_hide_on_ok = true
@@ -598,7 +598,7 @@ func _on_settings_pressed() -> void:
 
 # === UTILITY METHODS ===
 func _get_mode_name(mode: EducationalMode) -> String:
-    """Get display name for mode"""
+    ## Get display name for mode
     match mode:
         EducationalMode.BEGINNER: return "Beginner"
         EducationalMode.STUDENT: return "Student"
@@ -608,7 +608,7 @@ func _get_mode_name(mode: EducationalMode) -> String:
         _: return "Unknown"
 
 func _get_structure_name(structure_id: String) -> String:
-    """Get display name for structure"""
+    ## Get display name for structure
     # Query knowledge service
     if KnowledgeService and KnowledgeService.is_ready():
         var data = KnowledgeService.get_structure(structure_id)
@@ -617,12 +617,12 @@ func _get_structure_name(structure_id: String) -> String:
     return structure_id.capitalize()
 
 func _get_recent_history(count: int) -> Array:
-    """Get recent conversation history"""
+    ## Get recent conversation history
     var start = max(0, conversation_history.size() - count)
     return conversation_history.slice(start)
 
 func _create_suggestion_style() -> StyleBoxFlat:
-    """Create style for suggestion buttons"""
+    ## Create style for suggestion buttons
     var style = StyleBoxFlat.new()
     style.bg_color = DesignSystem.get_color("surface_light")
     style.corner_radius_top_left = 16
@@ -636,7 +636,7 @@ func _create_suggestion_style() -> StyleBoxFlat:
     return style
 
 func _show_sources(sources: Array) -> void:
-    """Show sources panel"""
+    ## Show sources panel
     source_panel.visible = true
     
     var content = source_panel.get_child(0)
@@ -654,11 +654,11 @@ func _show_sources(sources: Array) -> void:
         content.add_child(label)
 
 func _on_mode_changed(index: int) -> void:
-    """Handle mode change"""
+    ## Handle mode change
     set_educational_mode(index)
 
 func _on_language_changed(index: int) -> void:
-    """Handle language change"""
+    ## Handle language change
     match index:
         0: current_language = "en"
         1: current_language = "es"
@@ -667,7 +667,7 @@ func _on_language_changed(index: int) -> void:
 
 # === INNER CLASSES ===
 class ContextBuilder:
-    """Builds context for AI requests"""
+    ## Builds context for AI requests
     
     func build_context(params: Dictionary) -> Dictionary:
         var context = {
@@ -696,7 +696,7 @@ class ContextBuilder:
         return context
 
 class ResponseFormatter:
-    """Formats AI responses based on mode"""
+    ## Formats AI responses based on mode
     
     func format_response(response: Dictionary, mode: EducationalMode) -> Dictionary:
         var formatted = {

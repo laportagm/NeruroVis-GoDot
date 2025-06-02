@@ -42,7 +42,7 @@ var validation_start_time: float = 0.0
 
 ## Run comprehensive startup validation
 func validate_startup() -> Dictionary:
-	"""Run all validation checks and return results"""
+	## Run all validation checks and return results
 	if is_validating:
 		push_warning("[StartupValidator] Validation already in progress")
 		return {}
@@ -72,7 +72,7 @@ func validate_startup() -> Dictionary:
 
 ## Get validation summary
 func get_validation_summary() -> String:
-	"""Get a human-readable summary of validation results"""
+	## Get a human-readable summary of validation results
 	var summary = "=== NEUROVIS STARTUP VALIDATION ===\n"
 	summary += "Timestamp: " + validation_results.get("timestamp", "Unknown") + "\n"
 	summary += "Duration: %.2fs\n\n" % validation_results.get("total_time", 0.0)
@@ -116,7 +116,7 @@ func get_validation_summary() -> String:
 # === VALIDATION METHODS ===
 
 func _validate_autoloads() -> void:
-	"""Validate all required autoloads are present and initialized"""
+	## Validate all required autoloads are present and initialized
 	print("[StartupValidator] Validating autoloads...")
 	validation_progress.emit(ValidationCategory.AUTOLOADS, 0.0)
 	
@@ -154,7 +154,7 @@ func _validate_autoloads() -> void:
 	validation_results["autoloads"] = results
 
 func _validate_resources() -> void:
-	"""Validate critical resources are available"""
+	## Validate critical resources are available
 	print("[StartupValidator] Validating resources...")
 	validation_progress.emit(ValidationCategory.RESOURCES, 0.0)
 	
@@ -182,7 +182,7 @@ func _validate_resources() -> void:
 	validation_results["resources"] = results
 
 func _validate_ui_components() -> void:
-	"""Validate UI components can be created"""
+	## Validate UI components can be created
 	print("[StartupValidator] Validating UI components...")
 	validation_progress.emit(ValidationCategory.UI_COMPONENTS, 0.0)
 	
@@ -212,7 +212,7 @@ func _validate_ui_components() -> void:
 	validation_results["ui_components"] = results
 
 func _validate_educational_content() -> void:
-	"""Validate educational content is accessible"""
+	## Validate educational content is accessible
 	print("[StartupValidator] Validating educational content...")
 	validation_progress.emit(ValidationCategory.EDUCATIONAL_CONTENT, 0.0)
 	
@@ -258,7 +258,7 @@ func _validate_educational_content() -> void:
 	validation_results["educational_content"] = results
 
 func _validate_performance() -> void:
-	"""Validate performance metrics"""
+	## Validate performance metrics
 	print("[StartupValidator] Validating performance...")
 	validation_progress.emit(ValidationCategory.PERFORMANCE, 0.0)
 	
@@ -291,7 +291,7 @@ func _validate_performance() -> void:
 	validation_results["performance"] = results
 
 func _validate_accessibility() -> void:
-	"""Validate accessibility features"""
+	## Validate accessibility features
 	print("[StartupValidator] Validating accessibility...")
 	validation_progress.emit(ValidationCategory.ACCESSIBILITY, 0.0)
 	
@@ -318,7 +318,7 @@ func _validate_accessibility() -> void:
 
 ## Print validation report to console
 func print_validation_report() -> void:
-	"""Print detailed validation report"""
+	## Print detailed validation report
 	print("\n" + get_validation_summary())
 	
 	# Print detailed results by category
@@ -344,7 +344,7 @@ func print_validation_report() -> void:
 
 ## Save validation report to file
 func save_validation_report(file_path: String = "user://startup_validation.log") -> void:
-	"""Save validation report to file"""
+	## Save validation report to file
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	if file:
 		file.store_string(get_validation_summary())

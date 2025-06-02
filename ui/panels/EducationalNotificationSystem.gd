@@ -105,7 +105,7 @@ func _ready() -> void:
 	print("[NOTIFICATION_SYSTEM] Educational notification system initialized")
 
 func _setup_notification_system() -> void:
-	"""Setup the notification display system"""
+	## Setup the notification display system
 	# Create notifications container
 	notifications_container = VBoxContainer.new()
 	notifications_container.name = "NotificationsContainer"
@@ -118,29 +118,29 @@ func _setup_notification_system() -> void:
 	z_index = 2000
 
 func _position_container() -> void:
-	"""Position notification container in top-right corner"""
+	## Position notification container in top-right corner
 	set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	notifications_container.position = Vector2(-20, 20)
 
 # Public interface for showing notifications
 func show_info(title: String, message: String, duration: float = DEFAULT_DURATION) -> void:
-	"""Show informational notification"""
+	## Show informational notification
 	_queue_notification(NotificationType.INFO, title, message, duration)
 
 func show_success(title: String, message: String, duration: float = DEFAULT_DURATION) -> void:
-	"""Show success notification"""
+	## Show success notification
 	_queue_notification(NotificationType.SUCCESS, title, message, duration)
 
 func show_warning(title: String, message: String, duration: float = DEFAULT_DURATION) -> void:
-	"""Show warning notification"""
+	## Show warning notification
 	_queue_notification(NotificationType.WARNING, title, message, duration)
 
 func show_error(title: String, message: String, duration: float = DEFAULT_DURATION) -> void:
-	"""Show error notification"""
+	## Show error notification
 	_queue_notification(NotificationType.ERROR, title, message, duration)
 
 func show_learning_tip(tip_category: String = "") -> void:
-	"""Show educational learning tip"""
+	## Show educational learning tip
 	var tips_in_category = learning_tips
 	if tip_category != "":
 		tips_in_category = learning_tips.filter(func(tip): return tip.get("category", "") == tip_category)
@@ -152,7 +152,7 @@ func show_learning_tip(tip_category: String = "") -> void:
 	_queue_notification(NotificationType.LEARNING_TIP, random_tip["title"], random_tip["message"], LEARNING_TIP_DURATION)
 
 func show_achievement(achievement_id: String, custom_data: Dictionary = {}) -> void:
-	"""Show achievement notification"""
+	## Show achievement notification
 	if not learning_achievements.has(achievement_id):
 		print("[NOTIFICATION_SYSTEM] Unknown achievement: " + achievement_id)
 		return
@@ -180,7 +180,7 @@ func show_achievement(achievement_id: String, custom_data: Dictionary = {}) -> v
 	emit_signal("achievement_unlocked", achievement_id)
 
 func show_progress_update(milestone_type: String, current_value: int, target_value: int = 0) -> void:
-	"""Show learning progress update"""
+	## Show learning progress update
 	var title = "📊 Progress Update"
 	var message = ""
 	
@@ -202,7 +202,7 @@ func show_progress_update(milestone_type: String, current_value: int, target_val
 	emit_signal("learning_milestone_reached", milestone_type, current_value)
 
 func show_discovery(structure_name: String, interesting_fact: String = "") -> void:
-	"""Show discovery notification when user finds something new"""
+	## Show discovery notification when user finds something new
 	var title = "🔍 New Discovery!"
 	var message = "You discovered: " + structure_name
 	
@@ -212,7 +212,7 @@ func show_discovery(structure_name: String, interesting_fact: String = "") -> vo
 	_queue_notification(NotificationType.DISCOVERY, title, message, LEARNING_TIP_DURATION)
 
 func _queue_notification(type: NotificationType, title: String, message: String, duration: float, extra_data: Dictionary = {}) -> void:
-	"""Queue notification for display"""
+	## Queue notification for display
 	var notification_data = {
 		"type": type,
 		"title": title,
@@ -227,13 +227,13 @@ func _queue_notification(type: NotificationType, title: String, message: String,
 	_process_notification_queue()
 
 func _process_notification_queue() -> void:
-	"""Process queued notifications"""
+	## Process queued notifications
 	while notification_queue.size() > 0 and active_notifications.size() < MAX_NOTIFICATIONS:
 		var notification_data = notification_queue.pop_front()
 		_create_notification(notification_data)
 
 func _create_notification(data: Dictionary) -> void:
-	"""Create and display a notification"""
+	## Create and display a notification
 	var notification = _build_notification_ui(data)
 	
 	# Add to container and track
@@ -254,7 +254,7 @@ func _create_notification(data: Dictionary) -> void:
 	print("[NOTIFICATION_SYSTEM] Showing notification: " + data["title"])
 
 func _build_notification_ui(data: Dictionary) -> Control:
-	"""Build sophisticated notification UI"""
+	## Build sophisticated notification UI
 	var notification = PanelContainer.new()
 	notification.name = "Notification_" + data["id"]
 	notification.custom_minimum_size = Vector2(320, 0)
@@ -333,7 +333,7 @@ func _build_notification_ui(data: Dictionary) -> Control:
 	return notification
 
 func _get_notification_style_variant(type: NotificationType) -> String:
-	"""Get style variant based on notification type"""
+	## Get style variant based on notification type
 	match type:
 		NotificationType.ACHIEVEMENT, NotificationType.DISCOVERY:
 			return "highlight"
@@ -345,7 +345,7 @@ func _get_notification_style_variant(type: NotificationType) -> String:
 			return "standard"
 
 func _get_notification_color(type: NotificationType, extra_data: Dictionary = {}) -> Color:
-	"""Get color based on notification type"""
+	## Get color based on notification type
 	match type:
 		NotificationType.INFO:
 			return UIThemeManager.ACCENT_BLUE
@@ -367,7 +367,7 @@ func _get_notification_color(type: NotificationType, extra_data: Dictionary = {}
 			return UIThemeManager.ACCENT_BLUE
 
 func _get_notification_icon(type: NotificationType, extra_data: Dictionary = {}) -> String:
-	"""Get icon based on notification type"""
+	## Get icon based on notification type
 	match type:
 		NotificationType.INFO:
 			return "ℹ️"
@@ -389,7 +389,7 @@ func _get_notification_icon(type: NotificationType, extra_data: Dictionary = {})
 			return "📢"
 
 func _animate_notification_entrance(notification: Control) -> void:
-	"""Animate notification entrance"""
+	## Animate notification entrance
 	# Start off-screen to the right
 	notification.position.x = 400
 	notification.modulate.a = 0.0
@@ -401,7 +401,7 @@ func _animate_notification_entrance(notification: Control) -> void:
 	tween.tween_property(notification, "modulate:a", 1.0, SLIDE_IN_DURATION * 0.5).set_ease(Tween.EASE_OUT)
 
 func _animate_notification_exit(notification: Control) -> void:
-	"""Animate notification exit"""
+	## Animate notification exit
 	var tween = notification.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(notification, "position:x", 400, SLIDE_OUT_DURATION).set_ease(Tween.EASE_IN)
@@ -414,7 +414,7 @@ func _animate_notification_exit(notification: Control) -> void:
 	)
 
 func _remove_notification(notification: Control) -> void:
-	"""Remove notification with animation"""
+	## Remove notification with animation
 	if notification in active_notifications:
 		active_notifications.erase(notification)
 	
@@ -424,39 +424,39 @@ func _remove_notification(notification: Control) -> void:
 	get_tree().create_timer(SLIDE_OUT_DURATION).timeout.connect(_process_notification_queue)
 
 func _generate_notification_id() -> String:
-	"""Generate unique notification ID"""
+	## Generate unique notification ID
 	return "notif_" + str(Time.get_unix_time_from_system()) + "_" + str(randi())
 
 func _on_notification_clicked(data: Dictionary, event: InputEvent) -> void:
-	"""Handle notification click"""
+	## Handle notification click
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		print("[NOTIFICATION_SYSTEM] Notification clicked: " + data["id"])
 		emit_signal("notification_clicked", data["id"], data)
 
 # Achievement tracking helpers
 func track_structure_viewed(structure_id: String) -> void:
-	"""Track when user views a structure"""
+	## Track when user views a structure
 	# This would integrate with a persistence system
 	# For now, just show achievement for first view
 	show_achievement("first_structure_viewed")
 
 func track_quiz_completion(score: int) -> void:
-	"""Track quiz completion"""
+	## Track quiz completion
 	show_achievement("quiz_completed", {"score": score})
 
 func track_bookmark_created(total_bookmarks: int) -> void:
-	"""Track bookmark milestones"""
+	## Track bookmark milestones
 	if total_bookmarks in [1, 5, 10, 25, 50]:
 		show_achievement("bookmark_milestone", {"count": total_bookmarks})
 
 func track_learning_streak(days: int) -> void:
-	"""Track learning streak milestones"""
+	## Track learning streak milestones
 	if days in [3, 7, 14, 30, 60]:
 		show_achievement("learning_streak", {"days": days})
 
 # Learning tip helpers
 func show_contextual_tip(context: String) -> void:
-	"""Show tip based on user's current context"""
+	## Show tip based on user's current context
 	match context:
 		"first_visit":
 			show_learning_tip("study_strategy")
@@ -471,18 +471,18 @@ func show_contextual_tip(context: String) -> void:
 
 # Public utility functions
 func clear_all_notifications() -> void:
-	"""Clear all active notifications"""
+	## Clear all active notifications
 	for notification in active_notifications:
 		_remove_notification(notification)
 	
 	notification_queue.clear()
 
 func get_active_notification_count() -> int:
-	"""Get number of active notifications"""
+	## Get number of active notifications
 	return active_notifications.size()
 
 func has_notification_type(type: NotificationType) -> bool:
-	"""Check if notification of specific type is active"""
+	## Check if notification of specific type is active
 	for notification in active_notifications:
 		var data = notification.get_meta("notification_data", {})
 		if data.get("type", -1) == type:
@@ -491,22 +491,22 @@ func has_notification_type(type: NotificationType) -> bool:
 
 # Educational content management
 func add_custom_achievement(achievement_id: String, achievement_data: Dictionary) -> void:
-	"""Add custom achievement to the system"""
+	## Add custom achievement to the system
 	learning_achievements[achievement_id] = achievement_data
 	print("[NOTIFICATION_SYSTEM] Added custom achievement: " + achievement_id)
 
 func add_custom_learning_tip(tip_data: Dictionary) -> void:
-	"""Add custom learning tip"""
+	## Add custom learning tip
 	learning_tips.append(tip_data)
 	print("[NOTIFICATION_SYSTEM] Added custom learning tip")
 
 # Cleanup
 func dispose() -> void:
-	"""Clean up notification system"""
+	## Clean up notification system
 	clear_all_notifications()
 	learning_achievements.clear()
 	learning_tips.clear()
 
 func _exit_tree() -> void:
-	"""Cleanup on removal"""
+	## Cleanup on removal
 	dispose()

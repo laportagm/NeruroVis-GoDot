@@ -32,7 +32,7 @@ func _ready() -> void:
 	_apply_actions_styling()
 
 func _setup_actions_structure() -> void:
-	"""Setup the actions layout"""
+	## Setup the actions layout
 	
 	# Configure container
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -45,7 +45,7 @@ func _setup_actions_structure() -> void:
 	add_theme_constant_override("margin_bottom", UIThemeManager.get_spacing("md"))
 
 func _apply_actions_styling() -> void:
-	"""Apply styling to actions container"""
+	## Apply styling to actions container
 	
 	# Add subtle top border
 	var style = StyleBoxFlat.new()
@@ -56,7 +56,7 @@ func _apply_actions_styling() -> void:
 
 # === PUBLIC API ===
 func configure_actions(config: Dictionary) -> void:
-	"""Configure actions with settings"""
+	## Configure actions with settings
 	actions_config = config.duplicate()
 	
 	# Set layout mode
@@ -78,7 +78,7 @@ func configure_actions(config: Dictionary) -> void:
 		_update_button_sizes()
 
 func add_action_button(action_config: Dictionary) -> Button:
-	"""Add an action button with configuration"""
+	## Add an action button with configuration
 	var action = action_config.get("action", action_config.get("text", "action"))
 	var text = action_config.get("text", action.capitalize())
 	var icon = action_config.get("icon", "")
@@ -123,7 +123,7 @@ func add_action_button(action_config: Dictionary) -> Button:
 	return button
 
 func remove_action_button(action: String) -> void:
-	"""Remove an action button"""
+	## Remove an action button
 	if action_buttons.has(action):
 		var button = action_buttons[action]
 		var group = button.get_meta("group", "")
@@ -136,21 +136,21 @@ func remove_action_button(action: String) -> void:
 		button_removed.emit(action)
 
 func get_action_button(action: String) -> Button:
-	"""Get action button by action name"""
+	## Get action button by action name
 	return action_buttons.get(action)
 
 func enable_action(action: String, enabled: bool = true) -> void:
-	"""Enable or disable an action button"""
+	## Enable or disable an action button
 	if action_buttons.has(action):
 		action_buttons[action].disabled = not enabled
 
 func set_action_visible(action: String, visible: bool = true) -> void:
-	"""Show or hide an action button"""
+	## Show or hide an action button
 	if action_buttons.has(action):
 		action_buttons[action].visible = visible
 
 func add_separator() -> void:
-	"""Add a visual separator between button groups"""
+	## Add a visual separator between button groups
 	var separator = VSeparator.new()
 	separator.custom_minimum_size = Vector2(2, button_size.y)
 	separator.name = "Separator_" + str(separator_count)
@@ -158,7 +158,7 @@ func add_separator() -> void:
 	add_child(separator)
 
 func update_responsive_config(config: Dictionary) -> void:
-	"""Update actions for responsive layout"""
+	## Update actions for responsive layout
 	is_mobile = config.get("is_mobile", false)
 	
 	if is_mobile:
@@ -180,7 +180,7 @@ func update_responsive_config(config: Dictionary) -> void:
 	_update_button_sizes()
 
 func apply_theme(theme: String) -> void:
-	"""Apply theme to actions"""
+	## Apply theme to actions
 	current_theme = theme
 	
 	# Update all buttons with theme
@@ -191,7 +191,7 @@ func apply_theme(theme: String) -> void:
 
 # === PRIVATE METHODS ===
 func _setup_action_buttons(buttons_config: Array) -> void:
-	"""Setup action buttons from configuration"""
+	## Setup action buttons from configuration
 	
 	# Clear existing buttons
 	for child in get_children():
@@ -209,7 +209,7 @@ func _setup_action_buttons(buttons_config: Array) -> void:
 			add_action_button({"action": button_config, "text": button_config.capitalize()})
 
 func _update_layout_mode() -> void:
-	"""Update container layout based on mode"""
+	## Update container layout based on mode
 	match actions_layout_mode:
 		"vertical":
 			# For vertical layout, just change alignment
@@ -223,7 +223,7 @@ func _update_layout_mode() -> void:
 			alignment = BoxContainer.ALIGNMENT_CENTER
 
 func _update_button_sizes() -> void:
-	"""Update all button sizes"""
+	## Update all button sizes
 	for action in action_buttons:
 		var button = action_buttons[action]
 		var is_icon_only = button.text.length() <= 2  # Assuming icon buttons are short
@@ -234,7 +234,7 @@ func _update_button_sizes() -> void:
 			button.custom_minimum_size = button_size
 
 func _add_to_group(button: Button, group_name: String) -> void:
-	"""Add button to a named group"""
+	## Add button to a named group
 	if not button_groups.has(group_name):
 		# Create group container
 		var group_container = HBoxContainer.new()
@@ -246,7 +246,7 @@ func _add_to_group(button: Button, group_name: String) -> void:
 	button_groups[group_name].add_child(button)
 
 func _remove_from_group(button: Button, group_name: String) -> void:
-	"""Remove button from group"""
+	## Remove button from group
 	if button_groups.has(group_name):
 		var group_container = button_groups[group_name]
 		if button.get_parent() == group_container:
@@ -258,7 +258,7 @@ func _remove_from_group(button: Button, group_name: String) -> void:
 				button_groups.erase(group_name)
 
 func _get_default_tooltip(action: String) -> String:
-	"""Get default tooltip for action"""
+	## Get default tooltip for action
 	var tooltips = {
 		"notes": "Add study notes for this structure",
 		"related": "Show related structures",
@@ -274,7 +274,7 @@ func _get_default_tooltip(action: String) -> String:
 	return tooltips.get(action, "Action: " + action.capitalize())
 
 func _on_action_button_pressed(action: String, config: Dictionary) -> void:
-	"""Handle action button press"""
+	## Handle action button press
 	
 	# Add button press animation
 	if action_buttons.has(action) and FeatureFlags.is_enabled(FeatureFlags.ADVANCED_ANIMATIONS):
@@ -289,7 +289,7 @@ func _on_action_button_pressed(action: String, config: Dictionary) -> void:
 
 # === PRESET CONFIGURATIONS ===
 func apply_preset(preset_name: String) -> void:
-	"""Apply a preset button configuration"""
+	## Apply a preset button configuration
 	match preset_name:
 		"educational":
 			configure_actions({
@@ -329,13 +329,13 @@ func apply_preset(preset_name: String) -> void:
 
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> ActionsComponent:
-	"""Factory method to create configured actions"""
+	## Factory method to create configured actions
 	var actions = ActionsComponent.new()
 	actions.configure_actions(config)
 	return actions
 
 static func create_with_preset(preset_name: String) -> ActionsComponent:
-	"""Factory method to create actions with preset"""
+	## Factory method to create actions with preset
 	var actions = ActionsComponent.new()
 	actions.apply_preset(preset_name)
 	return actions

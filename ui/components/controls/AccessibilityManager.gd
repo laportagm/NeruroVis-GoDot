@@ -44,13 +44,13 @@ const TOUCH_TARGET_SIZES = {
 
 # === INITIALIZATION ===
 static func initialize() -> void:
-	"""Initialize accessibility system"""
+	## Initialize accessibility system
 	_load_accessibility_settings()
 	_setup_global_shortcuts()
 	print("[AccessibilityManager] Accessibility system initialized")
 
 static func _load_accessibility_settings() -> void:
-	"""Load accessibility settings from user preferences"""
+	## Load accessibility settings from user preferences
 	# In a real implementation, load from user settings file
 	accessibility_enabled = true
 	keyboard_navigation_enabled = true
@@ -59,13 +59,13 @@ static func _load_accessibility_settings() -> void:
 	font_size_scale = 1.0
 
 static func _setup_global_shortcuts() -> void:
-	"""Setup global accessibility shortcuts"""
+	## Setup global accessibility shortcuts
 	# These would be connected to the main scene's input handling
 	pass
 
 # === COMPONENT REGISTRATION ===
 static func register_component(component: Control) -> void:
-	"""Register a component for accessibility features"""
+	## Register a component for accessibility features
 	if not accessibility_enabled or not component:
 		return
 	
@@ -73,7 +73,7 @@ static func register_component(component: Control) -> void:
 	_add_to_navigation_group(component)
 
 static func _setup_component_accessibility(component: Control) -> void:
-	"""Setup accessibility features for a component"""
+	## Setup accessibility features for a component
 	# Set focus mode if not set
 	if component.focus_mode == Control.FOCUS_NONE:
 		if component is Button or component is LineEdit or component is OptionButton:
@@ -96,7 +96,7 @@ static func _setup_component_accessibility(component: Control) -> void:
 	_apply_accessibility_styling(component)
 
 static func _setup_aria_properties(component: Control) -> void:
-	"""Setup ARIA-like properties for screen readers"""
+	## Setup ARIA-like properties for screen readers
 	if not component.has_meta("accessibility_role"):
 		var role = _determine_component_role(component)
 		component.set_meta("accessibility_role", role)
@@ -110,7 +110,7 @@ static func _setup_aria_properties(component: Control) -> void:
 		component.set_meta("accessibility_description", component.tooltip_text)
 
 static func _determine_component_role(component: Control) -> String:
-	"""Determine ARIA role for component"""
+	## Determine ARIA role for component
 	if component is Button:
 		return "button"
 	elif component is Label:
@@ -133,7 +133,7 @@ static func _determine_component_role(component: Control) -> String:
 		return "generic"
 
 static func _add_focus_indicators(component: Control) -> void:
-	"""Add enhanced focus indicators"""
+	## Add enhanced focus indicators
 	if not component.has_signal("focus_entered"):
 		return
 	
@@ -141,14 +141,14 @@ static func _add_focus_indicators(component: Control) -> void:
 	component.focus_exited.connect(_on_component_focus_exited.bind(component))
 
 static func _setup_keyboard_navigation(component: Control) -> void:
-	"""Setup keyboard navigation for component"""
+	## Setup keyboard navigation for component
 	if not component.has_signal("gui_input"):
 		return
 	
 	component.gui_input.connect(_on_component_input.bind(component))
 
 static func _apply_accessibility_styling(component: Control) -> void:
-	"""Apply accessibility-specific styling"""
+	## Apply accessibility-specific styling
 	if high_contrast_mode:
 		_apply_high_contrast_styling(component)
 	
@@ -160,7 +160,7 @@ static func _apply_accessibility_styling(component: Control) -> void:
 
 # === KEYBOARD NAVIGATION ===
 static func _add_to_navigation_group(component: Control) -> void:
-	"""Add component to keyboard navigation group"""
+	## Add component to keyboard navigation group
 	if not keyboard_navigation_enabled:
 		return
 	
@@ -168,7 +168,7 @@ static func _add_to_navigation_group(component: Control) -> void:
 		current_focus_group.append(component)
 
 static func navigate_next() -> void:
-	"""Navigate to next focusable element"""
+	## Navigate to next focusable element
 	if current_focus_group.is_empty():
 		return
 	
@@ -184,7 +184,7 @@ static func navigate_next() -> void:
 		navigate_next()
 
 static func navigate_previous() -> void:
-	"""Navigate to previous focusable element"""
+	## Navigate to previous focusable element
 	if current_focus_group.is_empty():
 		return
 	
@@ -203,7 +203,7 @@ static func navigate_previous() -> void:
 		navigate_previous()
 
 static func push_navigation_context(components: Array) -> void:
-	"""Push new navigation context (e.g., for modal dialogs)"""
+	## Push new navigation context (e.g., for modal dialogs)
 	navigation_stack.append({
 		"focus_group": current_focus_group.duplicate(),
 		"focus_index": focus_index
@@ -213,7 +213,7 @@ static func push_navigation_context(components: Array) -> void:
 	focus_index = 0
 
 static func pop_navigation_context() -> void:
-	"""Pop navigation context"""
+	## Pop navigation context
 	if navigation_stack.is_empty():
 		return
 	
@@ -223,7 +223,7 @@ static func pop_navigation_context() -> void:
 
 # === SCREEN READER SUPPORT ===
 static func announce(text: String, priority: AnnouncementPriority = AnnouncementPriority.MEDIUM) -> void:
-	"""Announce text to screen reader"""
+	## Announce text to screen reader
 	if not screen_reader_enabled or text.is_empty():
 		return
 	
@@ -245,7 +245,7 @@ static func announce(text: String, priority: AnnouncementPriority = Announcement
 	_process_announcement_queue()
 
 static func announce_focus_change(component: Control) -> void:
-	"""Announce when focus changes to a component"""
+	## Announce when focus changes to a component
 	if not component:
 		return
 	
@@ -268,7 +268,7 @@ static func announce_focus_change(component: Control) -> void:
 	announce(announcement, AnnouncementPriority.MEDIUM)
 
 static func _process_announcement_queue() -> void:
-	"""Process the announcement queue"""
+	## Process the announcement queue
 	if announcement_queue.is_empty():
 		return
 	
@@ -284,13 +284,13 @@ static func _process_announcement_queue() -> void:
 
 # === HIGH CONTRAST MODE ===
 static func toggle_high_contrast() -> void:
-	"""Toggle high contrast mode"""
+	## Toggle high contrast mode
 	high_contrast_mode = not high_contrast_mode
 	_apply_high_contrast_to_all_components()
 	print("[AccessibilityManager] High contrast mode: " + str(high_contrast_mode))
 
 static func _apply_high_contrast_styling(component: Control) -> void:
-	"""Apply high contrast styling to component"""
+	## Apply high contrast styling to component
 	if not high_contrast_mode:
 		return
 	
@@ -323,20 +323,20 @@ static func _apply_high_contrast_styling(component: Control) -> void:
 		component.add_theme_stylebox_override("panel", style)
 
 static func _apply_high_contrast_to_all_components() -> void:
-	"""Apply high contrast mode to all registered components"""
+	## Apply high contrast mode to all registered components
 	for component in current_focus_group:
 		if is_instance_valid(component):
 			_apply_accessibility_styling(component)
 
 # === FONT SCALING ===
 static func set_font_scale(scale: float) -> void:
-	"""Set global font scaling factor"""
+	## Set global font scaling factor
 	font_size_scale = clamp(scale, 0.5, 3.0)
 	_apply_font_scaling_to_all_components()
 	print("[AccessibilityManager] Font scale set to: " + str(font_size_scale))
 
 static func _apply_font_scaling(component: Control) -> void:
-	"""Apply font scaling to component"""
+	## Apply font scaling to component
 	if font_size_scale == 1.0:
 		return
 	
@@ -354,14 +354,14 @@ static func _apply_font_scaling(component: Control) -> void:
 		component.add_theme_font_size_override("font_size", int(current_size * font_size_scale))
 
 static func _apply_font_scaling_to_all_components() -> void:
-	"""Apply font scaling to all registered components"""
+	## Apply font scaling to all registered components
 	for component in current_focus_group:
 		if is_instance_valid(component):
 			_apply_font_scaling(component)
 
 # === TOUCH TARGET SIZING ===
 static func _ensure_touch_target_size(component: Control) -> void:
-	"""Ensure component meets minimum touch target size"""
+	## Ensure component meets minimum touch target size
 	if not (component is Button or component is CheckBox or component is OptionButton):
 		return
 	
@@ -377,7 +377,7 @@ static func _ensure_touch_target_size(component: Control) -> void:
 
 # === EVENT HANDLERS ===
 static func _on_component_focus_entered(component: Control) -> void:
-	"""Handle component focus gained"""
+	## Handle component focus gained
 	if not focus_indicators_enhanced:
 		return
 	
@@ -397,7 +397,7 @@ static func _on_component_focus_entered(component: Control) -> void:
 		component.add_theme_stylebox_override("focus", focus_style)
 
 static func _on_component_focus_exited(component: Control) -> void:
-	"""Handle component focus lost"""
+	## Handle component focus lost
 	if not focus_indicators_enhanced:
 		return
 	
@@ -406,7 +406,7 @@ static func _on_component_focus_exited(component: Control) -> void:
 	tween.tween_property(component, "modulate", Color.WHITE, 0.2)
 
 static func _on_component_input(event: InputEvent, component: Control) -> void:
-	"""Handle component input for keyboard navigation"""
+	## Handle component input for keyboard navigation
 	if not keyboard_navigation_enabled or not event is InputEventKey:
 		return
 	
@@ -433,7 +433,7 @@ static func _on_component_input(event: InputEvent, component: Control) -> void:
 
 # === UTILITY METHODS ===
 static func check_color_contrast(foreground: Color, background: Color) -> float:
-	"""Check color contrast ratio between foreground and background"""
+	## Check color contrast ratio between foreground and background
 	var fg_luminance = _calculate_relative_luminance(foreground)
 	var bg_luminance = _calculate_relative_luminance(background)
 	
@@ -443,7 +443,7 @@ static func check_color_contrast(foreground: Color, background: Color) -> float:
 	return (lighter + 0.05) / (darker + 0.05)
 
 static func _calculate_relative_luminance(color: Color) -> float:
-	"""Calculate relative luminance for contrast ratio"""
+	## Calculate relative luminance for contrast ratio
 	var r = _linearize_color_component(color.r)
 	var g = _linearize_color_component(color.g)
 	var b = _linearize_color_component(color.b)
@@ -451,14 +451,14 @@ static func _calculate_relative_luminance(color: Color) -> float:
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 static func _linearize_color_component(component: float) -> float:
-	"""Linearize color component for luminance calculation"""
+	## Linearize color component for luminance calculation
 	if component <= 0.03928:
 		return component / 12.92
 	else:
 		return pow((component + 0.055) / 1.055, 2.4)
 
 static func is_contrast_sufficient(foreground: Color, background: Color, level: String = "AA", large_text: bool = false) -> bool:
-	"""Check if contrast meets WCAG guidelines"""
+	## Check if contrast meets WCAG guidelines
 	var contrast_ratio = check_color_contrast(foreground, background)
 	var required_ratio: float
 	
@@ -474,22 +474,22 @@ static func is_contrast_sufficient(foreground: Color, background: Color, level: 
 
 # === PUBLIC API ===
 static func set_accessibility_enabled(enabled: bool) -> void:
-	"""Enable/disable accessibility features"""
+	## Enable/disable accessibility features
 	accessibility_enabled = enabled
 	print("[AccessibilityManager] Accessibility " + ("enabled" if enabled else "disabled"))
 
 static func set_screen_reader_enabled(enabled: bool) -> void:
-	"""Enable/disable screen reader support"""
+	## Enable/disable screen reader support
 	screen_reader_enabled = enabled
 	print("[AccessibilityManager] Screen reader " + ("enabled" if enabled else "disabled"))
 
 static func set_keyboard_navigation_enabled(enabled: bool) -> void:
-	"""Enable/disable keyboard navigation"""
+	## Enable/disable keyboard navigation
 	keyboard_navigation_enabled = enabled
 	print("[AccessibilityManager] Keyboard navigation " + ("enabled" if enabled else "disabled"))
 
 static func get_accessibility_info() -> Dictionary:
-	"""Get current accessibility settings"""
+	## Get current accessibility settings
 	return {
 		"accessibility_enabled": accessibility_enabled,
 		"screen_reader_enabled": screen_reader_enabled,

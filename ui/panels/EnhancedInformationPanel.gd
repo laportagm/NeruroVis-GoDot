@@ -80,7 +80,7 @@ func _ready() -> void:
 	visible = false
 	
 func _setup_panel_structure() -> void:
-	"""Create the enhanced panel structure following Figma specs for educational UI"""
+	## Create the enhanced panel structure following Figma specs for educational UI
 	
 	# Apply enhanced panel styling
 	UIThemeManager.apply_enhanced_panel_style(self, "default")
@@ -104,7 +104,7 @@ func _setup_panel_structure() -> void:
 	_create_content_sections()
 
 func _create_header_section() -> void:
-	"""Create header with structure name and action buttons"""
+	## Create header with structure name and action buttons
 	
 	header_container = HBoxContainer.new()
 	header_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -149,7 +149,7 @@ func _create_header_section() -> void:
 	action_buttons_container.add_child(close_button)
 
 func _create_content_sections() -> void:
-	"""Create all content sections with proper hierarchy"""
+	## Create all content sections with proper hierarchy
 	
 	# Description section (always visible, non-collapsible)
 	_create_description_section()
@@ -164,7 +164,7 @@ func _create_content_sections() -> void:
 	_create_clinical_notes_section()
 
 func _create_description_section() -> void:
-	"""Create description section"""
+	## Create description section
 	
 	description_section = VBoxContainer.new()
 	description_section.add_theme_constant_override("separation", UIThemeManager.get_spacing("enhanced_item_gap"))
@@ -187,7 +187,7 @@ func _create_description_section() -> void:
 	description_section.add_child(description_text)
 
 func _create_functions_section() -> void:
-	"""Create collapsible functions section"""
+	## Create collapsible functions section
 	
 	functions_section = VBoxContainer.new()
 	functions_section.add_theme_constant_override("separation", UIThemeManager.get_spacing("enhanced_item_gap"))
@@ -207,7 +207,7 @@ func _create_functions_section() -> void:
 	functions_section.add_child(functions_list)
 
 func _create_connections_section() -> void:
-	"""Create collapsible connections section"""
+	## Create collapsible connections section
 	
 	connections_section = VBoxContainer.new()
 	connections_section.add_theme_constant_override("separation", UIThemeManager.get_spacing("enhanced_item_gap"))
@@ -228,7 +228,7 @@ func _create_connections_section() -> void:
 	connections_section.add_child(connections_list)
 
 func _create_clinical_notes_section() -> void:
-	"""Create collapsible clinical notes section"""
+	## Create collapsible clinical notes section
 	
 	clinical_notes_section = VBoxContainer.new()
 	clinical_notes_section.add_theme_constant_override("separation", UIThemeManager.get_spacing("enhanced_item_gap"))
@@ -253,7 +253,7 @@ func _create_clinical_notes_section() -> void:
 	clinical_notes_section.add_child(clinical_text)
 
 func _apply_enhanced_styling() -> void:
-	"""Apply enhanced styling throughout the panel"""
+	## Apply enhanced styling throughout the panel
 	
 	# Set minimum sizes based on Figma specs
 	custom_minimum_size = Vector2(320, 400)  # Minimum from design spec
@@ -267,7 +267,7 @@ func _apply_enhanced_styling() -> void:
 	UIThemeManager.add_hover_effect(clinical_header)
 
 func _setup_interactions() -> void:
-	"""Setup all button interactions and signals"""
+	## Setup all button interactions and signals
 	
 	# Header button connections
 	close_button.pressed.connect(_on_close_button_pressed)
@@ -283,7 +283,7 @@ func _setup_interactions() -> void:
 	_setup_accessibility()
 
 func _setup_responsive_behavior() -> void:
-	"""Setup responsive behavior for different screen sizes"""
+	## Setup responsive behavior for different screen sizes
 	
 	# Get initial viewport size
 	viewport_size = get_viewport().get_visible_rect().size
@@ -293,7 +293,7 @@ func _setup_responsive_behavior() -> void:
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
 func _setup_accessibility() -> void:
-	"""Setup accessibility features for keyboard navigation and screen readers"""
+	## Setup accessibility features for keyboard navigation and screen readers
 	
 	# Set focus order for keyboard navigation
 	if close_button and share_button:
@@ -327,7 +327,7 @@ func _setup_accessibility() -> void:
 		structure_name_label.add_theme_constant_override("outline_size", 1)
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	"""Handle keyboard shortcuts for accessibility"""
+	## Handle keyboard shortcuts for accessibility
 	
 	if not panel_is_visible:
 		return
@@ -357,7 +357,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					get_viewport().set_input_as_handled()
 
 func _update_responsive_layout() -> void:
-	"""Update layout based on current viewport size"""
+	## Update layout based on current viewport size
 	
 	viewport_size = get_viewport().get_visible_rect().size
 	is_mobile_layout = viewport_size.x <= 768
@@ -382,7 +382,7 @@ func _update_responsive_layout() -> void:
 
 # === PUBLIC INTERFACE ===
 func display_structure_info(structure_data: Dictionary) -> void:
-	"""Display information for a brain structure"""
+	## Display information for a brain structure
 	
 	current_structure = structure_data
 	
@@ -412,7 +412,7 @@ func display_structure_info(structure_data: Dictionary) -> void:
 	show_panel()
 
 func _update_functions_list(functions: Array) -> void:
-	"""Update the functions list display"""
+	## Update the functions list display
 	
 	# Clear existing functions
 	for child in functions_list.get_children():
@@ -438,7 +438,7 @@ func _update_functions_list(functions: Array) -> void:
 		functions_list.add_child(no_functions_label)
 
 func _update_connections_list(connections: Array) -> void:
-	"""Update the connections list display"""
+	## Update the connections list display
 	
 	# Clear existing connections
 	for child in connections_list.get_children():
@@ -460,7 +460,7 @@ func _update_connections_list(connections: Array) -> void:
 		connections_header.text = ("▼" if section_states.connections else "▶") + " CONNECTIONS (0)"
 
 func show_panel() -> void:
-	"""Show panel with enhanced animation"""
+	## Show panel with enhanced animation
 	
 	if panel_is_visible:
 		return
@@ -472,7 +472,7 @@ func show_panel() -> void:
 	UIThemeManager.animate_enhanced_entrance(self, 0.0)
 
 func hide_panel() -> void:
-	"""Hide panel with enhanced animation"""
+	## Hide panel with enhanced animation
 	
 	if not panel_is_visible:
 		return
@@ -483,7 +483,7 @@ func hide_panel() -> void:
 	UIThemeManager.animate_exit(self, UIThemeManager.get_animation_duration("exit_duration"))
 
 func _toggle_section(section_name: String) -> void:
-	"""Toggle visibility of a collapsible section"""
+	## Toggle visibility of a collapsible section
 	
 	var was_expanded = section_states.get(section_name, false)
 	var new_state = not was_expanded
@@ -547,13 +547,13 @@ func _on_viewport_size_changed() -> void:
 
 # === ACCESSIBILITY HELPERS ===
 func focus_close_button() -> void:
-	"""Focus the close button (for accessibility)"""
+	## Focus the close button (for accessibility)
 	close_button.grab_focus()
 
 func get_current_structure_id() -> String:
-	"""Get the current structure ID"""
+	## Get the current structure ID
 	return current_structure.get("id", "")
 
 func is_section_expanded(section_name: String) -> bool:
-	"""Check if a section is currently expanded"""
+	## Check if a section is currently expanded
 	return section_states.get(section_name, false)

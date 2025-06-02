@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp8ij2p3qnm7v"]
+
+[ext_resource type="Script" path="res://scenes/educational_systems/EducationalCoordinator.gd" id="1_5h3pj"]
+
+[node name="EducationalCoordinator" type="Node"]
+script = ExtResource("1_5h3pj")

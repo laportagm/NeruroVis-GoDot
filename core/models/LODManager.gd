@@ -63,7 +63,7 @@ var _initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the LOD manager"""
+	## Initialize the LOD manager
 	_initialized = true
 	
 	# Find camera if not set
@@ -73,7 +73,7 @@ func _ready() -> void:
 	print("[LODManager] Initialized with " + str(MAX_LOD_LEVELS) + " LOD levels")
 
 func _process(_delta: float) -> void:
-	"""Update LOD levels based on camera distance"""
+	## Update LOD levels based on camera distance
 	if not lod_enabled or not camera:
 		return
 	
@@ -95,7 +95,7 @@ func _process(_delta: float) -> void:
 ## @param lod_variants: Array of PackedScene LOD variants (optional)
 ## @returns: bool indicating success
 func register_model(model: Node3D, model_name: String, lod_variants: Array = []) -> bool:
-	"""Register a model for LOD management"""
+	## Register a model for LOD management
 	if not model or not model.is_inside_tree():
 		push_warning("[LODManager] Cannot register invalid model: " + model_name)
 		return false
@@ -129,7 +129,7 @@ func register_model(model: Node3D, model_name: String, lod_variants: Array = [])
 ## @param model_name: String name of the model
 ## @returns: bool indicating success
 func unregister_model(model_name: String) -> bool:
-	"""Unregister a model from LOD management"""
+	## Unregister a model from LOD management
 	if not _lod_models.has(model_name):
 		push_warning("[LODManager] Model not registered: " + model_name)
 		return false
@@ -159,7 +159,7 @@ func unregister_model(model_name: String) -> bool:
 ## @param force_instant: bool whether to force instant transition
 ## @returns: bool indicating success
 func set_lod_level(model_name: String, lod_level: int, force_instant: bool = false) -> bool:
-	"""Manually set LOD level for a model"""
+	## Manually set LOD level for a model
 	if not _lod_models.has(model_name):
 		push_warning("[LODManager] Model not registered: " + model_name)
 		return false
@@ -171,7 +171,7 @@ func set_lod_level(model_name: String, lod_level: int, force_instant: bool = fal
 ## @param thresholds: Array of float distance thresholds
 ## @returns: bool indicating success
 func update_thresholds(thresholds: Array) -> bool:
-	"""Update distance thresholds for LOD levels"""
+	## Update distance thresholds for LOD levels
 	if thresholds.size() < MAX_LOD_LEVELS - 1:
 		push_warning("[LODManager] Not enough thresholds provided. Need at least " + str(MAX_LOD_LEVELS - 1))
 		return false
@@ -194,7 +194,7 @@ func update_thresholds(thresholds: Array) -> bool:
 ## @param strategy: int memory strategy (0=Aggressive, 1=Balanced, 2=Quality)
 ## @returns: bool indicating success
 func update_memory_strategy(strategy: int) -> bool:
-	"""Update memory management strategy"""
+	## Update memory management strategy
 	if strategy < 0 or strategy > 2:
 		push_warning("[LODManager] Invalid memory strategy: " + str(strategy))
 		return false
@@ -210,13 +210,13 @@ func update_memory_strategy(strategy: int) -> bool:
 ## Force LOD update for all models
 ## @returns: bool indicating success
 func force_update() -> bool:
-	"""Force LOD update for all models"""
+	## Force LOD update for all models
 	return _update_lod_state()
 
 ## Reset all models to highest detail
 ## @returns: bool indicating success
 func reset_to_highest_detail() -> bool:
-	"""Reset all models to highest detail level"""
+	## Reset all models to highest detail level
 	for model_name in _lod_models:
 		set_lod_level(model_name, 0, true)
 	
@@ -225,7 +225,7 @@ func reset_to_highest_detail() -> bool:
 
 # === PRIVATE METHODS ===
 func _find_main_camera() -> Camera3D:
-	"""Find the main camera in the scene"""
+	## Find the main camera in the scene
 	var cameras = get_tree().get_nodes_in_group("Cameras")
 	if not cameras.is_empty():
 		return cameras[0]
@@ -245,7 +245,7 @@ func _find_main_camera() -> Camera3D:
 	return null
 
 func _calculate_model_distance(model: Node3D) -> float:
-	"""Calculate distance from camera to model"""
+	## Calculate distance from camera to model
 	if not camera:
 		return 0.0
 	
@@ -261,7 +261,7 @@ func _calculate_model_distance(model: Node3D) -> float:
 	return camera.global_position.distance_to(model_pos)
 
 func _determine_lod_level(distance: float) -> int:
-	"""Determine appropriate LOD level based on distance"""
+	## Determine appropriate LOD level based on distance
 	for i in range(distance_thresholds.size()):
 		if distance < distance_thresholds[i]:
 			return i
@@ -269,7 +269,7 @@ func _determine_lod_level(distance: float) -> int:
 	return min(distance_thresholds.size(), MAX_LOD_LEVELS - 1)
 
 func _switch_lod_level(model_name: String, level: int, force_instant: bool = false) -> bool:
-	"""Switch LOD level for a model"""
+	## Switch LOD level for a model
 	if not _lod_models.has(model_name):
 		return false
 	
@@ -306,12 +306,12 @@ func _switch_lod_level(model_name: String, level: int, force_instant: bool = fal
 	return true
 
 func _store_original_meshes(model: Node3D, model_data: Dictionary) -> void:
-	"""Store original meshes for reference and LOD generation"""
+	## Store original meshes for reference and LOD generation
 	# Recursively process model hierarchy
 	_process_model_node(model, model_data.original_meshes)
 
 func _process_model_node(node: Node, mesh_dict: Dictionary) -> void:
-	"""Process a node in the model hierarchy"""
+	## Process a node in the model hierarchy
 	if node is MeshInstance3D and node.mesh != null:
 		# Store reference to original mesh
 		mesh_dict[node.get_path()] = {
@@ -329,7 +329,7 @@ func _process_model_node(node: Node, mesh_dict: Dictionary) -> void:
 		_process_model_node(child, mesh_dict)
 
 func _generate_simplified_meshes(model_data: Dictionary) -> void:
-	"""Generate simplified meshes for LOD levels"""
+	## Generate simplified meshes for LOD levels
 	var original_meshes = model_data.original_meshes
 	
 	# Generate LOD meshes for each level
@@ -353,7 +353,7 @@ func _generate_simplified_meshes(model_data: Dictionary) -> void:
 		model_data.lod_meshes[level] = lod_meshes
 
 func _simplify_mesh(original_mesh: Mesh, quality_factor: float) -> Mesh:
-	"""Create a simplified version of a mesh"""
+	## Create a simplified version of a mesh
 	# In a real implementation, this would use mesh simplification algorithms
 	# For this example, we'll create a simplified mesh by reducing indices
 	
@@ -445,7 +445,7 @@ func _simplify_mesh(original_mesh: Mesh, quality_factor: float) -> Mesh:
 	return simplified_mesh
 
 func _apply_lod_level(model_data: Dictionary, level: int) -> void:
-	"""Apply LOD level meshes to a model"""
+	## Apply LOD level meshes to a model
 	if level == 0:
 		# Restore original meshes
 		_restore_original_meshes(model_data)
@@ -472,7 +472,7 @@ func _apply_lod_level(model_data: Dictionary, level: int) -> void:
 					node.set_surface_override_material(i, mesh_data.materials[i])
 
 func _restore_original_meshes(model_data: Dictionary) -> void:
-	"""Restore original meshes to a model"""
+	## Restore original meshes to a model
 	var original_meshes = model_data.original_meshes
 	
 	for node_path_str in original_meshes:
@@ -489,7 +489,7 @@ func _restore_original_meshes(model_data: Dictionary) -> void:
 					node.set_surface_override_material(i, mesh_data.materials[i])
 
 func _transition_to_level(model_data: Dictionary, model_name: String, target_level: int) -> void:
-	"""Smooth transition between LOD levels"""
+	## Smooth transition between LOD levels
 	var current_level = _current_lod_levels.get(model_name, 0)
 	
 	# Create a tween for smooth transition
@@ -545,13 +545,13 @@ func _transition_to_level(model_data: Dictionary, model_name: String, target_lev
 						).set_delay(transition_duration)
 
 func _switch_variant_model(model_data: Dictionary, level: int) -> void:
-	"""Switch to a different LOD variant model"""
+	## Switch to a different LOD variant model
 	# Placeholder for variant-based LOD switching
 	# In a real implementation, this would swap entire model variants
 	push_warning("[LODManager] Variant-based LOD switching not fully implemented")
 
 func _update_lod_state() -> bool:
-	"""Update LOD state for all models"""
+	## Update LOD state for all models
 	if not camera:
 		push_warning("[LODManager] No camera reference. Cannot update LOD state.")
 		return false
@@ -573,7 +573,7 @@ func _update_lod_state() -> bool:
 	return true
 
 func _apply_memory_strategy() -> void:
-	"""Apply memory management strategy"""
+	## Apply memory management strategy
 	match memory_strategy:
 		0:  # Aggressive
 			# Unload LOD meshes for distant models
@@ -618,7 +618,7 @@ func _apply_memory_strategy() -> void:
 						model_data.lod_meshes[level] = lod_meshes
 
 func _get_strategy_name(strategy: int) -> String:
-	"""Get the name of a memory strategy"""
+	## Get the name of a memory strategy
 	match strategy:
 		0:
 			return "Aggressive"

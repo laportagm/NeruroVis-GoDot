@@ -33,7 +33,7 @@ func _ready() -> void:
 ## @param system_name: Unique identifier for the system
 ## @param instance: The system instance to register
 func register_system(system_name: String, instance: Node) -> void:
-	"""Register an educational system in the registry"""
+	## Register an educational system in the registry
 	if _systems.has(system_name):
 		push_warning("[CoreSystemsRegistry] Replacing existing system: %s" % system_name)
 	
@@ -45,7 +45,7 @@ func register_system(system_name: String, instance: Node) -> void:
 ## @param system_name: Unique identifier for the system
 ## @param instance: The fallback system instance
 func register_fallback(system_name: String, instance: Node) -> void:
-	"""Register a fallback educational system for graceful degradation"""
+	## Register a fallback educational system for graceful degradation
 	_fallbacks[system_name] = instance
 	print("[CoreSystemsRegistry] Registered fallback for: %s" % system_name)
 	system_registered.emit(system_name, true)
@@ -54,7 +54,7 @@ func register_fallback(system_name: String, instance: Node) -> void:
 ## @param system_name: Name of the system to retrieve
 ## @returns: The system instance or null if not found
 func get_system(system_name: String) -> Node:
-	"""Get educational system with graceful fallback"""
+	## Get educational system with graceful fallback
 	# Try to get the enhanced system first
 	if _systems.has(system_name):
 		return _systems[system_name]
@@ -77,7 +77,7 @@ func get_system(system_name: String) -> Node:
 ## @param system_name: Name of the system to unregister
 ## @param include_fallback: Whether to also unregister the fallback
 func unregister_system(system_name: String, include_fallback: bool = false) -> void:
-	"""Unregister an educational system"""
+	## Unregister an educational system
 	var was_primary = false
 	var was_fallback = false
 	
@@ -101,7 +101,7 @@ func unregister_system(system_name: String, include_fallback: bool = false) -> v
 ## @param include_fallbacks: Whether to also check fallbacks
 ## @returns: true if system exists, false otherwise
 func has_system(system_name: String, include_fallbacks: bool = true) -> bool:
-	"""Check if educational system is available"""
+	## Check if educational system is available
 	var has_primary = _systems.has(system_name)
 	var has_fallback = include_fallbacks and _fallbacks.has(system_name)
 	var has_autoload = include_fallbacks and _has_autoload_system(system_name)
@@ -112,7 +112,7 @@ func has_system(system_name: String, include_fallbacks: bool = true) -> bool:
 ## @param system_name: Name of the system to promote
 ## @returns: true if promotion successful, false otherwise
 func promote_fallback(system_name: String) -> bool:
-	"""Promote fallback educational system to primary"""
+	## Promote fallback educational system to primary
 	if not _fallbacks.has(system_name):
 		push_warning("[CoreSystemsRegistry] No fallback to promote: %s" % system_name)
 		return false
@@ -131,7 +131,7 @@ func promote_fallback(system_name: String) -> bool:
 ## Get all registered system names
 ## @returns: Array of registered system names
 func get_available_systems() -> Array:
-	"""Get all registered educational systems"""
+	## Get all registered educational systems
 	var systems = []
 	
 	# Add primary systems
@@ -148,7 +148,7 @@ func get_available_systems() -> Array:
 ## Get detailed system status information
 ## @returns: Dictionary with system status information
 func get_system_status() -> Dictionary:
-	"""Get educational system status information"""
+	## Get educational system status information
 	var status = {}
 	
 	# Gather all system names
@@ -175,7 +175,7 @@ func get_system_status() -> Dictionary:
 # === DEBUGGING ===
 ## Print status of all registered systems
 func print_system_status() -> void:
-	"""Print all educational systems for debugging"""
+	## Print all educational systems for debugging
 	print("\n=== CORE SYSTEMS STATUS ===")
 	
 	var system_status = get_system_status()
@@ -190,7 +190,7 @@ func print_system_status() -> void:
 
 # === PRIVATE METHODS ===
 func _get_system_status_string(system_name: String) -> String:
-	"""Get human-readable status for a system"""
+	## Get human-readable status for a system
 	if _systems.has(system_name):
 		return "ACTIVE (primary)"
 	elif _fallbacks.has(system_name):
@@ -201,7 +201,7 @@ func _get_system_status_string(system_name: String) -> String:
 		return "NOT AVAILABLE"
 
 func _has_autoload_system(system_name: String) -> bool:
-	"""Check if system is available as an autoload singleton"""
+	## Check if system is available as an autoload singleton
 	var singleton_map = {
 		"knowledge_service": "KnowledgeService",
 		"ai_assistant": "AIAssistant",
@@ -219,7 +219,7 @@ func _has_autoload_system(system_name: String) -> bool:
 	return false
 
 func _get_autoload_system(system_name: String) -> Node:
-	"""Get system from autoload singleton"""
+	## Get system from autoload singleton
 	var singleton_map = {
 		"knowledge_service": "KnowledgeService",
 		"ai_assistant": "AIAssistant",

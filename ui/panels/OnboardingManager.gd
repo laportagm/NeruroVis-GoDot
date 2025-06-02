@@ -291,7 +291,7 @@ func complete_onboarding():
 
 # Animation helper functions
 func _animate_entrance(control: Control, delay: float = 0.0) -> void:
-    """Smooth entrance animation for any control"""
+    ## Smooth entrance animation for any control
     control.modulate.a = 0
     control.scale = Vector2(0.9, 0.9)
     
@@ -304,7 +304,7 @@ func _animate_entrance(control: Control, delay: float = 0.0) -> void:
     tween.tween_property(control, "scale", Vector2.ONE, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 func _animate_exit(control: Control, duration: float = 0.2) -> void:
-    """Smooth exit animation"""
+    ## Smooth exit animation
     var tween = control.create_tween()
     tween.set_parallel(true)
     tween.tween_property(control, "modulate:a", 0.0, duration)

@@ -14,7 +14,7 @@ var passed_tests: int = 0
 
 # === MAIN TEST RUNNER ===
 func run_all_tests() -> Dictionary:
-	"""Run all foundation layer tests"""
+	## Run all foundation layer tests
 	print("\n🧪 RUNNING COMPONENT FOUNDATION TESTS")
 	print("=====================================")
 	
@@ -51,7 +51,7 @@ func run_all_tests() -> Dictionary:
 
 # === FEATURE FLAGS TESTS ===
 func test_feature_flags_basic() -> void:
-	"""Test basic feature flag functionality"""
+	## Test basic feature flag functionality
 	_start_test("FeatureFlags Basic Operations")
 	
 	# Test default flags
@@ -73,7 +73,7 @@ func test_feature_flags_basic() -> void:
 	_end_test()
 
 func test_feature_flags_persistence() -> void:
-	"""Test feature flag persistence"""
+	## Test feature flag persistence
 	_start_test("FeatureFlags Persistence")
 	
 	# Enable a feature with persistence
@@ -93,7 +93,7 @@ func test_feature_flags_persistence() -> void:
 	_end_test()
 
 func test_feature_flags_listeners() -> void:
-	"""Test feature flag listener system"""
+	## Test feature flag listener system
 	_start_test("FeatureFlags Listeners")
 	
 	# Use array/dictionary for reference semantics in lambda
@@ -127,7 +127,7 @@ func test_feature_flags_listeners() -> void:
 
 # === COMPONENT REGISTRY TESTS ===
 func test_component_registry_creation() -> void:
-	"""Test component creation through registry"""
+	## Test component creation through registry
 	_start_test("ComponentRegistry Creation")
 	
 	# Test basic component creation
@@ -148,7 +148,7 @@ func test_component_registry_creation() -> void:
 	_end_test()
 
 func test_component_registry_caching() -> void:
-	"""Test component caching functionality"""
+	## Test component caching functionality
 	_start_test("ComponentRegistry Caching")
 	
 	# Enable component pooling for this test
@@ -176,7 +176,7 @@ func test_component_registry_caching() -> void:
 	_end_test()
 
 func test_component_registry_factories() -> void:
-	"""Test component factory registration"""
+	## Test component factory registration
 	_start_test("ComponentRegistry Factories")
 	
 	# Register custom factory
@@ -198,7 +198,7 @@ func test_component_registry_factories() -> void:
 
 # === STATE MANAGER TESTS ===
 func test_state_manager_basic() -> void:
-	"""Test basic state management functionality"""
+	## Test basic state management functionality
 	_start_test("ComponentStateManager Basic")
 	
 	# Enable state persistence for this test
@@ -228,7 +228,7 @@ func test_state_manager_basic() -> void:
 	_end_test()
 
 func test_state_manager_persistence() -> void:
-	"""Test state persistence to disk"""
+	## Test state persistence to disk
 	_start_test("ComponentStateManager Persistence")
 	
 	FeatureFlags.enable_feature(FeatureFlags.UI_STATE_PERSISTENCE)
@@ -254,7 +254,7 @@ func test_state_manager_persistence() -> void:
 	_end_test()
 
 func test_state_manager_cleanup() -> void:
-	"""Test state cleanup functionality"""
+	## Test state cleanup functionality
 	_start_test("ComponentStateManager Cleanup")
 	
 	FeatureFlags.enable_feature(FeatureFlags.UI_STATE_PERSISTENCE)
@@ -279,7 +279,7 @@ func test_state_manager_cleanup() -> void:
 
 # === INTEGRATION TESTS ===
 func test_full_integration_workflow() -> void:
-	"""Test complete workflow using all foundation systems"""
+	## Test complete workflow using all foundation systems
 	_start_test("Full Integration Workflow")
 	
 	# Enable new systems
@@ -322,7 +322,7 @@ func test_full_integration_workflow() -> void:
 	_end_test()
 
 func test_migration_compatibility() -> void:
-	"""Test compatibility with existing systems"""
+	## Test compatibility with existing systems
 	_start_test("Migration Compatibility")
 	
 	# Test legacy mode
@@ -344,7 +344,7 @@ func test_migration_compatibility() -> void:
 
 # === TEST UTILITIES ===
 func _reset_test_state() -> void:
-	"""Reset test state"""
+	## Reset test state
 	test_results.clear()
 	total_tests = 0
 	passed_tests = 0
@@ -355,12 +355,12 @@ func _reset_test_state() -> void:
 	ComponentStateManager.clear_session_states()
 
 func _start_test(test_name: String) -> void:
-	"""Start a new test"""
+	## Start a new test
 	total_tests += 1
 	print("  🔍 " + test_name)
 
 func _end_test(passed: bool = true) -> void:
-	"""End current test"""
+	## End current test
 	if passed:
 		passed_tests += 1
 		print("    ✅ PASSED")
@@ -368,7 +368,7 @@ func _end_test(passed: bool = true) -> void:
 		print("    ❌ FAILED")
 
 func assert_true(condition: bool, message: String = "") -> void:
-	"""Assert that condition is true"""
+	## Assert that condition is true
 	if not condition:
 		var error_msg = "Assertion failed: " + message
 		test_results.append({"type": "assertion_error", "message": error_msg})
@@ -376,11 +376,11 @@ func assert_true(condition: bool, message: String = "") -> void:
 		_end_test(false)
 
 func assert_false(condition: bool, message: String = "") -> void:
-	"""Assert that condition is false"""
+	## Assert that condition is false
 	assert_true(not condition, message)
 
 func assert_equal(actual, expected, message: String = "") -> void:
-	"""Assert that values are equal"""
+	## Assert that values are equal
 	if actual != expected:
 		var error_msg = "Expected: %s, Got: %s - %s" % [expected, actual, message]
 		test_results.append({"type": "assertion_error", "message": error_msg})
@@ -388,7 +388,7 @@ func assert_equal(actual, expected, message: String = "") -> void:
 		_end_test(false)
 
 func assert_not_equal(actual, expected, message: String = "") -> void:
-	"""Assert that values are not equal"""
+	## Assert that values are not equal
 	if actual == expected:
 		var error_msg = "Values should not be equal: %s - %s" % [actual, message]
 		test_results.append({"type": "assertion_error", "message": error_msg})
@@ -396,7 +396,7 @@ func assert_not_equal(actual, expected, message: String = "") -> void:
 		_end_test(false)
 
 func assert_not_null(value, message: String = "") -> void:
-	"""Assert that value is not null"""
+	## Assert that value is not null
 	if value == null:
 		var error_msg = "Value should not be null - " + message
 		test_results.append({"type": "assertion_error", "message": error_msg})
@@ -404,7 +404,7 @@ func assert_not_null(value, message: String = "") -> void:
 		_end_test(false)
 
 func _print_test_summary() -> void:
-	"""Print test summary"""
+	## Print test summary
 	print("\n📊 TEST SUMMARY")
 	print("================")
 	print("Total Tests: %d" % total_tests)
@@ -421,6 +421,6 @@ func _print_test_summary() -> void:
 
 # === STANDALONE RUNNER ===
 static func run_foundation_tests() -> Dictionary:
-	"""Static method to run tests from outside"""
+	## Static method to run tests from outside
 	var tester = new()
 	return tester.run_all_tests()

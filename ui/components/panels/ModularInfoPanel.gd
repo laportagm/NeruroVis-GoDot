@@ -71,7 +71,7 @@ const SECTION_TYPES = {
 }
 
 func _setup_component() -> void:
-	"""Setup the modular panel structure"""
+	## Setup the modular panel structure
 	super._setup_component()
 	
 	_create_panel_structure()
@@ -79,7 +79,7 @@ func _setup_component() -> void:
 	_connect_panel_signals()
 
 func _create_panel_structure() -> void:
-	"""Create the basic panel structure"""
+	## Create the basic panel structure
 	# Main container with proper styling
 	custom_minimum_size = Vector2(320, 400)
 	
@@ -106,7 +106,7 @@ func _create_panel_structure() -> void:
 	main_container.add_child(scroll_container)
 
 func _create_title_bar() -> void:
-	"""Create the panel title bar"""
+	## Create the panel title bar
 	title_bar = HBoxContainer.new()
 	title_bar.name = "TitleBar"
 	
@@ -124,7 +124,7 @@ func _create_title_bar() -> void:
 		title_bar.add_child(close_button)
 
 func _create_search_container() -> void:
-	"""Create search functionality"""
+	## Create search functionality
 	search_container = VBoxContainer.new()
 	search_container.name = "SearchContainer"
 	
@@ -136,7 +136,7 @@ func _create_search_container() -> void:
 	search_container.visible = show_search
 
 func _create_content_area() -> void:
-	"""Create scrollable content area"""
+	## Create scrollable content area
 	scroll_container = ScrollContainer.new()
 	scroll_container.name = "ScrollContainer"
 	scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -150,14 +150,14 @@ func _create_content_area() -> void:
 	scroll_container.add_child(content_container)
 
 func _setup_default_sections() -> void:
-	"""Setup default sections for brain structure info"""
+	## Setup default sections for brain structure info
 	add_section("header", SECTION_TYPES.header)
 	add_section("description", SECTION_TYPES.description) 
 	add_section("functions", SECTION_TYPES.functions)
 	add_section("connections", SECTION_TYPES.connections)
 
 func _connect_panel_signals() -> void:
-	"""Connect panel signals"""
+	## Connect panel signals
 	if close_button:
 		close_button.pressed.connect(_on_close_pressed)
 	
@@ -166,7 +166,7 @@ func _connect_panel_signals() -> void:
 
 # === PUBLIC API ===
 func add_section(section_id: String, config: Dictionary) -> void:
-	"""Add a new section to the panel"""
+	## Add a new section to the panel
 	if section_id in sections:
 		_log("Section already exists: " + section_id, "warning")
 		return
@@ -181,7 +181,7 @@ func add_section(section_id: String, config: Dictionary) -> void:
 	_log("Added section: " + section_id)
 
 func remove_section(section_id: String) -> void:
-	"""Remove a section from the panel"""
+	## Remove a section from the panel
 	if not section_id in sections:
 		return
 	
@@ -194,7 +194,7 @@ func remove_section(section_id: String) -> void:
 	section_order.erase(section_id)
 
 func update_section_content(section_id: String, content_data: Dictionary) -> void:
-	"""Update content for a specific section"""
+	## Update content for a specific section
 	if not section_id in sections:
 		_log("Section not found: " + section_id, "warning")
 		return
@@ -206,7 +206,7 @@ func update_section_content(section_id: String, content_data: Dictionary) -> voi
 	content_changed.emit(section_id, content_data)
 
 func set_section_visibility(section_id: String, visible: bool) -> void:
-	"""Show/hide a section"""
+	## Show/hide a section
 	if not section_id in sections:
 		return
 	
@@ -214,12 +214,12 @@ func set_section_visibility(section_id: String, visible: bool) -> void:
 	section_toggled.emit(section_id, visible)
 
 func clear_all_content() -> void:
-	"""Clear content from all sections"""
+	## Clear content from all sections
 	for section_id in sections:
 		update_section_content(section_id, {})
 
 func load_structure_data(structure_data: Dictionary) -> void:
-	"""Load brain structure data into appropriate sections"""
+	## Load brain structure data into appropriate sections
 	# Update header section
 	if "header" in sections:
 		update_section_content("header", {
@@ -247,7 +247,7 @@ func load_structure_data(structure_data: Dictionary) -> void:
 
 # === SECTION CREATION ===
 func _create_section_widget(section_id: String, config: Dictionary) -> Control:
-	"""Create a section widget based on configuration"""
+	## Create a section widget based on configuration
 	var section_container = VBoxContainer.new()
 	section_container.name = section_id + "_section"
 	
@@ -267,7 +267,7 @@ func _create_section_widget(section_id: String, config: Dictionary) -> Control:
 	return section_container
 
 func _create_section_header(section_id: String, config: Dictionary) -> Control:
-	"""Create section header with title and optional collapse button"""
+	## Create section header with title and optional collapse button
 	var header_container = HBoxContainer.new()
 	
 	# Section title
@@ -290,7 +290,7 @@ func _create_section_header(section_id: String, config: Dictionary) -> Control:
 	return header_container
 
 func _create_section_content(section_id: String, config: Dictionary) -> Control:
-	"""Create section content based on content type"""
+	## Create section content based on content type
 	var content_type = config.get("content_type", "text")
 	
 	match content_type:
@@ -308,7 +308,7 @@ func _create_section_content(section_id: String, config: Dictionary) -> Control:
 			return _create_text_content()
 
 func _create_rich_text_content() -> Control:
-	"""Create rich text content area"""
+	## Create rich text content area
 	var rich_text = RichTextLabel.new()
 	rich_text.name = "content"
 	rich_text.bbcode_enabled = true
@@ -320,14 +320,14 @@ func _create_rich_text_content() -> Control:
 	return rich_text
 
 func _create_list_content() -> Control:
-	"""Create list content area"""
+	## Create list content area
 	var list_container = VBoxContainer.new()
 	list_container.name = "content"
 	list_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
 	return list_container
 
 func _create_grid_content() -> Control:
-	"""Create grid content area"""
+	## Create grid content area
 	var grid_container = GridContainer.new()
 	grid_container.name = "content"
 	grid_container.columns = 2
@@ -336,21 +336,21 @@ func _create_grid_content() -> Control:
 	return grid_container
 
 func _create_cards_content() -> Control:
-	"""Create cards content area"""
+	## Create cards content area
 	var cards_container = VBoxContainer.new()
 	cards_container.name = "content"
 	cards_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("md"))
 	return cards_container
 
 func _create_buttons_content() -> Control:
-	"""Create buttons content area"""
+	## Create buttons content area
 	var buttons_container = VBoxContainer.new()
 	buttons_container.name = "content"
 	buttons_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
 	return buttons_container
 
 func _create_text_content() -> Control:
-	"""Create simple text content area"""
+	## Create simple text content area
 	var label = UIComponentFactory.create_label("", "body")
 	label.name = "content"
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -358,7 +358,7 @@ func _create_text_content() -> Control:
 
 # === CONTENT UPDATES ===
 func _update_section_content(section_widget: Control, content_type: String, data: Dictionary) -> void:
-	"""Update section content based on type"""
+	## Update section content based on type
 	var content_node = section_widget.get_meta("content")
 	
 	match content_type:
@@ -376,7 +376,7 @@ func _update_section_content(section_widget: Control, content_type: String, data
 			_update_text_content(content_node, data)
 
 func _update_rich_text_content(rich_text: RichTextLabel, data: Dictionary) -> void:
-	"""Update rich text content"""
+	## Update rich text content
 	var text = data.get("text", "")
 	var subtitle = data.get("subtitle", "")
 	
@@ -386,7 +386,7 @@ func _update_rich_text_content(rich_text: RichTextLabel, data: Dictionary) -> vo
 	rich_text.text = text
 
 func _update_list_content(list_container: VBoxContainer, data: Dictionary) -> void:
-	"""Update list content"""
+	## Update list content
 	# Clear existing items
 	for child in list_container.get_children():
 		child.queue_free()
@@ -417,7 +417,7 @@ func _update_list_content(list_container: VBoxContainer, data: Dictionary) -> vo
 		list_container.add_child(item_container)
 
 func _update_grid_content(grid_container: GridContainer, data: Dictionary) -> void:
-	"""Update grid content"""
+	## Update grid content
 	# Clear existing content
 	for child in grid_container.get_children():
 		child.queue_free()
@@ -432,7 +432,7 @@ func _update_grid_content(grid_container: GridContainer, data: Dictionary) -> vo
 		grid_container.add_child(strength)
 
 func _update_cards_content(cards_container: VBoxContainer, data: Dictionary) -> void:
-	"""Update cards content"""
+	## Update cards content
 	# Clear existing cards
 	for child in cards_container.get_children():
 		child.queue_free()
@@ -443,7 +443,7 @@ func _update_cards_content(cards_container: VBoxContainer, data: Dictionary) -> 
 		cards_container.add_child(card)
 
 func _update_buttons_content(buttons_container: VBoxContainer, data: Dictionary) -> void:
-	"""Update buttons content"""
+	## Update buttons content
 	# Clear existing buttons
 	for child in buttons_container.get_children():
 		child.queue_free()
@@ -458,11 +458,11 @@ func _update_buttons_content(buttons_container: VBoxContainer, data: Dictionary)
 		buttons_container.add_child(button)
 
 func _update_text_content(label: Label, data: Dictionary) -> void:
-	"""Update simple text content"""
+	## Update simple text content
 	label.text = data.get("text", "")
 
 func _create_content_card(card_data: Dictionary) -> Control:
-	"""Create a content card"""
+	## Create a content card
 	var card = UIComponentFactory.create_panel("default")
 	var card_content = VBoxContainer.new()
 	
@@ -482,7 +482,7 @@ func _create_content_card(card_data: Dictionary) -> Control:
 
 # === EVENT HANDLERS ===
 func _on_close_pressed() -> void:
-	"""Handle close button press"""
+	## Handle close button press
 	if animation_enabled:
 		animate_hide()
 	else:
@@ -490,7 +490,7 @@ func _on_close_pressed() -> void:
 	panel_closed.emit()
 
 func _on_section_toggle(section_id: String) -> void:
-	"""Handle section collapse/expand"""
+	## Handle section collapse/expand
 	var section_widget = sections[section_id]
 	var content_node = section_widget.get_meta("content")
 	var header_node = section_widget.get_meta("header")
@@ -508,24 +508,24 @@ func _on_section_toggle(section_id: String) -> void:
 	section_toggled.emit(section_id, not is_visible)
 
 func _on_search_text_changed(text: String) -> void:
-	"""Handle search text changes"""
+	## Handle search text changes
 	if text.is_empty():
 		_show_all_sections()
 	else:
 		_filter_sections(text)
 
 func _on_action_button_pressed(action: String) -> void:
-	"""Handle action button presses"""
+	## Handle action button presses
 	action_triggered.emit(action, {})
 
 # === UTILITY METHODS ===
 func _show_all_sections() -> void:
-	"""Show all sections"""
+	## Show all sections
 	for section_id in sections:
 		set_section_visibility(section_id, true)
 
 func _filter_sections(search_text: String) -> void:
-	"""Filter sections based on search text"""
+	## Filter sections based on search text
 	var search_lower = search_text.to_lower()
 	
 	for section_id in sections:
@@ -536,7 +536,7 @@ func _filter_sections(search_text: String) -> void:
 		set_section_visibility(section_id, visible)
 
 func get_section_data(section_id: String) -> Dictionary:
-	"""Get current data for a section"""
+	## Get current data for a section
 	if not section_id in sections:
 		return {}
 	
@@ -550,7 +550,7 @@ func get_section_data(section_id: String) -> Dictionary:
 	}
 
 func get_all_sections_data() -> Array:
-	"""Get data for all sections"""
+	## Get data for all sections
 	var result = []
 	for section_id in section_order:
 		result.append(get_section_data(section_id))

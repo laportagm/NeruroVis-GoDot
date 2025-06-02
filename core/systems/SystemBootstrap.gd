@@ -29,10 +29,10 @@ func _ready() -> void:
 
 ## Main initialization function
 func initialize_all_systems(main_scene: Node3D) -> bool:
-	"""
+	## 
 	Initialize all systems in proper dependency order
 	Returns true if all systems initialized successfully
-	"""
+	
 	print("[BOOTSTRAP] Beginning system initialization...")
 	
 	# Show loading overlay
@@ -63,7 +63,7 @@ func initialize_all_systems(main_scene: Node3D) -> bool:
 
 ## Debug systems initialization (highest priority)
 func _initialize_debug_systems() -> bool:
-	"""Initialize debug and monitoring systems first"""
+	## Initialize debug and monitoring systems first
 	print("[BOOTSTRAP] Initializing debug systems...")
 	
 	if OS.is_debug_build():
@@ -89,7 +89,7 @@ func _initialize_debug_systems() -> bool:
 
 ## Core systems initialization (knowledge base, neural net)
 func _initialize_core_systems(main_scene: Node3D) -> bool:
-	"""Initialize core business logic systems"""
+	## Initialize core business logic systems
 	print("[BOOTSTRAP] Initializing core systems...")
 	
 	# Initialize knowledge base
@@ -106,7 +106,7 @@ func _initialize_core_systems(main_scene: Node3D) -> bool:
 
 ## Model management systems
 func _initialize_model_systems(main_scene: Node3D) -> bool:
-	"""Initialize model management and coordination systems"""
+	## Initialize model management and coordination systems
 	print("[BOOTSTRAP] Initializing model systems...")
 	
 	# Initialize model switcher
@@ -123,7 +123,7 @@ func _initialize_model_systems(main_scene: Node3D) -> bool:
 
 ## Interaction systems (selection, camera)
 func _initialize_interaction_systems(main_scene: Node3D) -> bool:
-	"""Initialize user interaction systems"""
+	## Initialize user interaction systems
 	print("[BOOTSTRAP] Initializing interaction systems...")
 	
 	# Initialize selection manager
@@ -140,7 +140,7 @@ func _initialize_interaction_systems(main_scene: Node3D) -> bool:
 
 ## Final setup and validation
 func _initialize_final_systems(main_scene: Node3D) -> bool:
-	"""Perform final system setup and validation"""
+	## Perform final system setup and validation
 	print("[BOOTSTRAP] Finalizing system initialization...")
 	
 	# Register debug commands if available
@@ -157,7 +157,7 @@ func _initialize_final_systems(main_scene: Node3D) -> bool:
 
 ## Individual system initializers
 func _initialize_knowledge_base(main_scene: Node3D) -> bool:
-	"""Initialize the anatomical knowledge database"""
+	## Initialize the anatomical knowledge database
 	var script_path = "res://core/knowledge/AnatomicalKnowledgeDatabase.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -179,7 +179,7 @@ func _initialize_knowledge_base(main_scene: Node3D) -> bool:
 	return true
 
 func _initialize_neural_net(main_scene: Node3D) -> bool:
-	"""Initialize the brain visualization core"""
+	## Initialize the brain visualization core
 	var script_path = "res://core/systems/BrainVisualizationCore.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -199,7 +199,7 @@ func _initialize_neural_net(main_scene: Node3D) -> bool:
 	return true
 
 func _initialize_model_switcher(main_scene: Node3D) -> bool:
-	"""Initialize the model visibility manager"""
+	## Initialize the model visibility manager
 	var script_path = "res://core/models/ModelVisibilityManager.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -219,7 +219,7 @@ func _initialize_model_switcher(main_scene: Node3D) -> bool:
 	return true
 
 func _initialize_model_coordinator(main_scene: Node3D) -> bool:
-	"""Initialize the model coordination system"""
+	## Initialize the model coordination system
 	var script_path = "res://core/models/ModelRegistry.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -244,7 +244,7 @@ func _initialize_model_coordinator(main_scene: Node3D) -> bool:
 	return true
 
 func _initialize_selection_manager(main_scene: Node3D) -> bool:
-	"""Initialize the brain structure selection manager"""
+	## Initialize the brain structure selection manager
 	var script_path = "res://core/interaction/BrainStructureSelectionManager.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -264,7 +264,7 @@ func _initialize_selection_manager(main_scene: Node3D) -> bool:
 	return true
 
 func _initialize_camera_controller(main_scene: Node3D) -> bool:
-	"""Initialize the camera behavior controller"""
+	## Initialize the camera behavior controller
 	var script_path = "res://core/interaction/CameraBehaviorController.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -294,7 +294,7 @@ func _initialize_camera_controller(main_scene: Node3D) -> bool:
 
 ## Helper functions
 func _load_script(script_path: String):
-	"""Load a script resource"""
+	## Load a script resource
 	if not ResourceLoader.exists(script_path):
 		print("[BOOTSTRAP] ERROR: Script not found: ", script_path)
 		return null
@@ -307,7 +307,7 @@ func _load_script(script_path: String):
 	return script_resource
 
 func _create_loading_overlay(main_scene: Node3D):
-	"""Create and show loading overlay"""
+	## Create and show loading overlay
 	var script_path = "res://ui/panels/LoadingOverlay.gd"
 	var script_resource = _load_script(script_path)
 	if not script_resource:
@@ -332,11 +332,11 @@ func _create_loading_overlay(main_scene: Node3D):
 	return loading_overlay
 
 func _validate_autoload(autoload_name: String) -> bool:
-	"""Validate that an autoload exists and is accessible"""
+	## Validate that an autoload exists and is accessible
 	return Engine.has_singleton(autoload_name) or get_node_or_null("/root/" + autoload_name) != null
 
 func _validate_critical_systems() -> bool:
-	"""Validate that all critical systems are properly initialized"""
+	## Validate that all critical systems are properly initialized
 	var critical_systems = ["knowledge_base", "selection_manager", "camera_controller"]
 	
 	for system in critical_systems:
@@ -347,7 +347,7 @@ func _validate_critical_systems() -> bool:
 	return true
 
 func _register_debug_commands() -> void:
-	"""Register debug commands if debug system is available"""
+	## Register debug commands if debug system is available
 	if not OS.is_debug_build():
 		return
 	
@@ -362,7 +362,7 @@ func _register_debug_commands() -> void:
 
 ## Debug command implementations
 func _debug_system_status() -> void:
-	"""Show status of all systems"""
+	## Show status of all systems
 	print("=== SYSTEM STATUS ===")
 	print("Initialization complete: ", initialization_complete)
 	print("Systems:")
@@ -371,7 +371,7 @@ func _debug_system_status() -> void:
 		print("  ", status, " ", system_name)
 
 func _debug_reinit_system(system_name: String = "") -> void:
-	"""Reinitialize a specific system (for debugging)"""
+	## Reinitialize a specific system (for debugging)
 	if system_name.is_empty():
 		print("Usage: reinit_system <system_name>")
 		print("Available systems: ", systems_initialized.keys())
@@ -383,40 +383,40 @@ func _debug_reinit_system(system_name: String = "") -> void:
 
 ## Getters for system references
 func get_knowledge_base():
-	"""Get the knowledge base system reference"""
+	## Get the knowledge base system reference
 	return knowledge_base
 
 func get_neural_net():
-	"""Get the neural net system reference"""
+	## Get the neural net system reference
 	return neural_net
 
 func get_model_switcher():
-	"""Get the model switcher system reference"""
+	## Get the model switcher system reference
 	return model_switcher
 
 func get_model_coordinator():
-	"""Get the model coordinator system reference"""
+	## Get the model coordinator system reference
 	return model_coordinator
 
 func get_selection_manager():
-	"""Get the selection manager system reference"""
+	## Get the selection manager system reference
 	return selection_manager
 
 func get_camera_controller():
-	"""Get the camera controller system reference"""
+	## Get the camera controller system reference
 	return camera_controller
 
 func is_system_initialized(system_name: String) -> bool:
-	"""Check if a specific system is initialized"""
+	## Check if a specific system is initialized
 	return systems_initialized.get(system_name, false)
 
 func is_initialization_complete() -> bool:
-	"""Check if all systems are initialized"""
+	## Check if all systems are initialized
 	return initialization_complete
 
 ## Cleanup
 func _exit_tree():
-	"""Clean up system references"""
+	## Clean up system references
 	knowledge_base = null
 	neural_net = null
 	model_switcher = null

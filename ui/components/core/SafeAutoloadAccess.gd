@@ -40,7 +40,7 @@ static func get_debug_cmd() -> Node:
 
 # === CORE SAFE ACCESS METHOD ===
 static func _safe_get_autoload(autoload_name: String) -> Node:
-	"""Safely get an autoload with caching and validation"""
+	## Safely get an autoload with caching and validation
 	var inst = instance()
 	var current_time = Time.get_ticks_msec() / 1000.0
 	
@@ -63,7 +63,7 @@ static func _safe_get_autoload(autoload_name: String) -> Node:
 		return null
 
 func _validate_autoload(autoload_name: String) -> void:
-	"""Validate if an autoload exists and is ready"""
+	## Validate if an autoload exists and is ready
 	var node = null
 	
 	# Access autoload via scene tree (avoids Engine.get_singleton warnings)
@@ -94,7 +94,7 @@ func _validate_autoload(autoload_name: String) -> void:
 
 ## Apply theme styling with fallback
 static func apply_theme_safely(control: Control, style_type: String = "panel") -> bool:
-	"""Apply theme styling with fallback to basic styling"""
+	## Apply theme styling with fallback to basic styling
 	if not control:
 		return false
 	
@@ -119,7 +119,7 @@ static func apply_theme_safely(control: Control, style_type: String = "panel") -
 	return false
 
 static func _apply_fallback_styling(control: Control, style_type: String) -> void:
-	"""Apply basic fallback styling when UIThemeManager is unavailable"""
+	## Apply basic fallback styling when UIThemeManager is unavailable
 	if not control:
 		return
 	
@@ -155,7 +155,7 @@ static func _apply_fallback_styling(control: Control, style_type: String) -> voi
 
 ## Get structure data safely
 static func get_structure_safely(structure_id: String) -> Dictionary:
-	"""Get structure data with fallback to empty dictionary"""
+	## Get structure data with fallback to empty dictionary
 	if structure_id.is_empty():
 		return {}
 	
@@ -179,7 +179,7 @@ static func get_structure_safely(structure_id: String) -> Dictionary:
 
 ## Set AI context safely
 static func set_ai_context_safely(context: String) -> bool:
-	"""Set AI assistant context with fallback"""
+	## Set AI assistant context with fallback
 	var ai_assistant = get_ai_assistant()
 	if ai_assistant and ai_assistant.has_method("set_current_structure"):
 		ai_assistant.set_current_structure(context)
@@ -190,14 +190,14 @@ static func set_ai_context_safely(context: String) -> bool:
 
 ## Check if specific autoload is available
 static func is_autoload_available(autoload_name: String) -> bool:
-	"""Check if a specific autoload is available and functional"""
+	## Check if a specific autoload is available and functional
 	var inst = instance()
 	inst._validate_autoload(autoload_name)
 	return inst._autoload_status.get(autoload_name) or false
 
 ## Get status of all autoloads
 static func get_autoload_status() -> Dictionary:
-	"""Get the status of all tracked autoloads"""
+	## Get the status of all tracked autoloads
 	var inst = instance()
 	var status = {}
 	var autoloads = ["UIThemeManager", "KnowledgeService", "AIAssistant", "ModelSwitcherGlobal", "DebugCmd"]
@@ -210,7 +210,7 @@ static func get_autoload_status() -> Dictionary:
 
 ## Log autoload status for debugging
 static func log_autoload_status() -> void:
-	"""Log the status of all autoloads for debugging"""
+	## Log the status of all autoloads for debugging
 	var status = get_autoload_status()
 	print("[SafeAutoloadAccess] Autoload Status:")
 	for autoload_name in status:

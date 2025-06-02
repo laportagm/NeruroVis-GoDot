@@ -7,7 +7,7 @@ extends RefCounted
 
 # === STATIC INTERFACE (Compatible with ComponentRegistry) ===
 static func create_component(component_type: String, config: Dictionary = {}) -> Control:
-	"""Create component using direct, simple approach"""
+	## Create component using direct, simple approach
 	
 	match component_type:
 		"info_panel":
@@ -26,7 +26,7 @@ static func create_component(component_type: String, config: Dictionary = {}) ->
 			return _create_fallback_component(component_type)
 
 static func get_or_create(component_id: String, component_type: String, config: Dictionary = {}) -> Control:
-	"""Simplified version - always create new (no caching complexity)"""
+	## Simplified version - always create new (no caching complexity)
 	var component = create_component(component_type, config)
 	if component:
 		component.set_meta("component_id", component_id)
@@ -34,7 +34,7 @@ static func get_or_create(component_id: String, component_type: String, config: 
 
 # === DIRECT COMPONENT CREATION (Simple, No Caching) ===
 static func _create_info_panel_direct(_config: Dictionary) -> Control:
-	"""Create info panel using existing factory"""
+	## Create info panel using existing factory
 	
 	# Use existing InfoPanelFactory - this is the most reliable approach
 	var factory_script = _safe_load_script("res://ui/panels/InfoPanelFactory.gd")
@@ -55,7 +55,7 @@ static func _create_info_panel_direct(_config: Dictionary) -> Control:
 	return _create_basic_info_panel()
 
 static func _create_settings_panel(_config: Dictionary) -> Control:
-	"""Create simple settings panel"""
+	## Create simple settings panel
 	var panel = PanelContainer.new()
 	panel.name = "SettingsPanel"
 	panel.custom_minimum_size = Vector2(300, 200)
@@ -75,7 +75,7 @@ static func _create_settings_panel(_config: Dictionary) -> Control:
 	return panel
 
 static func _create_ai_assistant_panel(_config: Dictionary) -> Control:
-	"""Create simple AI assistant panel"""
+	## Create simple AI assistant panel
 	var panel = PanelContainer.new()
 	panel.name = "AIAssistantPanel"
 	panel.custom_minimum_size = Vector2(350, 250)
@@ -95,7 +95,7 @@ static func _create_ai_assistant_panel(_config: Dictionary) -> Control:
 	return panel
 
 static func _create_button_direct(config: Dictionary) -> Control:
-	"""Create simple button"""
+	## Create simple button
 	var button = Button.new()
 	button.text = config.get("text", "Button")
 	
@@ -108,7 +108,7 @@ static func _create_button_direct(config: Dictionary) -> Control:
 	return button
 
 static func _create_label_direct(config: Dictionary) -> Control:
-	"""Create simple label"""
+	## Create simple label
 	var label = Label.new()
 	label.text = config.get("text", "Label")
 	
@@ -118,7 +118,7 @@ static func _create_label_direct(config: Dictionary) -> Control:
 	return label
 
 static func _create_container_direct(config: Dictionary) -> Control:
-	"""Create simple container"""
+	## Create simple container
 	var container_type = config.get("type", "vbox")
 	
 	match container_type:
@@ -135,7 +135,7 @@ static func _create_container_direct(config: Dictionary) -> Control:
 
 # === FALLBACK METHODS ===
 static func _create_basic_info_panel() -> Control:
-	"""Create very basic info panel as ultimate fallback"""
+	## Create very basic info panel as ultimate fallback
 	var panel = PanelContainer.new()
 	panel.name = "BasicInfoPanel"
 	panel.custom_minimum_size = Vector2(300, 200)
@@ -156,7 +156,7 @@ static func _create_basic_info_panel() -> Control:
 	return panel
 
 static func _create_fallback_component(component_type: String) -> Control:
-	"""Create fallback for unknown component types"""
+	## Create fallback for unknown component types
 	var fallback = PanelContainer.new()
 	fallback.name = "Fallback_" + component_type
 	
@@ -169,7 +169,7 @@ static func _create_fallback_component(component_type: String) -> Control:
 
 # === UTILITY METHODS ===
 static func _safe_load_script(script_path: String) -> Script:
-	"""Safely load script without errors"""
+	## Safely load script without errors
 	if ResourceLoader.exists(script_path):
 		return load(script_path)
 	return null
@@ -177,19 +177,19 @@ static func _safe_load_script(script_path: String) -> Script:
 # === COMPATIBILITY METHODS ===
 # These methods provide compatibility with ComponentRegistry interface
 static func register_factory(_component_type: String, _factory_function: Callable) -> void:
-	"""No-op for compatibility"""
+	## No-op for compatibility
 	pass
 
 static func release_component(_component_id: String) -> void:
-	"""No-op for compatibility"""
+	## No-op for compatibility
 	pass
 
 static func destroy_component(_component_id: String) -> void:
-	"""No-op for compatibility"""  
+	## No-op for compatibility  
 	pass
 
 static func get_registry_stats() -> Dictionary:
-	"""Return empty stats for compatibility"""
+	## Return empty stats for compatibility
 	return {
 		"total_created": 0,
 		"cache_hits": 0,
@@ -201,7 +201,7 @@ static func get_registry_stats() -> Dictionary:
 	}
 
 static func print_registry_stats() -> void:
-	"""Print simplified stats"""
+	## Print simplified stats
 	print("\n=== SIMPLIFIED COMPONENT FACTORY ===")
 	print("Mode: Core Development (No Caching)")
 	print("Components: Created directly as needed")

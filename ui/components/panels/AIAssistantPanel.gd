@@ -48,7 +48,7 @@ var quick_questions = [
 ]
 
 func _setup_component() -> void:
-    """Setup the AI assistant panel"""
+    ## Setup the AI assistant panel
     super._setup_component()
     
     # Get reference to AI services
@@ -60,7 +60,7 @@ func _setup_component() -> void:
     _create_welcome_message()
 
 func _create_panel_structure() -> void:
-    """Create the AI panel UI structure"""
+    ## Create the AI panel UI structure
     # Set panel properties
     custom_minimum_size = Vector2(400, 500)
     
@@ -104,7 +104,7 @@ func _create_panel_structure() -> void:
     main_container.add_child(status_label)
 
 func _create_title_bar() -> void:
-    """Create the panel title bar"""
+    ## Create the panel title bar
     title_bar = HBoxContainer.new()
     title_bar.name = "TitleBar"
     
@@ -126,7 +126,7 @@ func _create_title_bar() -> void:
     title_bar.add_child(close_btn)
 
 func _create_provider_selection() -> void:
-    """Create AI provider selection controls"""
+    ## Create AI provider selection controls
     model_selector_container = HBoxContainer.new()
     model_selector_container.name = "ProviderSelector"
     model_selector_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
@@ -160,7 +160,7 @@ func _create_provider_selection() -> void:
     model_selector_container.add_child(model_selector)
 
 func _create_context_indicator() -> void:
-    """Create context indicator showing current structure"""
+    ## Create context indicator showing current structure
     context_indicator = UIComponentFactory.create_label("No structure selected", "caption")
     context_indicator.name = "ContextIndicator"
     
@@ -181,7 +181,7 @@ func _create_context_indicator() -> void:
     context_bg.add_child(context_indicator)
     
 func _create_rate_limit_indicator() -> void:
-    """Create rate limit indicator for Gemini"""
+    ## Create rate limit indicator for Gemini
     rate_limit_container = VBoxContainer.new()
     rate_limit_container.name = "RateLimitContainer"
     
@@ -205,7 +205,7 @@ func _create_rate_limit_indicator() -> void:
         gemini.rate_limit_updated.connect(_on_rate_limit_updated)
 
 func _create_chat_area() -> void:
-    """Create scrollable chat message area"""
+    ## Create scrollable chat message area
     chat_container = ScrollContainer.new()
     chat_container.name = "ChatContainer"
     chat_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -219,7 +219,7 @@ func _create_chat_area() -> void:
     chat_container.add_child(messages_list)
 
 func _create_quick_questions() -> void:
-    """Create quick question buttons"""
+    ## Create quick question buttons
     quick_questions_container = HBoxContainer.new()
     quick_questions_container.name = "QuickQuestions"
     quick_questions_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
@@ -233,7 +233,7 @@ func _create_quick_questions() -> void:
         quick_questions_container.add_child(btn)
 
 func _create_input_area() -> void:
-    """Create message input area"""
+    ## Create message input area
     input_container = VBoxContainer.new()
     input_container.name = "InputContainer"
     
@@ -257,19 +257,19 @@ func _create_input_area() -> void:
     input_container.add_child(input_row)
 
 func _create_status_area() -> void:
-    """Create status indicator"""
+    ## Create status indicator
     status_label = UIComponentFactory.create_label("Ready", "caption")
     status_label.name = "StatusLabel"
     status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 func _create_welcome_message() -> void:
-    """Create initial welcome message"""
+    ## Create initial welcome message
     var welcome_text = "Hello! I'm NeuroBot, your brain anatomy assistant. I can help explain brain structures, their functions, and how they work together. Select a brain structure and ask me questions!"
     _add_message("assistant", welcome_text, "Welcome")
 
 # === AI SERVICE INTEGRATION ===
 func _setup_ai_connections() -> void:
-    """Setup connections to AI service"""
+    ## Setup connections to AI service
     if not ai_service:
         _update_status("AI Service not available - using offline mode")
         return
@@ -289,7 +289,7 @@ func _setup_ai_connections() -> void:
     _update_status("Connected to AI Assistant")
 
 func set_current_structure(structure_name: String) -> void:
-    """Update the current brain structure context"""
+    ## Update the current brain structure context
     current_structure = structure_name
     
     if ai_service:
@@ -307,7 +307,7 @@ func set_current_structure(structure_name: String) -> void:
         _show_structure_suggestions(structure_name)
 
 func ask_question(question: String) -> void:
-    """Ask a question to the AI assistant"""
+    ## Ask a question to the AI assistant
     if question.strip() == "":
         return
     
@@ -333,7 +333,7 @@ func ask_question(question: String) -> void:
 
 # === GEMINI INTEGRATION ===
 func _on_provider_selected(index: int) -> void:
-    """Handle AI provider selection"""
+    ## Handle AI provider selection
     if not ai_service or index < 0:
         return
         
@@ -361,11 +361,11 @@ func _on_provider_selected(index: int) -> void:
                 _show_user_gemini_setup_message()
 
 func _on_gemini_settings_requested() -> void:
-    """Open Gemini settings dialog"""
+    ## Open Gemini settings dialog
     _show_gemini_setup_dialog()
 
 func _show_gemini_setup_dialog() -> void:
-    """Show the Gemini setup dialog"""
+    ## Show the Gemini setup dialog
     if is_instance_valid(gemini_setup_dialog):
         return
         
@@ -376,7 +376,7 @@ func _show_gemini_setup_dialog() -> void:
     gemini_setup_dialog.show_dialog()
     
 func _show_user_gemini_setup_message() -> void:
-    """Show message for setting up user's Gemini service"""
+    ## Show message for setting up user's Gemini service
     var setup_message = "Your Gemini AI service requires setup. Please enter your API key to continue."
     _add_message("assistant", setup_message, "Gemini AI Setup Required")
     
@@ -386,7 +386,7 @@ func _show_user_gemini_setup_message() -> void:
     api_key_dialog.popup_centered()
     
 func _create_api_key_dialog() -> ConfirmationDialog:
-    """Create a simple dialog for entering the API key"""
+    ## Create a simple dialog for entering the API key
     var dialog = ConfirmationDialog.new()
     dialog.title = "Gemini API Key Setup"
     dialog.dialog_text = "Enter your Google Gemini API key:"
@@ -423,7 +423,7 @@ func _create_api_key_dialog() -> ConfirmationDialog:
     return dialog
     
 func _handle_user_gemini_setup(gemini_ai: Node, key: String) -> void:
-    """Handle user's Gemini API key setup"""
+    ## Handle user's Gemini API key setup
     _add_message("assistant", "Setting up Gemini API... Please wait.", "Setup in Progress")
     
     # Use async/await to wait for the setup result
@@ -437,7 +437,7 @@ func _handle_user_gemini_setup(gemini_ai: Node, key: String) -> void:
         _update_status("Gemini API setup failed")
 
 func _on_gemini_setup_completed(successful: bool, api_key: String) -> void:
-    """Handle Gemini setup completion"""
+    ## Handle Gemini setup completion
     if successful:
         _update_status("Gemini API configured successfully")
         
@@ -450,7 +450,7 @@ func _on_gemini_setup_completed(successful: bool, api_key: String) -> void:
     gemini_setup_dialog = null
 
 func _on_gemini_setup_cancelled() -> void:
-    """Handle Gemini setup cancellation"""
+    ## Handle Gemini setup cancellation
     # If Gemini was not configured, switch back to mock responses
     if ai_service and ai_service.ai_provider == AIAssistantService.AIProvider.GOOGLE_GEMINI:
         if not gemini_service or not gemini_service.is_api_key_valid():
@@ -465,7 +465,7 @@ func _on_gemini_setup_cancelled() -> void:
 
 # === MESSAGE MANAGEMENT ===
 func _add_message(sender: String, content: String, title: String = "") -> void:
-    """Add a message to the chat"""
+    ## Add a message to the chat
     var message_container = VBoxContainer.new()
     message_container.add_theme_constant_override("separation", UIThemeManager.get_spacing("xs"))
     
@@ -532,7 +532,7 @@ func _add_message(sender: String, content: String, title: String = "") -> void:
     chat_container.scroll_vertical = chat_container.get_v_scroll_bar().max_value
 
 func _show_structure_suggestions(structure_name: String) -> void:
-    """Show suggested questions for the current structure"""
+    ## Show suggested questions for the current structure
     var suggestions = [
         "What does the %s do?" % structure_name,
         "Where is the %s located?" % structure_name,
@@ -547,15 +547,15 @@ func _show_structure_suggestions(structure_name: String) -> void:
 
 # === EVENT HANDLERS ===
 func _on_question_submitted(text: String) -> void:
-    """Handle question submission via Enter key"""
+    ## Handle question submission via Enter key
     ask_question(text)
 
 func _on_send_pressed() -> void:
-    """Handle send button press"""
+    ## Handle send button press
     ask_question(question_input.text)
 
 func _on_quick_question_pressed(question_type: String) -> void:
-    """Handle quick question button press"""
+    ## Handle quick question button press
     if current_structure.is_empty():
         _add_message("assistant", "Please select a brain structure first, then I can answer specific questions about it!")
         return
@@ -578,7 +578,7 @@ func _on_quick_question_pressed(question_type: String) -> void:
         ask_question(question)
 
 func _on_close_pressed() -> void:
-    """Handle close button press"""
+    ## Handle close button press
     panel_closed.emit()
     if animation_enabled:
         animate_hide()
@@ -586,14 +586,14 @@ func _on_close_pressed() -> void:
         visible = false
 
 func _on_ai_response_received(question: String, response: String) -> void:
-    """Handle AI response"""
+    ## Handle AI response
     _add_message("assistant", response)
     is_waiting_for_response = false
     _update_status("Ready")
     send_button.disabled = false
 
 func _on_ai_error(error_message: String) -> void:
-    """Handle AI service error"""
+    ## Handle AI service error
     if "Rate limit" in error_message:
         _add_message("assistant", error_message, "Rate Limit")
     elif "not set up" in error_message:
@@ -605,11 +605,11 @@ func _on_ai_error(error_message: String) -> void:
     send_button.disabled = false
 
 func _on_ai_context_updated(structure_name: String) -> void:
-    """Handle AI context update"""
+    ## Handle AI context update
     set_current_structure(structure_name)
     
 func _on_rate_limit_updated(used: int, limit: int) -> void:
-    """Handle Gemini rate limit updates"""
+    ## Handle Gemini rate limit updates
     if rate_limit_bar:
         rate_limit_bar.value = limit - used
         rate_limit_label.text = "%d queries remaining" % (limit - used)
@@ -625,7 +625,7 @@ func _on_rate_limit_updated(used: int, limit: int) -> void:
 
 # === OFFLINE FALLBACK ===
 func _handle_offline_response(question: String) -> void:
-    """Handle questions when AI service is not available"""
+    ## Handle questions when AI service is not available
     await get_tree().create_timer(1.0).timeout  # Simulate processing
     
     var response = "I'm currently in offline mode. For full AI assistance, please ensure an internet connection and API configuration. In the meantime, you can explore the 3D brain model and view structure information in the information panel."
@@ -637,25 +637,25 @@ func _handle_offline_response(question: String) -> void:
 
 # === UTILITY METHODS ===
 func _update_status(status: String) -> void:
-    """Update status label"""
+    ## Update status label
     if status_label:
         status_label.text = status
 
 func clear_chat() -> void:
-    """Clear all chat messages"""
+    ## Clear all chat messages
     for child in messages_list.get_children():
         child.queue_free()
     message_count = 0
     _create_welcome_message()
 
 func get_chat_history() -> Array:
-    """Get current chat history"""
+    ## Get current chat history
     if ai_service:
         return ai_service.get_conversation_history()
     return []
 
 func export_conversation() -> String:
-    """Export conversation as text"""
+    ## Export conversation as text
     var export_text = "NeuroVis AI Assistant Conversation\n"
     export_text += "Generated: " + Time.get_datetime_string_from_system() + "\n"
     export_text += "Structure Context: " + current_structure + "\n\n"

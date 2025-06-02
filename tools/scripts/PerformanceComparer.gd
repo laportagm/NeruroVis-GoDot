@@ -108,7 +108,7 @@ func compare_performance():
 	print("  Unchanged: %d" % unchanged)
 
 func generate_comparison_report():
-	var report_content = """# 🔄 Performance Comparison Report
+	var report_content = ## # 🔄 Performance Comparison Report
 
 ## Overview
 - **Previous Build:** %s
@@ -126,7 +126,7 @@ func generate_comparison_report():
 
 | Metric | Previous | Current | Change | Status |
 |--------|----------|---------|--------|---------|
-""" % [
+ % [
 		previous_results.get("meta_timestamp", "Unknown"),
 		current_results.get("meta_timestamp", "Unknown"),
 		Time.get_datetime_string_from_system(),

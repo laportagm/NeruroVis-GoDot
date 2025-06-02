@@ -8,7 +8,7 @@ var test_label: Label
 var test_button: Button
 
 func _setup_component() -> void:
-	"""Setup test component with safety checks"""
+	## Setup test component with safety checks
 	_log("Setting up test component with safety framework")
 	
 	# Test autoload access
@@ -18,7 +18,7 @@ func _setup_component() -> void:
 	_create_test_ui()
 
 func _test_autoload_access() -> void:
-	"""Test safe autoload access"""
+	## Test safe autoload access
 	_log("Testing autoload access...")
 	
 	# Test UIThemeManager
@@ -53,7 +53,7 @@ func _test_autoload_access() -> void:
 	SafeAutoloadAccess.log_autoload_status()
 
 func _create_test_ui() -> void:
-	"""Create test UI elements"""
+	## Create test UI elements
 	# Setup as vertical container
 	var vbox = VBoxContainer.new()
 	add_child(vbox)
@@ -84,14 +84,14 @@ func _create_test_ui() -> void:
 		_log("- Used fallback button theming", "info")
 
 func _apply_component_theme() -> void:
-	"""Apply component-specific theming safely"""
+	## Apply component-specific theming safely
 	# This will be called by the base class
 	var theme_applied = SafeAutoloadAccess.apply_theme_safely(self, "panel")
 	if not theme_applied:
 		_log("Applied fallback panel theming", "info")
 
 func _on_test_button_pressed() -> void:
-	"""Test button press handler"""
+	## Test button press handler
 	_log("Test button pressed - running safety tests...")
 	
 	# Test structure retrieval with various names
@@ -111,7 +111,7 @@ func _on_test_button_pressed() -> void:
 
 # === STATIC TEST METHODS ===
 static func run_component_test(parent: Node) -> SafeUIComponentTest:
-	"""Create and run a test instance"""
+	## Create and run a test instance
 	var test_component = SafeUIComponentTest.new()
 	test_component.component_id = "SafeUITest"
 	test_component.size = Vector2(300, 200)
@@ -123,7 +123,7 @@ static func run_component_test(parent: Node) -> SafeUIComponentTest:
 	return test_component
 
 static func run_autoload_validation() -> Dictionary:
-	"""Run validation of all autoloads"""
+	## Run validation of all autoloads
 	print("[SafeUIComponentTest] Running autoload validation...")
 	
 	var results = {}
@@ -139,7 +139,7 @@ static func run_autoload_validation() -> Dictionary:
 	return results
 
 static func test_component_safety() -> bool:
-	"""Test component safety without UI"""
+	## Test component safety without UI
 	print("[SafeUIComponentTest] Testing component safety...")
 	
 	var all_safe = true

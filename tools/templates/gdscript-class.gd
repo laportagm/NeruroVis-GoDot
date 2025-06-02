@@ -30,11 +30,11 @@ var _is_initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the {{CLASS_NAME}} component"""
+	## Initialize the {{CLASS_NAME}} component
 	_initialize()
 
 func _process(delta: float) -> void:
-	"""Called every frame"""
+	## Called every frame
 	if not _is_initialized:
 		return
 	
@@ -46,7 +46,7 @@ func _process(delta: float) -> void:
 ## @param {{PARAM_NAME}}: {{PARAM_DESCRIPTION}}
 ## @return: {{RETURN_DESCRIPTION}}
 func {{METHOD_NAME}}({{PARAM_NAME}}: {{PARAM_TYPE}}) -> {{RETURN_TYPE}}:
-	"""{{METHOD_DOCUMENTATION}}"""
+	## {{METHOD_DOCUMENTATION}}
 	
 	# Validation
 	if {{VALIDATION_CONDITION}}:
@@ -60,7 +60,7 @@ func {{METHOD_NAME}}({{PARAM_NAME}}: {{PARAM_TYPE}}) -> {{RETURN_TYPE}}:
 
 # === PRIVATE METHODS ===
 func _initialize() -> void:
-	"""Initialize the component with default settings"""
+	## Initialize the component with default settings
 	
 	# Setup validation
 	if not _validate_setup():
@@ -75,32 +75,32 @@ func _initialize() -> void:
 	print("[{{CLASS_NAME}}] Initialized successfully")
 
 func _validate_setup() -> bool:
-	"""Validate that all required dependencies are available"""
+	## Validate that all required dependencies are available
 	
 	# Add validation logic
 	return true
 
 func _setup_connections() -> void:
-	"""Setup signal connections and dependencies"""
+	## Setup signal connections and dependencies
 	
 	# Connect signals here
 	pass
 
 func _apply_initial_state() -> void:
-	"""Apply initial state and configuration"""
+	## Apply initial state and configuration
 	
 	# Set initial state here
 	pass
 
 func _cleanup() -> void:
-	"""Clean up resources and connections"""
+	## Clean up resources and connections
 	
 	# Cleanup logic here
 	_is_initialized = false
 
 # === EVENT HANDLERS ===
 func _on_{{EVENT_NAME}}({{PARAM_NAME}}: {{PARAM_TYPE}}) -> void:
-	"""Handle {{EVENT_DESCRIPTION}}"""
+	## Handle {{EVENT_DESCRIPTION}}
 	
 	if not _is_initialized:
 		return
@@ -110,15 +110,15 @@ func _on_{{EVENT_NAME}}({{PARAM_NAME}}: {{PARAM_TYPE}}) -> void:
 
 # === UTILITY METHODS ===
 func _log_debug(message: String) -> void:
-	"""Log debug message with class context"""
+	## Log debug message with class context
 	if OS.is_debug_build():
 		print("[{{CLASS_NAME}}] " + message)
 
 func _log_error(message: String) -> void:
-	"""Log error message with class context"""
+	## Log error message with class context
 	push_error("[{{CLASS_NAME}}] " + message)
 
 # === CLEANUP ===
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	_cleanup()

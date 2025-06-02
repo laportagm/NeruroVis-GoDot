@@ -64,7 +64,7 @@ var _shaders_cache: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the material library"""
+	## Initialize the material library
 	_initialize_library()
 	_create_default_materials()
 	_create_material_presets()
@@ -75,7 +75,7 @@ func _ready() -> void:
 ## @param type: MaterialType enum value
 ## @returns: Material based on specified type
 func get_material_by_type(type: int) -> Material:
-	"""Get a predefined material by type"""
+	## Get a predefined material by type
 	var material_name = ""
 	
 	match type:
@@ -106,7 +106,7 @@ func get_material_by_type(type: int) -> Material:
 ## @param material_name: String name of the material
 ## @returns: Material with the specified name
 func get_material(material_name: String) -> Material:
-	"""Get a material by name, creating it if it doesn't exist"""
+	## Get a material by name, creating it if it doesn't exist
 	if _materials_cache.has(material_name):
 		return _materials_cache[material_name]
 	
@@ -127,7 +127,7 @@ func get_material(material_name: String) -> Material:
 ## @param preset_name: String name of the preset to apply
 ## @returns: bool indicating success
 func apply_preset(preset_name: String) -> bool:
-	"""Apply a predefined material preset to all materials"""
+	## Apply a predefined material preset to all materials
 	if not _material_presets.has(preset_name):
 		push_warning("[MaterialLibrary] Preset not found: " + preset_name)
 		return false
@@ -150,7 +150,7 @@ func apply_preset(preset_name: String) -> bool:
 ## @param material_name: String name of the material to apply
 ## @returns: bool indicating success
 func apply_material_to_mesh(mesh_instance: MeshInstance3D, material_name: String) -> bool:
-	"""Apply a material to a mesh instance"""
+	## Apply a material to a mesh instance
 	if not mesh_instance or not mesh_instance.mesh:
 		push_warning("[MaterialLibrary] Invalid mesh instance")
 		return false
@@ -170,7 +170,7 @@ func apply_material_to_mesh(mesh_instance: MeshInstance3D, material_name: String
 ## @param mesh_instance: MeshInstance3D to apply material to
 ## @returns: bool indicating success
 func apply_material_by_name_recognition(mesh_instance: MeshInstance3D) -> bool:
-	"""Intelligently apply material based on mesh name"""
+	## Intelligently apply material based on mesh name
 	if not mesh_instance or not mesh_instance.mesh:
 		push_warning("[MaterialLibrary] Invalid mesh instance")
 		return false
@@ -199,7 +199,7 @@ func apply_material_by_name_recognition(mesh_instance: MeshInstance3D) -> bool:
 ## @param properties: Dictionary of material properties
 ## @returns: Material with specified properties
 func create_custom_material(properties: Dictionary) -> Material:
-	"""Create a custom material with specified properties"""
+	## Create a custom material with specified properties
 	var material
 	
 	if use_pbr:
@@ -256,7 +256,7 @@ func create_custom_material(properties: Dictionary) -> Material:
 ## Update material quality level
 ## @param level: int quality level (0=Low, 1=Medium, 2=High)
 func set_quality_level(level: int) -> void:
-	"""Set the material quality level"""
+	## Set the material quality level
 	quality_level = clamp(level, 0, 2)
 	
 	# Update PBR flag based on quality
@@ -271,7 +271,7 @@ func set_quality_level(level: int) -> void:
 ## @param material_name: String name of the material
 ## @returns: bool indicating success
 func save_material(material_name: String) -> bool:
-	"""Save a material to file"""
+	## Save a material to file
 	if not _materials_cache.has(material_name):
 		push_warning("[MaterialLibrary] Material not found: " + material_name)
 		return false
@@ -302,7 +302,7 @@ func save_material(material_name: String) -> bool:
 ## @param value: Variant property value
 ## @returns: bool indicating success
 func update_material_property(material_name: String, property: String, value) -> bool:
-	"""Update a specific property of a material"""
+	## Update a specific property of a material
 	if not _materials_cache.has(material_name):
 		push_warning("[MaterialLibrary] Material not found: " + material_name)
 		return false
@@ -350,7 +350,7 @@ func update_material_property(material_name: String, property: String, value) ->
 
 # === PRIVATE METHODS ===
 func _initialize_library() -> void:
-	"""Initialize the material library"""
+	## Initialize the material library
 	# Create materials directory if it doesn't exist
 	var dir = DirAccess.open("res://assets")
 	if dir:
@@ -370,7 +370,7 @@ func _initialize_library() -> void:
 	_initialized = true
 
 func _create_default_materials() -> void:
-	"""Create the default set of materials"""
+	## Create the default set of materials
 	# Gray matter - slightly pinkish with subsurface scattering
 	var gray_matter = _create_brain_material(
 		Color(0.85, 0.71, 0.65),  # Pinkish gray
@@ -461,7 +461,7 @@ func _create_default_materials() -> void:
 	_materials_cache["highlighted_structure"] = highlighted
 
 func _create_brain_material(color: Color, roughness: float, metallic: float, enable_sss: bool) -> StandardMaterial3D:
-	"""Create a brain material with the specified properties"""
+	## Create a brain material with the specified properties
 	var material = StandardMaterial3D.new()
 	
 	# Basic properties
@@ -482,7 +482,7 @@ func _create_brain_material(color: Color, roughness: float, metallic: float, ena
 	return material
 
 func _create_default_material() -> StandardMaterial3D:
-	"""Create a default generic material"""
+	## Create a default generic material
 	return _create_brain_material(
 		Color(0.8, 0.8, 0.8),  # Light gray
 		0.7,  # Medium-high roughness
@@ -491,7 +491,7 @@ func _create_default_material() -> StandardMaterial3D:
 	)
 
 func _create_material_presets() -> void:
-	"""Create material presets for different visualization modes"""
+	## Create material presets for different visualization modes
 	# Standard educational preset
 	_material_presets["educational"] = {
 		"gray_matter": {"albedo_color": Color(0.85, 0.71, 0.65), "roughness": 0.8, "subsurf_scatter_enabled": true},
@@ -520,7 +520,7 @@ func _create_material_presets() -> void:
 	}
 
 func _apply_preset_to_material(material: Material, preset: Dictionary) -> void:
-	"""Apply preset settings to a specific material"""
+	## Apply preset settings to a specific material
 	# Skip if not a StandardMaterial3D
 	if not material is StandardMaterial3D:
 		return
@@ -564,7 +564,7 @@ func _apply_preset_to_material(material: Material, preset: Dictionary) -> void:
 						material.set(property, settings[property])
 
 func _recreate_materials_for_quality() -> void:
-	"""Recreate all materials based on current quality level"""
+	## Recreate all materials based on current quality level
 	var material_names = _materials_cache.keys()
 	
 	for name in material_names:

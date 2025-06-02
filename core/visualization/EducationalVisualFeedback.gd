@@ -84,7 +84,7 @@ signal color_scheme_changed(new_scheme: String)
 
 # === INITIALIZATION ===
 func _ready() -> void:
-    """Initialize visual feedback system"""
+    ## Initialize visual feedback system
     _load_color_scheme(color_scheme)
     _precompile_shaders()
     
@@ -97,7 +97,7 @@ func _ready() -> void:
 # === PUBLIC METHODS ===
 ## Apply hover visual feedback with accessibility considerations
 func apply_hover_feedback(mesh: MeshInstance3D, original_material: Material = null) -> void:
-    """Apply educational hover effect with smooth transitions"""
+    ## Apply educational hover effect with smooth transitions
     if not mesh or not mesh.mesh:
         return
     
@@ -122,7 +122,7 @@ func apply_hover_feedback(mesh: MeshInstance3D, original_material: Material = nu
 
 ## Apply selection visual feedback
 func apply_selection_feedback(mesh: MeshInstance3D, original_material: Material = null) -> void:
-    """Apply educational selection effect with clear indication"""
+    ## Apply educational selection effect with clear indication
     if not mesh or not mesh.mesh:
         return
     
@@ -148,7 +148,7 @@ func apply_selection_feedback(mesh: MeshInstance3D, original_material: Material 
 
 ## Apply related structure feedback (for connected anatomy)
 func apply_related_feedback(mesh: MeshInstance3D, original_material: Material = null) -> void:
-    """Apply subtle feedback for related structures"""
+    ## Apply subtle feedback for related structures
     if not mesh or not mesh.mesh:
         return
     
@@ -163,7 +163,7 @@ func apply_related_feedback(mesh: MeshInstance3D, original_material: Material = 
 
 ## Clear all visual feedback
 func clear_feedback(mesh: MeshInstance3D, original_material: Material) -> void:
-    """Clear all visual feedback with smooth transition"""
+    ## Clear all visual feedback with smooth transition
     if not mesh:
         return
     
@@ -181,7 +181,7 @@ func clear_feedback(mesh: MeshInstance3D, original_material: Material) -> void:
 
 ## Change color scheme (for accessibility)
 func set_color_scheme(scheme_name: String) -> void:
-    """Change the active color scheme"""
+    ## Change the active color scheme
     if COLOR_SCHEMES.has(scheme_name):
         color_scheme = scheme_name
         _load_color_scheme(scheme_name)
@@ -190,13 +190,13 @@ func set_color_scheme(scheme_name: String) -> void:
 
 ## Adjust feedback intensity
 func set_feedback_intensity(intensity: float) -> void:
-    """Adjust the intensity of visual feedback (0.0 - 1.0)"""
+    ## Adjust the intensity of visual feedback (0.0 - 1.0)
     feedback_intensity = clamp(intensity, 0.0, 1.0)
     _invalidate_material_cache()
 
 ## Get current accessibility settings
 func get_accessibility_info() -> Dictionary:
-    """Return current accessibility configuration"""
+    ## Return current accessibility configuration
     return {
         "color_scheme": color_scheme,
         "feedback_intensity": feedback_intensity,
@@ -208,7 +208,7 @@ func get_accessibility_info() -> Dictionary:
 
 # === PRIVATE METHODS ===
 func _load_color_scheme(scheme_name: String) -> void:
-    """Load a color scheme from presets"""
+    ## Load a color scheme from presets
     if COLOR_SCHEMES.has(scheme_name):
         _current_colors = COLOR_SCHEMES[scheme_name].duplicate()
         
@@ -222,7 +222,7 @@ func _load_color_scheme(scheme_name: String) -> void:
                 _current_colors[key] = color
 
 func _get_or_create_hover_material(mesh: MeshInstance3D, base_material: Material) -> Material:
-    """Create or retrieve cached hover material"""
+    ## Create or retrieve cached hover material
     var cache_key = "hover_%s_%s" % [mesh.get_instance_id(), feedback_intensity]
     
     if _material_cache.has(cache_key):
@@ -259,7 +259,7 @@ func _get_or_create_hover_material(mesh: MeshInstance3D, base_material: Material
     return hover_mat
 
 func _get_or_create_selection_material(mesh: MeshInstance3D, base_material: Material) -> Material:
-    """Create or retrieve cached selection material"""
+    ## Create or retrieve cached selection material
     var cache_key = "select_%s_%s" % [mesh.get_instance_id(), feedback_intensity]
     
     if _material_cache.has(cache_key):
@@ -289,7 +289,7 @@ func _get_or_create_selection_material(mesh: MeshInstance3D, base_material: Mate
     return select_mat
 
 func _get_or_create_related_material(mesh: MeshInstance3D, base_material: Material) -> Material:
-    """Create material for related structures"""
+    ## Create material for related structures
     var cache_key = "related_%s_%s" % [mesh.get_instance_id(), feedback_intensity]
     
     if _material_cache.has(cache_key):
@@ -313,29 +313,29 @@ func _get_or_create_related_material(mesh: MeshInstance3D, base_material: Materi
     return related_mat
 
 func _add_outline_effect(mesh: MeshInstance3D, color: Color, thickness: float = OUTLINE_THICKNESS) -> void:
-    """Add outline effect using shader or duplicate mesh method"""
+    ## Add outline effect using shader or duplicate mesh method
     # Implementation depends on Godot version and performance requirements
     # For now, using rim lighting as outline approximation
     pass
 
 func _remove_outline_effect(mesh: MeshInstance3D) -> void:
-    """Remove outline effect from mesh"""
+    ## Remove outline effect from mesh
     pass
 
 func _animate_material_transition(mesh: MeshInstance3D, target_material: Material, duration: float) -> void:
-    """Smoothly transition between materials"""
+    ## Smoothly transition between materials
     # For now, apply instantly to avoid tween errors
     # TODO: Implement proper material transition animation
     _apply_material_instant(mesh, target_material)
 
 func _apply_material_instant(mesh: MeshInstance3D, material: Material) -> void:
-    """Apply material without animation"""
+    ## Apply material without animation
     var surface_count = mesh.mesh.get_surface_count()
     for i in range(surface_count):
         mesh.set_surface_override_material(i, material)
 
 func _add_hover_animation(mesh: MeshInstance3D) -> void:
-    """Add subtle hover animation"""
+    ## Add subtle hover animation
     if not enable_animations or reduce_motion:
         return
     
@@ -352,7 +352,7 @@ func _add_hover_animation(mesh: MeshInstance3D) -> void:
     _active_tweens["%s_hover" % mesh.get_instance_id()] = tween
 
 func _add_selection_pulse(mesh: MeshInstance3D) -> void:
-    """Add selection confirmation pulse"""
+    ## Add selection confirmation pulse
     if not enable_animations or reduce_motion:
         return
     
@@ -364,7 +364,7 @@ func _add_selection_pulse(mesh: MeshInstance3D) -> void:
     tween.tween_property(mesh, "scale", original_scale, 0.2 / animation_speed)
 
 func _stop_mesh_animations(mesh: MeshInstance3D) -> void:
-    """Stop all animations for a mesh"""
+    ## Stop all animations for a mesh
     var mesh_id = mesh.get_instance_id()
     
     # Stop main tween
@@ -382,21 +382,21 @@ func _stop_mesh_animations(mesh: MeshInstance3D) -> void:
     mesh.scale = Vector3.ONE
 
 func _precompile_shaders() -> void:
-    """Precompile shaders for better performance"""
+    ## Precompile shaders for better performance
     # Shader compilation would happen here
     pass
 
 func _invalidate_material_cache() -> void:
-    """Clear material cache when settings change"""
+    ## Clear material cache when settings change
     _material_cache.clear()
 
 # === ACCESSIBILITY CALLBACKS ===
 func _on_colorblind_mode_changed(mode: String) -> void:
-    """Handle colorblind mode changes"""
+    ## Handle colorblind mode changes
     set_color_scheme(mode)
 
 func _on_reduce_motion_changed(enabled: bool) -> void:
-    """Handle reduce motion preference"""
+    ## Handle reduce motion preference
     reduce_motion = enabled
     
     # Stop all active animations if motion is reduced
@@ -408,7 +408,7 @@ func _on_reduce_motion_changed(enabled: bool) -> void:
 
 # === CLEANUP ===
 func _exit_tree() -> void:
-    """Clean up resources"""
+    ## Clean up resources
     # Stop all animations
     for tween in _active_tweens.values():
         if tween and is_instance_valid(tween):

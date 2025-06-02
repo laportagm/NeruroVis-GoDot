@@ -15,7 +15,7 @@ func _ready():
 	test_name = "InputRouter Component Tests"
 
 func setup_test():
-	"""Setup for each test"""
+	## Setup for each test
 	test_router = InputRouter.new()
 	mock_main_scene = Node3D.new()
 	mock_main_scene.name = "MockMainScene"
@@ -28,7 +28,7 @@ func setup_test():
 	add_child(mock_main_scene)
 
 func teardown_test():
-	"""Cleanup after each test"""
+	## Cleanup after each test
 	if test_router:
 		test_router.queue_free()
 		test_router = null
@@ -41,12 +41,12 @@ func teardown_test():
 	mock_selection_manager = null
 
 func test_router_creation():
-	"""Test that InputRouter can be created"""
+	## Test that InputRouter can be created
 	assert_not_null(test_router, "InputRouter should be created successfully")
 	assert_true(test_router.is_input_enabled(), "Input should be enabled by default")
 
 func test_router_initialization():
-	"""Test router initialization with system references"""
+	## Test router initialization with system references
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	var status = test_router.get_input_status()
@@ -54,7 +54,7 @@ func test_router_initialization():
 	assert_true(status.has_selection_manager, "Should have selection manager reference")
 
 func test_input_enable_disable():
-	"""Test input enable/disable functionality"""
+	## Test input enable/disable functionality
 	assert_true(test_router.is_input_enabled(), "Should start enabled")
 	
 	test_router.disable_input()
@@ -64,7 +64,7 @@ func test_input_enable_disable():
 	assert_true(test_router.is_input_enabled(), "Should be enabled after enable_input()")
 
 func test_camera_shortcuts_handling():
-	"""Test camera shortcut handling"""
+	## Test camera shortcut handling
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	var shortcut_triggered = false
@@ -84,7 +84,7 @@ func test_camera_shortcuts_handling():
 	assert_true(shortcut_triggered, "Camera shortcut signal should be emitted")
 
 func test_selection_input_handling():
-	"""Test selection input handling"""
+	## Test selection input handling
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	var selection_attempted = false
@@ -104,7 +104,7 @@ func test_selection_input_handling():
 	assert_true(selection_attempted, "Selection attempted signal should be emitted")
 
 func test_hover_input_handling():
-	"""Test hover input handling"""
+	## Test hover input handling
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	var hover_changed = false
@@ -122,7 +122,7 @@ func test_hover_input_handling():
 	assert_true(hover_changed, "Hover position changed signal should be emitted")
 
 func test_input_simulation():
-	"""Test input simulation for testing purposes"""
+	## Test input simulation for testing purposes
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	# Test camera shortcut simulation
@@ -134,7 +134,7 @@ func test_input_simulation():
 	assert_true(mock_selection_manager.handle_selection_called, "Handle selection should be called")
 
 func test_system_reference_updates():
-	"""Test updating system references"""
+	## Test updating system references
 	test_router.initialize(mock_main_scene, null, null)
 	
 	var status = test_router.get_input_status()
@@ -149,7 +149,7 @@ func test_system_reference_updates():
 	assert_true(status.has_selection_manager, "Should have selection manager after update")
 
 func test_input_status_reporting():
-	"""Test input status reporting"""
+	## Test input status reporting
 	test_router.initialize(mock_main_scene, mock_camera_controller, mock_selection_manager)
 	
 	var status = test_router.get_input_status()
@@ -161,7 +161,7 @@ func test_input_status_reporting():
 	assert_true(status.has("has_selection_manager"), "Status should include has_selection_manager")
 
 func run_all_tests():
-	"""Run all input router tests"""
+	## Run all input router tests
 	var tests = [
 		"test_router_creation",
 		"test_router_initialization",

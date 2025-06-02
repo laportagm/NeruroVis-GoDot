@@ -58,7 +58,7 @@ func _run() -> void:
 
 # === VERIFICATION FUNCTIONS ===
 func _verify_script_files() -> bool:
-	"""Verify that all required script files exist"""
+	## Verify that all required script files exist
 	print("\nVerifying script files...")
 	var all_exist = true
 	
@@ -75,7 +75,7 @@ func _verify_script_files() -> bool:
 	return all_exist
 
 func _ensure_directories_exist() -> void:
-	"""Create required directories if they don't exist"""
+	## Create required directories if they don't exist
 	print("\nEnsuring required directories exist...")
 	
 	var directories = [
@@ -92,7 +92,7 @@ func _ensure_directories_exist() -> void:
 
 # === AUTOLOAD CONFIGURATION ===
 func _get_current_autoloads() -> Dictionary:
-	"""Get current autoloads from project.godot"""
+	## Get current autoloads from project.godot
 	print("\nReading current autoloads...")
 	var current_autoloads = {}
 	
@@ -113,7 +113,7 @@ func _get_current_autoloads() -> Dictionary:
 	return current_autoloads
 
 func _update_project_autoloads(current_autoloads: Dictionary) -> void:
-	"""Update project.godot with new autoloads"""
+	## Update project.godot with new autoloads
 	print("\nUpdating project autoloads...")
 	
 	var config = ConfigFile.new()
@@ -144,7 +144,7 @@ func _update_project_autoloads(current_autoloads: Dictionary) -> void:
 
 # === CONFIG FILE CREATION ===
 func _create_config_files() -> void:
-	"""Create configuration files for architecture components"""
+	## Create configuration files for architecture components
 	print("\nCreating configuration files...")
 	
 	# Create preload_resources.cfg

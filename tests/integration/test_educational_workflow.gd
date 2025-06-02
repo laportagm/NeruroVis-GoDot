@@ -40,7 +40,7 @@ func _ready():
 	_print_test_report()
 
 func _initialize_services() -> void:
-	"""Initialize service references"""
+	## Initialize service references
 	knowledge_service = get_node_or_null("/root/KnowledgeService")
 	ai_assistant = get_node_or_null("/root/AIAssistant")
 	
@@ -50,7 +50,7 @@ func _initialize_services() -> void:
 		ui_theme_manager = UIThemeManagerScript
 
 func _test_knowledge_retrieval() -> void:
-	"""Test educational content retrieval"""
+	## Test educational content retrieval
 	current_test = "Knowledge Retrieval"
 	print("📚 Testing Knowledge Retrieval...")
 	
@@ -85,7 +85,7 @@ func _test_knowledge_retrieval() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _test_search_functionality() -> void:
-	"""Test educational content search"""
+	## Test educational content search
 	current_test = "Search Functionality"
 	print("\n🔍 Testing Search Functionality...")
 	
@@ -116,7 +116,7 @@ func _test_search_functionality() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _test_theme_switching() -> void:
-	"""Test UI theme system"""
+	## Test UI theme system
 	current_test = "Theme Switching"
 	print("\n🎨 Testing Theme System...")
 	
@@ -152,7 +152,7 @@ func _test_theme_switching() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _test_ai_integration() -> void:
-	"""Test AI assistant integration"""
+	## Test AI assistant integration
 	current_test = "AI Integration"
 	print("\n🤖 Testing AI Assistant...")
 	
@@ -176,7 +176,7 @@ func _test_ai_integration() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _test_ui_components() -> void:
-	"""Test UI component creation"""
+	## Test UI component creation
 	current_test = "UI Components"
 	print("\n🖼️ Testing UI Components...")
 	
@@ -200,7 +200,7 @@ func _test_ui_components() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _test_performance() -> void:
-	"""Test performance metrics"""
+	## Test performance metrics
 	current_test = "Performance"
 	print("\n⚡ Testing Performance...")
 	
@@ -237,7 +237,7 @@ func _test_performance() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _print_test_report() -> void:
-	"""Print comprehensive test report"""
+	## Print comprehensive test report
 	print("\n" + "=" * 50)
 	print("EDUCATIONAL WORKFLOW TEST REPORT")
 	print("=" * 50 + "\n")

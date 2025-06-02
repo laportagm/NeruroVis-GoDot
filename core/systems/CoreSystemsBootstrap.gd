@@ -82,7 +82,7 @@ func _ready() -> void:
 ## @param registry: Optional registry to use (will create one if not provided)
 ## @returns: true if initialization was started, false otherwise
 func initialize_systems(registry: CoreSystemsRegistry = null) -> bool:
-    """Initialize all core educational systems in proper order"""
+    ## Initialize all core educational systems in proper order
     if _initialization_in_progress:
         push_warning("[Bootstrap] Initialization already in progress")
         return false
@@ -112,7 +112,7 @@ func initialize_systems(registry: CoreSystemsRegistry = null) -> bool:
 ## @param system_name: Name of the system to retrieve
 ## @returns: The system instance or null if not found or not initialized
 func get_system(system_name: String) -> Node:
-    """Get an educational system by name"""
+    ## Get an educational system by name
     if _registry:
         return _registry.get_system(system_name)
     return null
@@ -121,19 +121,19 @@ func get_system(system_name: String) -> Node:
 ## @param system_name: Name of the system to check
 ## @returns: true if the system is initialized, false otherwise
 func is_system_initialized(system_name: String) -> bool:
-    """Check if a specific educational system is initialized"""
+    ## Check if a specific educational system is initialized
     return _initialized_systems.has(system_name)
 
 ## Check if all systems are fully initialized
 ## @returns: true if all systems are initialized, false otherwise
 func is_initialized() -> bool:
-    """Check if all educational systems are initialized"""
+    ## Check if all educational systems are initialized
     return _initialization_complete
 
 ## Get initialization progress as a percentage
 ## @returns: Percentage of systems initialized (0-100)
 func get_initialization_progress() -> float:
-    """Get educational system initialization progress"""
+    ## Get educational system initialization progress
     if _initialization_sequence.is_empty():
         return 100.0
     
@@ -143,18 +143,18 @@ func get_initialization_progress() -> float:
 ## Get a list of all initialized systems
 ## @returns: Array of initialized system names
 func get_initialized_systems() -> Array:
-    """Get list of initialized educational systems"""
+    ## Get list of initialized educational systems
     return _initialized_systems.keys()
 
 ## Get a list of systems that failed to initialize
 ## @returns: Array of failed system names
 func get_failed_systems() -> Array:
-    """Get list of educational systems that failed to initialize"""
+    ## Get list of educational systems that failed to initialize
     return _failed_systems.duplicate()
 
 # === PRIVATE METHODS ===
 func _process_next_system(index: int) -> void:
-    """Process the next system in the initialization sequence"""
+    ## Process the next system in the initialization sequence
     if index >= _initialization_sequence.size():
         _complete_initialization()
         return
@@ -183,7 +183,7 @@ func _process_next_system(index: int) -> void:
     _process_next_system(index + 1)
 
 func _check_dependencies(system_name: String) -> bool:
-    """Check if all dependencies for a system are initialized"""
+    ## Check if all dependencies for a system are initialized
     if not SYSTEM_DEPENDENCIES.has(system_name):
         return true  # No dependencies defined
     
@@ -198,7 +198,7 @@ func _check_dependencies(system_name: String) -> bool:
     return all_satisfied
 
 func _initialize_system(system_name: String) -> bool:
-    """Initialize a specific system"""
+    ## Initialize a specific system
     print("[Bootstrap] Initializing: %s" % system_name)
     
     # Create system instance
@@ -237,7 +237,7 @@ func _initialize_system(system_name: String) -> bool:
         return false
 
 func _create_system_instance(system_name: String) -> Node:
-    """Create instance of a specific system"""
+    ## Create instance of a specific system
     var script_path = ""
     
     match system_name:
@@ -310,7 +310,7 @@ func _create_system_instance(system_name: String) -> Node:
     return null
 
 func _create_selection_system() -> Node:
-    """Create selection system with appropriate configuration"""
+    ## Create selection system with appropriate configuration
     # Check if we should use multi-selection
     var use_multi_selection = true
     
@@ -341,7 +341,7 @@ func _create_selection_system() -> Node:
     return null
 
 func _find_autoload_by_name(system_name: String) -> Node:
-    """Try to find an existing autoload for a system"""
+    ## Try to find an existing autoload for a system
     var autoload_map = {
         "event_bus": "EventBus",
         "app_state": "AppState",
@@ -361,7 +361,7 @@ func _find_autoload_by_name(system_name: String) -> Node:
     return null
 
 func _complete_initialization() -> void:
-    """Complete initialization process"""
+    ## Complete initialization process
     # Calculate duration
     var duration = (Time.get_ticks_msec() - _start_time) / 1000.0
     

@@ -39,7 +39,7 @@ static var active_tooltip: InteractiveTooltip
 static var tooltip_instances: Array[InteractiveTooltip] = []
 
 func _setup_component() -> void:
-	"""Setup the interactive tooltip"""
+	## Setup the interactive tooltip
 	super._setup_component()
 	
 	# Register with global manager
@@ -55,7 +55,7 @@ func _setup_component() -> void:
 	modulate = Color.TRANSPARENT
 
 func _create_tooltip_structure() -> void:
-	"""Create the tooltip UI structure"""
+	## Create the tooltip UI structure
 	# Apply enhanced tooltip styling
 	UIThemeManager.apply_enhanced_panel_style(self, "overlay")
 	
@@ -83,7 +83,7 @@ func _create_tooltip_structure() -> void:
 	main_container.add_child(action_buttons)
 
 func _setup_timers() -> void:
-	"""Setup show/hide timers"""
+	## Setup show/hide timers
 	show_timer = Timer.new()
 	show_timer.wait_time = show_delay
 	show_timer.one_shot = true
@@ -97,14 +97,14 @@ func _setup_timers() -> void:
 	add_child(hide_timer)
 
 func _setup_positioning() -> void:
-	"""Setup automatic positioning"""
+	## Setup automatic positioning
 	z_index = 1000  # Ensure tooltips appear above other UI
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 
 # === PUBLIC API ===
 static func show_for_control(target: Control, content: Dictionary, tooltip_type: TooltipType = TooltipType.SIMPLE) -> InteractiveTooltip:
-	"""Show tooltip for a specific control"""
+	## Show tooltip for a specific control
 	hide_all_tooltips()
 	
 	var tooltip = _get_or_create_tooltip(tooltip_type)
@@ -114,7 +114,7 @@ static func show_for_control(target: Control, content: Dictionary, tooltip_type:
 	return tooltip
 
 static func show_structure_tooltip(target: Control, structure_id: String) -> InteractiveTooltip:
-	"""Show tooltip with brain structure information"""
+	## Show tooltip with brain structure information
 	var structure_data = {}
 	
 	# Get structure data from KnowledgeService if available
@@ -135,7 +135,7 @@ static func show_structure_tooltip(target: Control, structure_id: String) -> Int
 	return show_for_control(target, content, TooltipType.EDUCATIONAL)
 
 static func show_diagnostic_tooltip(target: Control, diagnostic_data: Dictionary) -> InteractiveTooltip:
-	"""Show diagnostic tooltip with system information"""
+	## Show diagnostic tooltip with system information
 	var content = {
 		"type": "diagnostic",
 		"title": "Diagnostic Information",
@@ -146,14 +146,14 @@ static func show_diagnostic_tooltip(target: Control, diagnostic_data: Dictionary
 	return show_for_control(target, content, TooltipType.DIAGNOSTIC)
 
 static func hide_all_tooltips() -> void:
-	"""Hide all active tooltips"""
+	## Hide all active tooltips
 	if active_tooltip:
 		active_tooltip._hide_tooltip()
 		active_tooltip = null
 
 # === TOOLTIP DISPLAY ===
 func _show_for_target(target: Control, content: Dictionary) -> void:
-	"""Show tooltip for specific target"""
+	## Show tooltip for specific target
 	if not target or not is_instance_valid(target):
 		return
 	
@@ -174,7 +174,7 @@ func _show_for_target(target: Control, content: Dictionary) -> void:
 	show_timer.start()
 
 func _show_tooltip() -> void:
-	"""Actually show the tooltip"""
+	## Actually show the tooltip
 	if not target_control or not is_instance_valid(target_control):
 		return
 	
@@ -190,7 +190,7 @@ func _show_tooltip() -> void:
 	tooltip_shown.emit(target_control, content_data)
 
 func _hide_tooltip() -> void:
-	"""Hide the tooltip"""
+	## Hide the tooltip
 	if not is_visible:
 		return
 	
@@ -213,7 +213,7 @@ func _hide_tooltip() -> void:
 
 # === CONTENT MANAGEMENT ===
 func _update_tooltip_content() -> void:
-	"""Update tooltip content based on type and data"""
+	## Update tooltip content based on type and data
 	_clear_content()
 	
 	var tooltip_type_string = content_data.get("type", "simple")
@@ -233,7 +233,7 @@ func _update_tooltip_content() -> void:
 			_create_simple_content()
 
 func _clear_content() -> void:
-	"""Clear existing content"""
+	## Clear existing content
 	for child in content_area.get_children():
 		child.queue_free()
 	
@@ -244,7 +244,7 @@ func _clear_content() -> void:
 	action_buttons.visible = false
 
 func _create_simple_content() -> void:
-	"""Create simple text tooltip"""
+	## Create simple text tooltip
 	var text = content_data.get("text", "")
 	if text == "":
 		return
@@ -255,7 +255,7 @@ func _create_simple_content() -> void:
 	content_area.add_child(label)
 
 func _create_rich_content() -> void:
-	"""Create rich text tooltip with formatting"""
+	## Create rich text tooltip with formatting
 	var title = content_data.get("title", "")
 	var description = content_data.get("description", "")
 	
@@ -275,7 +275,7 @@ func _create_rich_content() -> void:
 		content_area.add_child(rich_text)
 
 func _create_interactive_content() -> void:
-	"""Create interactive tooltip with buttons"""
+	## Create interactive tooltip with buttons
 	_create_rich_content()
 	
 	var actions = content_data.get("actions", [])
@@ -283,7 +283,7 @@ func _create_interactive_content() -> void:
 		_create_action_buttons(actions)
 
 func _create_educational_content() -> void:
-	"""Create educational tooltip for brain structures"""
+	## Create educational tooltip for brain structures
 	var title = content_data.get("title", "")
 	var description = content_data.get("description", "")
 	var functions = content_data.get("functions", [])
@@ -329,7 +329,7 @@ func _create_educational_content() -> void:
 		_create_action_buttons(actions)
 
 func _create_diagnostic_content() -> void:
-	"""Create diagnostic tooltip with system information"""
+	## Create diagnostic tooltip with system information
 	var title = content_data.get("title", "Diagnostic Info")
 	var data = content_data.get("data", {})
 	var timestamp = content_data.get("timestamp", "")
@@ -355,7 +355,7 @@ func _create_diagnostic_content() -> void:
 		content_area.add_child(entry_container)
 
 func _create_action_buttons(actions: Array) -> void:
-	"""Create action buttons for interactive tooltips"""
+	## Create action buttons for interactive tooltips
 	for action_data in actions:
 		var button = UIComponentFactory.create_button(
 			action_data.get("text", "Action"),
@@ -369,7 +369,7 @@ func _create_action_buttons(actions: Array) -> void:
 
 # === POSITIONING ===
 func _position_near_target() -> void:
-	"""Position tooltip near target control"""
+	## Position tooltip near target control
 	if not target_control or not is_instance_valid(target_control):
 		return
 	
@@ -404,7 +404,7 @@ func _position_near_target() -> void:
 
 # === EVENT HANDLING ===
 func _connect_target_events() -> void:
-	"""Connect to target control events"""
+	## Connect to target control events
 	if not target_control:
 		return
 	
@@ -417,7 +417,7 @@ func _connect_target_events() -> void:
 			target_control.mouse_entered.connect(_on_target_mouse_entered)
 
 func _disconnect_target_events() -> void:
-	"""Disconnect from target control events"""
+	## Disconnect from target control events
 	if not target_control:
 		return
 	
@@ -430,16 +430,16 @@ func _disconnect_target_events() -> void:
 			target_control.mouse_entered.disconnect(_on_target_mouse_entered)
 
 func _on_target_mouse_exited() -> void:
-	"""Handle target mouse exit"""
+	## Handle target mouse exit
 	if not interactive_mode:
 		hide_timer.start()
 
 func _on_target_mouse_entered() -> void:
-	"""Handle target mouse enter"""
+	## Handle target mouse enter
 	hide_timer.stop()
 
 func _gui_input(event: InputEvent) -> void:
-	"""Handle tooltip input events"""
+	## Handle tooltip input events
 	super._gui_input(event)
 	
 	if event is InputEventMouseButton:
@@ -449,7 +449,7 @@ func _gui_input(event: InputEvent) -> void:
 				_hide_tooltip()
 
 func _on_action_button_pressed(action_data: Dictionary) -> void:
-	"""Handle action button press"""
+	## Handle action button press
 	var action = action_data.get("action", "")
 	var data = action_data.get("data", {})
 	
@@ -461,7 +461,7 @@ func _on_action_button_pressed(action_data: Dictionary) -> void:
 
 # === STATIC HELPER METHODS ===
 static func _get_or_create_tooltip(tooltip_type: TooltipType) -> InteractiveTooltip:
-	"""Get existing or create new tooltip instance"""
+	## Get existing or create new tooltip instance
 	# Try to reuse existing tooltip of same type
 	for tooltip in tooltip_instances:
 		if is_instance_valid(tooltip) and tooltip.tooltip_type == tooltip_type and not tooltip.is_visible:
@@ -473,7 +473,7 @@ static func _get_or_create_tooltip(tooltip_type: TooltipType) -> InteractiveTool
 	return tooltip
 
 static func register_tooltip_for_control(control: Control, content: Dictionary) -> void:
-	"""Register tooltip content for a control"""
+	## Register tooltip content for a control
 	if not control:
 		return
 	
@@ -486,19 +486,19 @@ static func register_tooltip_for_control(control: Control, content: Dictionary) 
 		control.mouse_exited.connect(_on_control_mouse_exited.bind(control))
 
 static func _on_control_mouse_entered(control: Control) -> void:
-	"""Handle registered control mouse enter"""
+	## Handle registered control mouse enter
 	var content = control.get_meta("tooltip_content", {})
 	if not content.is_empty():
 		show_for_control(control, content)
 
 static func _on_control_mouse_exited(control: Control) -> void:
-	"""Handle registered control mouse exit"""
+	## Handle registered control mouse exit
 	if active_tooltip and active_tooltip.target_control == control:
 		active_tooltip.hide_timer.start()
 
 # === CLEANUP ===
 func _cleanup_resources() -> void:
-	"""Clean up tooltip resources"""
+	## Clean up tooltip resources
 	super._cleanup_resources()
 	
 	tooltip_instances.erase(self)

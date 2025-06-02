@@ -44,17 +44,17 @@ var _settings: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the singleton on startup"""
+	## Initialize the singleton on startup
 	name = SINGLETON_NAME
 	_initialize_singleton()
 
 func _exit_tree() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 	_cleanup_singleton()
 
 # === INITIALIZATION ===
 func _initialize_singleton() -> void:
-	"""Initialize the singleton with default configuration"""
+	## Initialize the singleton with default configuration
 	
 	_log_debug("Initializing " + SINGLETON_NAME + " singleton...")
 	var start_time = Time.get_ticks_msec()
@@ -77,7 +77,7 @@ func _initialize_singleton() -> void:
 	_log_debug(SINGLETON_NAME + " initialized in " + str(_initialization_time) + "s")
 
 func _load_configuration() -> void:
-	"""Load singleton configuration from settings"""
+	## Load singleton configuration from settings
 	
 	# Default settings for structure analysis
 	_settings = {
@@ -92,7 +92,7 @@ func _load_configuration() -> void:
 	debug_mode = _settings.get("debug_mode", false)
 
 func _load_project_settings() -> void:
-	"""Load settings from project configuration"""
+	## Load settings from project configuration
 	
 	var setting_prefix = "structure_analysis_manager"
 	
@@ -102,7 +102,7 @@ func _load_project_settings() -> void:
 			_settings[key] = ProjectSettings.get_setting(setting_path)
 
 func _initialize_subsystems() -> void:
-	"""Initialize analysis subsystems and knowledge base connection"""
+	## Initialize analysis subsystems and knowledge base connection
 	
 	# Connect to knowledge base if available
 	if has_node("/root/KB"):
@@ -117,7 +117,7 @@ func _initialize_subsystems() -> void:
 
 
 func _setup_performance_monitoring() -> void:
-	"""Setup performance monitoring if enabled"""
+	## Setup performance monitoring if enabled
 	
 	if not monitor_performance:
 		return
@@ -128,28 +128,28 @@ func _setup_performance_monitoring() -> void:
 # === PUBLIC API ===
 ## Check if singleton is initialized
 func is_initialized() -> bool:
-	"""Check if the singleton is fully initialized"""
+	## Check if the singleton is fully initialized
 	return _is_initialized
 
 ## Get singleton version
 func get_version() -> String:
-	"""Get the singleton version"""
+	## Get the singleton version
 	return VERSION
 
 ## Get initialization time
 func get_initialization_time() -> float:
-	"""Get the time taken to initialize in seconds"""
+	## Get the time taken to initialize in seconds
 	return _initialization_time
 
 ## Get error count
 func get_error_count() -> int:
-	"""Get the number of errors that have occurred"""
+	## Get the number of errors that have occurred
 	return _error_count
 
 # === BRAIN STRUCTURE ANALYSIS ===
 ## Analyze a brain structure and return detailed information
 func analyze_structure(structure_id: String) -> Dictionary:
-	"""Analyze brain structure and return comprehensive data"""
+	## Analyze brain structure and return comprehensive data
 	
 	if structure_id.is_empty():
 		_handle_error("Structure ID cannot be empty")
@@ -173,7 +173,7 @@ func analyze_structure(structure_id: String) -> Dictionary:
 
 ## Get basic structure information from knowledge base
 func get_structure_info(structure_id: String) -> Dictionary:
-	"""Get basic structure information without full analysis"""
+	## Get basic structure information without full analysis
 	
 	if structure_id.is_empty():
 		return {}
@@ -193,14 +193,14 @@ func get_structure_info(structure_id: String) -> Dictionary:
 
 ## Clear analysis cache
 func clear_cache() -> void:
-	"""Clear all cached analysis and structure data"""
+	## Clear all cached analysis and structure data
 	_structure_cache.clear()
 	_analysis_cache.clear()
 	_log_debug("Analysis cache cleared")
 
 # === PRIVATE ANALYSIS METHODS ===
 func _perform_structure_analysis(structure_id: String) -> Dictionary:
-	"""Perform detailed analysis of brain structure"""
+	## Perform detailed analysis of brain structure
 	
 	var basic_info = _query_knowledge_base(structure_id)
 	if basic_info.is_empty():
@@ -216,7 +216,7 @@ func _perform_structure_analysis(structure_id: String) -> Dictionary:
 	return analysis
 
 func _query_knowledge_base(structure_id: String) -> Dictionary:
-	"""Query knowledge base for structure information"""
+	## Query knowledge base for structure information
 	
 	if not _knowledge_base_ref:
 		_log_debug("No knowledge base available")
@@ -232,17 +232,17 @@ func _query_knowledge_base(structure_id: String) -> Dictionary:
 	return {}
 
 func _analyze_relationships(_structure_id: String) -> Array:
-	"""Analyze relationships with other brain structures"""
+	## Analyze relationships with other brain structures
 	# Placeholder for relationship analysis
 	return []
 
 func _analyze_connectivity(_structure_id: String) -> Dictionary:
-	"""Analyze neural connectivity patterns"""
+	## Analyze neural connectivity patterns
 	# Placeholder for connectivity analysis
 	return {"input_connections": 0, "output_connections": 0}
 
 func _cache_analysis(structure_id: String, analysis_data: Dictionary) -> void:
-	"""Cache analysis result with size management"""
+	## Cache analysis result with size management
 	
 	if _analysis_cache.size() >= MAX_CACHE_SIZE:
 		# Remove oldest entry
@@ -253,7 +253,7 @@ func _cache_analysis(structure_id: String, analysis_data: Dictionary) -> void:
 
 # === ERROR HANDLING ===
 func _handle_error(message: String) -> void:
-	"""Handle error with logging and signal emission"""
+	## Handle error with logging and signal emission
 	
 	_error_count += 1
 	var full_message = "[" + SINGLETON_NAME + "] " + message
@@ -263,21 +263,21 @@ func _handle_error(message: String) -> void:
 
 # === LOGGING ===
 func _log_debug(message: String) -> void:
-	"""Log debug message if debug mode is enabled"""
+	## Log debug message if debug mode is enabled
 	if debug_mode:
 		print("[" + SINGLETON_NAME + "] " + message)
 
 func _log_info(message: String) -> void:
-	"""Log info message"""
+	## Log info message
 	print("[" + SINGLETON_NAME + "] " + message)
 
 func _log_warning(message: String) -> void:
-	"""Log warning message"""
+	## Log warning message
 	push_warning("[" + SINGLETON_NAME + "] " + message)
 
 # === CLEANUP ===
 func _cleanup_singleton() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 	
 	# Clear caches
 	clear_cache()
@@ -290,7 +290,7 @@ func _cleanup_singleton() -> void:
 
 # === DEBUG METHODS ===
 func get_debug_info() -> Dictionary:
-	"""Get debug information about the singleton"""
+	## Get debug information about the singleton
 	
 	return {
 		"name": SINGLETON_NAME,

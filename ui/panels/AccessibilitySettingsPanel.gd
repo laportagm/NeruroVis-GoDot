@@ -36,7 +36,7 @@ var original_settings: Dictionary = {}
 
 # === INITIALIZATION ===
 func _ready() -> void:
-    """Initialize accessibility settings panel"""
+    ## Initialize accessibility settings panel
     # Get accessibility manager
     if has_node("/root/AccessibilityManager"):
         accessibility_manager = get_node("/root/AccessibilityManager")
@@ -53,7 +53,7 @@ func _ready() -> void:
 
 # === PRIVATE METHODS ===
 func _setup_ui() -> void:
-    """Setup UI elements"""
+    ## Setup UI elements
     # Configure colorblind options
     if colorblind_option:
         colorblind_option.clear()
@@ -86,7 +86,7 @@ func _setup_ui() -> void:
         font_size_slider.tooltip_text = "Adjust text size for better readability"
 
 func _connect_signals() -> void:
-    """Connect UI signals"""
+    ## Connect UI signals
     if colorblind_option:
         colorblind_option.item_selected.connect(_on_colorblind_mode_changed)
     
@@ -109,7 +109,7 @@ func _connect_signals() -> void:
         reset_button.pressed.connect(_on_reset_pressed)
 
 func _load_current_settings() -> void:
-    """Load current settings from accessibility manager"""
+    ## Load current settings from accessibility manager
     if not accessibility_manager:
         return
     
@@ -144,7 +144,7 @@ func _load_current_settings() -> void:
         _update_font_size_label(font_size_slider.value)
 
 func _apply_theme() -> void:
-    """Apply UI theme based on current settings"""
+    ## Apply UI theme based on current settings
     if not accessibility_manager:
         return
     
@@ -179,7 +179,7 @@ func _apply_theme() -> void:
         reset_button.add_theme_color_override("font_color", colors["background"])
 
 func _update_preview() -> void:
-    """Update preview area with current settings"""
+    ## Update preview area with current settings
     if not preview_area:
         return
     
@@ -219,7 +219,7 @@ func _update_preview() -> void:
 
 # === SIGNAL CALLBACKS ===
 func _on_colorblind_mode_changed(index: int) -> void:
-    """Handle colorblind mode change"""
+    ## Handle colorblind mode change
     if not accessibility_manager:
         return
     
@@ -230,37 +230,37 @@ func _on_colorblind_mode_changed(index: int) -> void:
         _apply_theme()
 
 func _on_reduce_motion_toggled(enabled: bool) -> void:
-    """Handle reduce motion toggle"""
+    ## Handle reduce motion toggle
     if accessibility_manager:
         accessibility_manager.set_reduce_motion(enabled)
 
 func _on_high_contrast_toggled(enabled: bool) -> void:
-    """Handle high contrast toggle"""
+    ## Handle high contrast toggle
     if accessibility_manager:
         accessibility_manager.set_high_contrast(enabled)
         _update_preview()
         _apply_theme()
 
 func _on_enhanced_outlines_toggled(enabled: bool) -> void:
-    """Handle enhanced outlines toggle"""
+    ## Handle enhanced outlines toggle
     if accessibility_manager:
         accessibility_manager.enhanced_outlines = enabled
         accessibility_manager.save_settings()
 
 func _on_font_size_changed(value: float) -> void:
-    """Handle font size change"""
+    ## Handle font size change
     _update_font_size_label(value)
     if accessibility_manager:
         accessibility_manager.set_font_size(value)
         _update_preview()
 
 func _update_font_size_label(size: float) -> void:
-    """Update font size label"""
+    ## Update font size label
     if font_size_label:
         font_size_label.text = "%d px" % int(size)
 
 func _on_apply_pressed() -> void:
-    """Apply and save settings"""
+    ## Apply and save settings
     if accessibility_manager:
         accessibility_manager.save_settings()
         settings_changed.emit()
@@ -274,7 +274,7 @@ func _on_apply_pressed() -> void:
         confirm_dialog.popup_hide.connect(func(): confirm_dialog.queue_free())
 
 func _on_reset_pressed() -> void:
-    """Reset to original settings"""
+    ## Reset to original settings
     if not accessibility_manager or original_settings.is_empty():
         return
     
@@ -302,13 +302,13 @@ func _on_reset_pressed() -> void:
 # === PUBLIC METHODS ===
 ## Show the accessibility panel
 func show_panel() -> void:
-    """Show the accessibility settings panel"""
+    ## Show the accessibility settings panel
     show()
     _load_current_settings()
     _update_preview()
 
 ## Hide the accessibility panel
 func hide_panel() -> void:
-    """Hide the accessibility settings panel"""
+    ## Hide the accessibility settings panel
     hide()
     panel_closed.emit()

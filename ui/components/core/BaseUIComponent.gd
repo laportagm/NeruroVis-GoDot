@@ -43,7 +43,7 @@ func _exit_tree() -> void:
 
 # === CORE LIFECYCLE METHODS ===
 func initialize_component() -> void:
-	"""Initialize the component with configuration and styling"""
+	## Initialize the component with configuration and styling
 	if _initialized:
 		return
 	
@@ -65,11 +65,11 @@ func initialize_component() -> void:
 	component_ready.emit()
 
 func _setup_component() -> void:
-	"""Override in derived classes for component-specific setup"""
+	## Override in derived classes for component-specific setup
 	pass
 
 func update_component(config: Dictionary = {}) -> void:
-	"""Update component with new configuration"""
+	## Update component with new configuration
 	if current_state == ComponentState.DESTROYED:
 		_log("Cannot update destroyed component", "warning")
 		return
@@ -87,11 +87,11 @@ func update_component(config: Dictionary = {}) -> void:
 	current_state = ComponentState.READY
 
 func _apply_config_changes(_old_config: Dictionary, _new_config: Dictionary) -> void:
-	"""Override in derived classes to handle config changes"""
+	## Override in derived classes to handle config changes
 	pass
 
 func cleanup_component() -> void:
-	"""Clean up component resources"""
+	## Clean up component resources
 	if current_state == ComponentState.DESTROYED:
 		return
 	
@@ -102,12 +102,12 @@ func cleanup_component() -> void:
 	component_destroyed.emit()
 
 func _cleanup_resources() -> void:
-	"""Override in derived classes for cleanup"""
+	## Override in derived classes for cleanup
 	pass
 
 # === THEMING SYSTEM ===
 func apply_theme(theme_mode: String = "") -> void:
-	"""Apply theme to component"""
+	## Apply theme to component
 	if theme_mode != "":
 		_theme_mode = theme_mode
 	
@@ -115,7 +115,7 @@ func apply_theme(theme_mode: String = "") -> void:
 	component_theme_changed.emit(_theme_mode)
 
 func _apply_theme() -> void:
-	"""Apply theme safely with fallbacks"""
+	## Apply theme safely with fallbacks
 	# Try to apply advanced theming first
 	var theme_applied = SafeAutoloadAccess.apply_theme_safely(self, "panel")
 	
@@ -126,16 +126,16 @@ func _apply_theme() -> void:
 	_apply_component_theme()
 
 func _apply_component_theme() -> void:
-	"""Override in derived classes for component-specific theming"""
+	## Override in derived classes for component-specific theming
 	pass
 
 func get_theme_mode() -> String:
-	"""Get current theme mode"""
+	## Get current theme mode
 	return _theme_mode
 
 # === ACCESSIBILITY SYSTEM ===
 func _setup_accessibility() -> void:
-	"""Setup accessibility features"""
+	## Setup accessibility features
 	if not accessibility_enabled:
 		return
 	
@@ -152,7 +152,7 @@ func _setup_accessibility() -> void:
 		focus_mode = Control.FOCUS_CLICK
 
 func set_accessibility_data(data: Dictionary) -> void:
-	"""Set accessibility information"""
+	## Set accessibility information
 	_accessibility_data = data
 	
 	if data.has("description"):
@@ -163,27 +163,27 @@ func set_accessibility_data(data: Dictionary) -> void:
 		tooltip_text = data.help_text
 
 func get_accessibility_data() -> Dictionary:
-	"""Get accessibility information"""
+	## Get accessibility information
 	return _accessibility_data
 
 func request_focus() -> void:
-	"""Request focus for this component"""
+	## Request focus for this component
 	grab_focus()
 	focus_requested.emit()
 
 # === CONFIGURATION MANAGEMENT ===
 func set_config(config: Dictionary) -> void:
-	"""Set component configuration"""
+	## Set component configuration
 	_component_config = config
 	if _initialized:
 		update_component(config)
 
 func get_config() -> Dictionary:
-	"""Get component configuration"""
+	## Get component configuration
 	return _component_config.duplicate()
 
 func set_config_value(key: String, value) -> void:
-	"""Set a single configuration value"""
+	## Set a single configuration value
 	var old_value = _component_config.get(key)
 	_component_config[key] = value
 	component_updated.emit(key, old_value, value)
@@ -192,20 +192,20 @@ func set_config_value(key: String, value) -> void:
 		update_component({key: value})
 
 func get_config_value(key: String, default_value = null):
-	"""Get a single configuration value"""
+	## Get a single configuration value
 	return _component_config.get(key, default_value)
 
 # === STATE MANAGEMENT ===
 func get_component_state() -> ComponentState:
-	"""Get current component state"""
+	## Get current component state
 	return current_state
 
 func is_ready() -> bool:
-	"""Check if component is ready"""
+	## Check if component is ready
 	return current_state == ComponentState.READY
 
 func set_error_state(error_message: String = "") -> void:
-	"""Set component to error state"""
+	## Set component to error state
 	current_state = ComponentState.ERROR
 	_log("Component error: " + error_message, "error")
 
@@ -216,11 +216,11 @@ func _notification(what: int) -> void:
 			_handle_resize()
 
 func _handle_resize() -> void:
-	"""Handle component resize - override in derived classes"""
+	## Handle component resize - override in derived classes
 	pass
 
 func get_responsive_size() -> Vector2:
-	"""Get responsive size based on parent/viewport"""
+	## Get responsive size based on parent/viewport
 	var viewport = get_viewport()
 	if viewport:
 		var vp_size = viewport.get_visible_rect().size
@@ -235,20 +235,20 @@ func get_responsive_size() -> Vector2:
 
 # === ANIMATION HELPERS ===
 func animate_show(duration: float = 0.3) -> void:
-	"""Animate component entrance"""
+	## Animate component entrance
 	modulate.a = 0.0
 	visible = true
 	var tween = create_tween()
 	tween.tween_property(self, "modulate:a", 1.0, duration)
 
 func animate_hide(duration: float = 0.2) -> void:
-	"""Animate component exit"""
+	## Animate component exit
 	var tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, duration)
 	tween.tween_callback(func(): visible = false)
 
 func animate_update(duration: float = 0.2) -> void:
-	"""Animate component update"""
+	## Animate component update
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color.WHITE.darkened(0.1), duration * 0.5)
 	tween.tween_property(self, "modulate", Color.WHITE, duration * 0.5)
@@ -259,7 +259,7 @@ func _gui_input(event: InputEvent) -> void:
 		_handle_key_input(event)
 
 func _handle_key_input(event: InputEventKey) -> void:
-	"""Handle keyboard input - override in derived classes"""
+	## Handle keyboard input - override in derived classes
 	match event.keycode:
 		KEY_F1:
 			if accessibility_enabled:
@@ -270,7 +270,7 @@ func _handle_key_input(event: InputEventKey) -> void:
 
 # === UTILITY METHODS ===
 func _log(message: String, level: String = "info") -> void:
-	"""Component logging with autoload status on errors"""
+	## Component logging with autoload status on errors
 	if not enable_logging:
 		return
 	
@@ -297,7 +297,7 @@ func _log(message: String, level: String = "info") -> void:
 			print(full_message)
 
 func get_component_info() -> Dictionary:
-	"""Get component information for debugging"""
+	## Get component information for debugging
 	return {
 		"id": component_id,
 		"class": get_class(),
@@ -310,19 +310,19 @@ func get_component_info() -> Dictionary:
 
 # === SIGNAL HELPERS ===
 func connect_to_signal(signal_name: String, target: Object, method: String) -> void:
-	"""Safe signal connection"""
+	## Safe signal connection
 	if has_signal(signal_name) and target and target.has_method(method):
 		if not is_connected(signal_name, Callable(target, method)):
 			connect(signal_name, Callable(target, method))
 
 func disconnect_from_signal(signal_name: String, target: Object, method: String) -> void:
-	"""Safe signal disconnection"""
+	## Safe signal disconnection
 	if has_signal(signal_name) and target and is_connected(signal_name, Callable(target, method)):
 		disconnect(signal_name, Callable(target, method))
 
 # === FACTORY HELPER ===
 static func create_component(component_class: String, config: Dictionary = {}) -> BaseUIComponent:
-	"""Factory method to create components"""
+	## Factory method to create components
 	var component_script = load("res://ui/components/" + component_class + ".gd")
 	if component_script:
 		var component = component_script.new()

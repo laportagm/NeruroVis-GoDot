@@ -31,7 +31,7 @@ func _ready() -> void:
 	_apply_content_styling()
 
 func _setup_content_structure() -> void:
-	"""Setup the content layout"""
+	## Setup the content layout
 	
 	# Configure container
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -39,7 +39,7 @@ func _setup_content_structure() -> void:
 	add_theme_constant_override("separation", UIThemeManager.get_spacing("enhanced_section_gap"))
 
 func _apply_content_styling() -> void:
-	"""Apply styling to content elements"""
+	## Apply styling to content elements
 	
 	# Add content padding
 	add_theme_constant_override("margin_left", UIThemeManager.get_spacing("md"))
@@ -49,7 +49,7 @@ func _apply_content_styling() -> void:
 
 # === PUBLIC API ===
 func configure_content(config: Dictionary) -> void:
-	"""Configure content with settings"""
+	## Configure content with settings
 	content_config = config.duplicate()
 	
 	# Setup sections
@@ -75,7 +75,7 @@ func configure_content(config: Dictionary) -> void:
 				_make_section_collapsible(section_name)
 
 func display_structure_data(data: Dictionary) -> void:
-	"""Display brain structure information"""
+	## Display brain structure information
 	structure_data = data.duplicate()
 	
 	# Update each section with relevant data
@@ -87,7 +87,7 @@ func display_structure_data(data: Dictionary) -> void:
 	content_changed.emit({"action": "structure_loaded", "structure": data.get("displayName", "")})
 
 func restore_section_states(states: Dictionary) -> void:
-	"""Restore section expanded/collapsed states"""
+	## Restore section expanded/collapsed states
 	section_states = states.duplicate()
 	
 	for section_name in section_states:
@@ -95,7 +95,7 @@ func restore_section_states(states: Dictionary) -> void:
 			_set_section_expanded(section_name, section_states[section_name])
 
 func update_responsive_config(config: Dictionary) -> void:
-	"""Update content for responsive layout"""
+	## Update content for responsive layout
 	is_mobile = config.get("is_mobile", false)
 	
 	# Update sections for mobile
@@ -105,7 +105,7 @@ func update_responsive_config(config: Dictionary) -> void:
 			section.update_responsive_config(config)
 
 func apply_theme(theme: String) -> void:
-	"""Apply theme to content"""
+	## Apply theme to content
 	current_theme = theme
 	
 	# Update all sections with new theme
@@ -116,7 +116,7 @@ func apply_theme(theme: String) -> void:
 
 # === PRIVATE METHODS ===
 func _setup_sections(section_list: Array) -> void:
-	"""Setup content sections"""
+	## Setup content sections
 	
 	# Clear existing sections
 	for child in get_children():
@@ -128,7 +128,7 @@ func _setup_sections(section_list: Array) -> void:
 		_create_section(section_name)
 
 func _create_section(section_name: String) -> void:
-	"""Create a content section"""
+	## Create a content section
 	
 	var section = ComponentRegistry.create_component("section", {
 		"name": section_name,
@@ -147,14 +147,14 @@ func _create_section(section_name: String) -> void:
 			section.content_changed.connect(_on_section_content_changed)
 
 func _make_section_collapsible(section_name: String) -> void:
-	"""Make a section collapsible"""
+	## Make a section collapsible
 	if sections.has(section_name):
 		var section = sections[section_name]
 		if section.has_method("set_collapsible"):
 			section.set_collapsible(true)
 
 func _set_section_expanded(section_name: String, expanded: bool) -> void:
-	"""Set section expanded state"""
+	## Set section expanded state
 	if sections.has(section_name):
 		var section = sections[section_name]
 		if section.has_method("set_expanded"):
@@ -162,7 +162,7 @@ func _set_section_expanded(section_name: String, expanded: bool) -> void:
 
 # === SECTION UPDATE METHODS ===
 func _update_description_section(data: Dictionary) -> void:
-	"""Update description section with structure data"""
+	## Update description section with structure data
 	if not sections.has("description"):
 		return
 	
@@ -173,7 +173,7 @@ func _update_description_section(data: Dictionary) -> void:
 		section.set_content(_format_description(description))
 
 func _update_functions_section(data: Dictionary) -> void:
-	"""Update functions section with structure data"""
+	## Update functions section with structure data
 	if not sections.has("functions"):
 		return
 	
@@ -184,7 +184,7 @@ func _update_functions_section(data: Dictionary) -> void:
 		section.set_content(_format_functions_list(functions))
 
 func _update_connections_section(data: Dictionary) -> void:
-	"""Update connections section with structure data"""
+	## Update connections section with structure data
 	if not sections.has("connections"):
 		return
 	
@@ -195,7 +195,7 @@ func _update_connections_section(data: Dictionary) -> void:
 		section.set_content(_format_connections_list(connections))
 
 func _update_clinical_section(data: Dictionary) -> void:
-	"""Update clinical section with structure data"""
+	## Update clinical section with structure data
 	if not sections.has("clinical"):
 		return
 	
@@ -207,7 +207,7 @@ func _update_clinical_section(data: Dictionary) -> void:
 
 # === CONTENT FORMATTING ===
 func _format_description(description: String) -> String:
-	"""Format description text"""
+	## Format description text
 	if description.is_empty():
 		return "No description available for this structure."
 	
@@ -222,7 +222,7 @@ func _format_description(description: String) -> String:
 	return formatted
 
 func _format_functions_list(functions: Array) -> String:
-	"""Format functions as bulleted list"""
+	## Format functions as bulleted list
 	if functions.is_empty():
 		return "No specific functions listed for this structure."
 	
@@ -236,7 +236,7 @@ func _format_functions_list(functions: Array) -> String:
 	return formatted
 
 func _format_connections_list(connections: Array) -> String:
-	"""Format connections as linked list"""
+	## Format connections as linked list
 	if connections.is_empty():
 		return "No connections listed for this structure."
 	
@@ -251,7 +251,7 @@ func _format_connections_list(connections: Array) -> String:
 	return formatted
 
 func _format_clinical_notes(clinical_text: String) -> String:
-	"""Format clinical notes"""
+	## Format clinical notes
 	if clinical_text.is_empty():
 		return "No clinical information available for this structure."
 	
@@ -268,13 +268,13 @@ func _format_clinical_notes(clinical_text: String) -> String:
 
 # === EVENT HANDLERS ===
 func _on_section_toggled(section_name: String, expanded: bool) -> void:
-	"""Handle section toggle"""
+	## Handle section toggle
 	section_states[section_name] = expanded
 	section_toggled.emit(section_name, expanded)
 	content_changed.emit({"action": "section_toggled", "section": section_name, "expanded": expanded})
 
 func _on_section_content_changed(section_name: String, change_data: Dictionary) -> void:
-	"""Handle section content changes"""
+	## Handle section content changes
 	content_changed.emit({
 		"action": "section_content_changed",
 		"section": section_name,
@@ -282,7 +282,7 @@ func _on_section_content_changed(section_name: String, change_data: Dictionary) 
 	})
 
 func _on_link_activated(link_text: String) -> void:
-	"""Handle link activation in content"""
+	## Handle link activation in content
 	# Parse link and emit appropriate signal
 	var link_data = {
 		"type": "structure_link",
@@ -295,7 +295,7 @@ func _on_link_activated(link_text: String) -> void:
 
 # === SEARCH AND HIGHLIGHTING ===
 func highlight_text(search_term: String) -> int:
-	"""Highlight search term in content and return number of matches"""
+	## Highlight search term in content and return number of matches
 	var total_matches = 0
 	
 	for section_name in sections:
@@ -307,7 +307,7 @@ func highlight_text(search_term: String) -> int:
 	return total_matches
 
 func clear_highlights() -> void:
-	"""Clear all text highlights"""
+	## Clear all text highlights
 	for section_name in sections:
 		var section = sections[section_name]
 		if section.has_method("clear_highlights"):
@@ -315,7 +315,7 @@ func clear_highlights() -> void:
 
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> ContentComponent:
-	"""Factory method to create configured content"""
+	## Factory method to create configured content
 	var content = ContentComponent.new()
 	content.configure_content(config)
 	return content

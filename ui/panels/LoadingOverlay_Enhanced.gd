@@ -125,7 +125,7 @@ func _ready() -> void:
 	print("[LOADING_OVERLAY] Enhanced educational loading overlay initialized")
 
 func _create_enhanced_loading_ui() -> void:
-	"""Create sophisticated loading UI with educational elements"""
+	## Create sophisticated loading UI with educational elements
 	# Full screen background
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
@@ -156,7 +156,7 @@ func _create_enhanced_loading_ui() -> void:
 	_create_educational_section()
 
 func _create_logo_section() -> void:
-	"""Create logo and branding area"""
+	## Create logo and branding area
 	logo_container = VBoxContainer.new()
 	logo_container.name = "LogoContainer"
 	logo_container.add_theme_constant_override("separation", UIThemeManager.MARGIN_MEDIUM)
@@ -184,7 +184,7 @@ func _create_logo_section() -> void:
 	logo_container.add_child(app_subtitle)
 
 func _create_progress_section() -> void:
-	"""Create progress tracking section"""
+	## Create progress tracking section
 	progress_container = VBoxContainer.new()
 	progress_container.name = "ProgressContainer"
 	progress_container.add_theme_constant_override("separation", UIThemeManager.MARGIN_MEDIUM)
@@ -232,7 +232,7 @@ func _create_progress_section() -> void:
 	progress_bar_container.add_child(progress_label)
 
 func _create_educational_section() -> void:
-	"""Create educational content section"""
+	## Create educational content section
 	educational_content = VBoxContainer.new()
 	educational_content.name = "EducationalContent"
 	educational_content.add_theme_constant_override("separation", UIThemeManager.MARGIN_MEDIUM)
@@ -297,7 +297,7 @@ func _create_educational_section() -> void:
 	tip_navigation.add_child(next_tip_btn)
 
 func _apply_enhanced_styling() -> void:
-	"""Apply sophisticated educational styling"""
+	## Apply sophisticated educational styling
 	# Background with dark glass effect
 	var bg_style = UIThemeManager.create_glass_panel(0.98, "hero")
 	bg_style.bg_color = Color(0.02, 0.05, 0.1, 0.95)  # Very dark background
@@ -329,7 +329,7 @@ func _apply_enhanced_styling() -> void:
 		UIThemeManager.apply_glass_panel(tip_panel, 0.8, "card")
 
 func _setup_animations() -> void:
-	"""Setup loading animations and timers"""
+	## Setup loading animations and timers
 	# Auto-rotation timer for tips
 	tip_rotation_timer = Timer.new()
 	tip_rotation_timer.wait_time = 8.0  # Change tip every 8 seconds
@@ -337,7 +337,7 @@ func _setup_animations() -> void:
 	add_child(tip_rotation_timer)
 
 func _connect_signals() -> void:
-	"""Connect interactive signals"""
+	## Connect interactive signals
 	if prev_tip_btn:
 		prev_tip_btn.pressed.connect(_show_previous_tip)
 	
@@ -346,7 +346,7 @@ func _connect_signals() -> void:
 
 # Public interface
 func show_loading() -> void:
-	"""Show loading overlay with educational content"""
+	## Show loading overlay with educational content
 	if is_showing:
 		return
 	
@@ -374,7 +374,7 @@ func show_loading() -> void:
 	print("[LOADING_OVERLAY] Showing enhanced loading overlay")
 
 func hide_loading() -> void:
-	"""Hide loading overlay with completion animation"""
+	## Hide loading overlay with completion animation
 	if not is_showing:
 		return
 	
@@ -394,7 +394,7 @@ func hide_loading() -> void:
 	print("[LOADING_OVERLAY] Hiding loading overlay")
 
 func update_progress(phase: String, percentage: float, task_description: String = "") -> void:
-	"""Update loading progress with educational context"""
+	## Update loading progress with educational context
 	if not is_showing:
 		return
 	
@@ -426,7 +426,7 @@ func update_progress(phase: String, percentage: float, task_description: String 
 	print("[LOADING_OVERLAY] Progress updated: %s - %.1f%%" % [phase, percentage])
 
 func _animate_progress_update() -> void:
-	"""Smoothly animate progress bar update"""
+	## Smoothly animate progress bar update
 	if not progress_bar or not progress_percentage:
 		return
 	
@@ -445,12 +445,12 @@ func _animate_progress_update() -> void:
 	current_progress = target_progress
 
 func _update_percentage_text(value: float) -> void:
-	"""Update percentage text during animation"""
+	## Update percentage text during animation
 	if progress_percentage:
 		progress_percentage.text = "%.0f%%" % value
 
 func _animate_entrance() -> void:
-	"""Animate loading overlay entrance"""
+	## Animate loading overlay entrance
 	# Start with fade
 	modulate.a = 0.0
 	
@@ -469,7 +469,7 @@ func _animate_entrance() -> void:
 		UIThemeManager.animate_entrance(educational_content, 0.6, UIThemeManager.ANIM_DURATION_STANDARD, "slide_up")
 
 func _animate_exit() -> void:
-	"""Animate loading overlay exit"""
+	## Animate loading overlay exit
 	var tween = create_tween()
 	tween.set_parallel(true)
 	
@@ -482,7 +482,7 @@ func _animate_exit() -> void:
 
 # Educational content management
 func _update_educational_content() -> void:
-	"""Update educational tip content"""
+	## Update educational tip content
 	if current_tip_index >= loading_tips.size():
 		current_tip_index = 0
 	
@@ -508,7 +508,7 @@ func _update_educational_content() -> void:
 	emit_signal("educational_tip_changed", current_tip_index, tip)
 
 func _show_previous_tip() -> void:
-	"""Show previous educational tip"""
+	## Show previous educational tip
 	current_tip_index = (current_tip_index - 1) % loading_tips.size()
 	_update_educational_content()
 	
@@ -517,7 +517,7 @@ func _show_previous_tip() -> void:
 	tip_rotation_timer.start()
 
 func _show_next_tip() -> void:
-	"""Show next educational tip"""
+	## Show next educational tip
 	current_tip_index = (current_tip_index + 1) % loading_tips.size()
 	_update_educational_content()
 	
@@ -526,27 +526,27 @@ func _show_next_tip() -> void:
 	tip_rotation_timer.start()
 
 func _rotate_tip() -> void:
-	"""Auto-rotate to next tip"""
+	## Auto-rotate to next tip
 	_show_next_tip()
 
 # Public utility functions
 func add_custom_tip(tip_data: Dictionary) -> void:
-	"""Add custom educational tip"""
+	## Add custom educational tip
 	loading_tips.append(tip_data)
 	print("[LOADING_OVERLAY] Added custom tip: " + tip_data.get("title", "Unknown"))
 
 func set_tip_rotation_interval(seconds: float) -> void:
-	"""Set tip rotation interval"""
+	## Set tip rotation interval
 	tip_rotation_timer.wait_time = seconds
 
 func get_current_tip() -> Dictionary:
-	"""Get currently displayed tip"""
+	## Get currently displayed tip
 	if current_tip_index < loading_tips.size():
 		return loading_tips[current_tip_index]
 	return {}
 
 func show_completion_message() -> void:
-	"""Show completion message before hiding"""
+	## Show completion message before hiding
 	if current_task_label:
 		UIThemeManager.animate_fade_text_change(current_task_label, "🎉 Welcome to NeuroVis!")
 	
@@ -559,7 +559,7 @@ func show_completion_message() -> void:
 
 # Cleanup
 func dispose() -> void:
-	"""Clean up loading overlay"""
+	## Clean up loading overlay
 	if loading_tween:
 		loading_tween.kill()
 	
@@ -569,5 +569,5 @@ func dispose() -> void:
 	loading_tips.clear()
 
 func _exit_tree() -> void:
-	"""Cleanup on removal"""
+	## Cleanup on removal
 	dispose()

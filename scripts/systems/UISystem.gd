@@ -30,7 +30,7 @@ func _ready() -> void:
 ## Public interface methods
 
 func display_structure_info(data: Dictionary) -> void:
-	"""Display structure information panel"""
+	## Display structure information panel
 	if not data.has("name"):
 		print("[UI_SYSTEM] Warning: Structure data missing name field")
 		return
@@ -50,7 +50,7 @@ func display_structure_info(data: Dictionary) -> void:
 	structure_info_displayed.emit(structure_name)
 
 func hide_structure_info() -> void:
-	"""Hide structure information panel"""
+	## Hide structure information panel
 	print("[UI_SYSTEM] Hiding structure info")
 	
 	# Update object name label
@@ -68,27 +68,27 @@ func hide_structure_info() -> void:
 	structure_info_hidden.emit()
 
 func show_status(message: String) -> void:
-	"""Show status message in UI"""
+	## Show status message in UI
 	print("[UI_SYSTEM] Status: ", message)
 	
 	if object_name_label:
 		_update_object_label(message)
 
 func update_hover_status(structure_name: String) -> void:
-	"""Update UI for structure hover (only if nothing selected)"""
+	## Update UI for structure hover (only if nothing selected)
 	if current_structure_name.is_empty() and object_name_label:
 		var hover_text = "Hover: " + structure_name if not structure_name.is_empty() else "Hover: None"
 		object_name_label.text = hover_text
 
 func setup_ui_layer() -> void:
-	"""Setup and configure the UI layer"""
+	## Setup and configure the UI layer
 	if ui_layer:
 		ui_layer.visible = true
 		ui_layer.add_to_group("ui_layer")
 		print("[UI_SYSTEM] UI layer configured")
 
 func apply_modern_theme() -> void:
-	"""Apply modern theming to UI elements"""
+	## Apply modern theming to UI elements
 	if not ui_layer:
 		print("[UI_SYSTEM] Warning: No UI layer available for theming")
 		return
@@ -104,7 +104,7 @@ func apply_modern_theme() -> void:
 ## Configuration and setup
 
 func initialize_with_ui_components(ui_layer_ref: CanvasLayer, object_label: Label, info_panel_ref: Control, bootstrap: Node) -> void:
-	"""Initialize with UI component references"""
+	## Initialize with UI component references
 	ui_layer = ui_layer_ref
 	object_name_label = object_label
 	info_panel = info_panel_ref
@@ -122,13 +122,13 @@ func initialize_with_ui_components(ui_layer_ref: CanvasLayer, object_label: Labe
 	ui_initialized.emit()
 
 func set_modern_info_display_script(script_class) -> void:
-	"""Set the ModernInfoDisplay script class"""
+	## Set the ModernInfoDisplay script class
 	ModernInfoDisplay = script_class
 
 ## UI Helper methods
 
 func _update_object_label(text: String) -> void:
-	"""Update object label with smooth animation"""
+	## Update object label with smooth animation
 	if not object_name_label:
 		return
 	
@@ -138,7 +138,7 @@ func _update_object_label(text: String) -> void:
 	tween.tween_property(object_name_label, "modulate:a", 1.0, 0.1)
 
 func _display_structure_info_modern(structure_name: String) -> void:
-	"""Display structure information using modern UI"""
+	## Display structure information using modern UI
 	if not system_bootstrap:
 		print("[UI_SYSTEM] Warning: No system bootstrap available")
 		return
@@ -176,7 +176,7 @@ func _display_structure_info_modern(structure_name: String) -> void:
 		_display_fallback_info(structure_data)
 
 func _hide_modern_info_display() -> void:
-	"""Hide/remove modern info display"""
+	## Hide/remove modern info display
 	if not ui_layer:
 		return
 	
@@ -185,14 +185,14 @@ func _hide_modern_info_display() -> void:
 		existing_display.queue_free()
 
 func _display_fallback_info(structure_data: Dictionary) -> void:
-	"""Display structure info using fallback info panel"""
+	## Display structure info using fallback info panel
 	if info_panel:
 		info_panel.visible = true
 		# Basic fallback display - could be enhanced
 		print("[UI_SYSTEM] Displaying fallback info for: ", structure_data.get("displayName", "Unknown"))
 
 func _find_structure_id_by_name(mesh_name: String) -> String:
-	"""Find structure ID by mesh name using neural net mapping"""
+	## Find structure ID by mesh name using neural net mapping
 	if not system_bootstrap:
 		return ""
 	
@@ -227,7 +227,7 @@ func _find_structure_id_by_name(mesh_name: String) -> String:
 	return ""
 
 func _load_modern_info_display() -> void:
-	"""Load ModernInfoDisplay script if available"""
+	## Load ModernInfoDisplay script if available
 	var script_path = "res://ui/panels/ModernInfoDisplay.gd"
 	if ResourceLoader.exists(script_path):
 		ModernInfoDisplay = load(script_path)
@@ -238,7 +238,7 @@ func _load_modern_info_display() -> void:
 ## Status and debugging
 
 func get_ui_status() -> Dictionary:
-	"""Get current UI status information"""
+	## Get current UI status information
 	return {
 		"ui_layer_available": ui_layer != null,
 		"object_label_available": object_name_label != null,
@@ -250,7 +250,7 @@ func get_ui_status() -> Dictionary:
 	}
 
 func print_ui_status() -> void:
-	"""Print current UI status for debugging"""
+	## Print current UI status for debugging
 	print("=== UI SYSTEM STATUS ===")
 	var status = get_ui_status()
 	for key in status.keys():
@@ -259,7 +259,7 @@ func print_ui_status() -> void:
 ## Cleanup
 
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	_hide_modern_info_display()
 	
 	ui_layer = null

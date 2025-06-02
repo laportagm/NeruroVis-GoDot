@@ -23,7 +23,7 @@ func _ready() -> void:
 ## Public interface methods
 
 func select_structure(structure_name: String) -> void:
-	"""Select a structure by name"""
+	## Select a structure by name
 	if not selection_manager:
 		print("[SELECTION_SYSTEM] Warning: No selection manager available")
 		return
@@ -37,7 +37,7 @@ func select_structure(structure_name: String) -> void:
 	structure_selected.emit(structure_name, selected_structure_data)
 
 func deselect_structure() -> void:
-	"""Deselect the currently selected structure"""
+	## Deselect the currently selected structure
 	if selection_manager:
 		selection_manager.clear_current_selection()
 	
@@ -48,7 +48,7 @@ func deselect_structure() -> void:
 	structure_deselected.emit()
 
 func get_structure_at_position(screen_pos: Vector2) -> String:
-	"""Get structure name at screen position using raycast"""
+	## Get structure name at screen position using raycast
 	if not selection_manager:
 		print("[SELECTION_SYSTEM] Warning: No selection manager available for raycast")
 		return ""
@@ -61,7 +61,7 @@ func get_structure_at_position(screen_pos: Vector2) -> String:
 	return ""
 
 func handle_selection_at_position(screen_pos: Vector2) -> void:
-	"""Handle selection attempt at screen position"""
+	## Handle selection attempt at screen position
 	if not selection_manager:
 		print("[SELECTION_SYSTEM] Warning: No selection manager available for selection")
 		return
@@ -82,7 +82,7 @@ func handle_selection_at_position(screen_pos: Vector2) -> void:
 ## Configuration and setup
 
 func initialize_with_selection_manager(manager: Node) -> void:
-	"""Initialize with reference to the selection manager"""
+	## Initialize with reference to the selection manager
 	if not manager:
 		print("[SELECTION_SYSTEM] Error: Cannot initialize with null selection manager")
 		return
@@ -97,21 +97,21 @@ func initialize_with_selection_manager(manager: Node) -> void:
 		selection_manager.structure_deselected.connect(_on_manager_structure_deselected)
 
 func get_selected_structure_name() -> String:
-	"""Get the name of the currently selected structure"""
+	## Get the name of the currently selected structure
 	return currently_selected_structure
 
 func get_selected_structure_data() -> Dictionary:
-	"""Get the data of the currently selected structure"""
+	## Get the data of the currently selected structure
 	return selected_structure_data
 
 func is_structure_selected() -> bool:
-	"""Check if any structure is currently selected"""
+	## Check if any structure is currently selected
 	return not currently_selected_structure.is_empty()
 
 ## Signal handlers
 
 func _on_manager_structure_selected(structure_name: String, mesh: MeshInstance3D) -> void:
-	"""Handle selection from the underlying selection manager"""
+	## Handle selection from the underlying selection manager
 	currently_selected_structure = structure_name
 	selected_structure_data = {"name": structure_name, "display_name": structure_name, "mesh": mesh}
 	
@@ -119,7 +119,7 @@ func _on_manager_structure_selected(structure_name: String, mesh: MeshInstance3D
 	structure_selected.emit(structure_name, selected_structure_data)
 
 func _on_manager_structure_deselected() -> void:
-	"""Handle deselection from the underlying selection manager"""
+	## Handle deselection from the underlying selection manager
 	currently_selected_structure = ""
 	selected_structure_data.clear()
 	
@@ -129,7 +129,7 @@ func _on_manager_structure_deselected() -> void:
 ## Cleanup
 
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	if selection_manager:
 		# Disconnect signals
 		if selection_manager.has_signal("structure_selected") and selection_manager.structure_selected.is_connected(_on_manager_structure_selected):

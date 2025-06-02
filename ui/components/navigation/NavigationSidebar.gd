@@ -252,7 +252,7 @@ func restore_state() -> void:
 
 # === PRIVATE METHODS ===
 func _load_dependencies() -> void:
-    """Load required dependencies safely"""
+    ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
     var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
@@ -283,7 +283,7 @@ func _load_dependencies() -> void:
         _event_bus = get_node_or_null("/root/EventBus")
 
 func _create_ui() -> void:
-    """Create the sidebar UI structure"""
+    ## Create the sidebar UI structure
     # Main container
     _main_container = VBoxContainer.new()
     _main_container.name = "MainContainer"
@@ -335,7 +335,7 @@ func _create_ui() -> void:
         _create_section_ui(section_id)
 
 func _create_section_ui(section_id: String) -> void:
-    """Create UI for a section"""
+    ## Create UI for a section
     if not _component_registry:
         push_error("[NavigationSidebar] ComponentRegistry not available")
         return
@@ -388,7 +388,7 @@ func _create_section_ui(section_id: String) -> void:
             section_node.add_item(item_id, item_data.title, item_data.icon)
 
 func _apply_styling() -> void:
-    """Apply styling to the sidebar"""
+    ## Apply styling to the sidebar
     # Use theme manager if available
     if _theme_manager and _theme_manager.has_method("apply_glass_panel"):
         _theme_manager.apply_glass_panel(self)
@@ -404,7 +404,7 @@ func _apply_styling() -> void:
     add_theme_stylebox_override("panel", panel_style)
 
 func _setup_responsive_behavior() -> void:
-    """Setup responsive behavior based on viewport size"""
+    ## Setup responsive behavior based on viewport size
     # Get initial viewport size
     _viewport_size = get_viewport().get_visible_rect().size
     
@@ -415,7 +415,7 @@ func _setup_responsive_behavior() -> void:
     _check_responsive_mode()
 
 func _check_responsive_mode() -> void:
-    """Check and update responsive mode based on viewport size"""
+    ## Check and update responsive mode based on viewport size
     if not is_inside_tree():
         return
     
@@ -435,7 +435,7 @@ func _check_responsive_mode() -> void:
         _update_responsive_state()
 
 func _update_responsive_state() -> void:
-    """Update UI based on responsive mode and expanded state"""
+    ## Update UI based on responsive mode and expanded state
     match _responsive_mode:
         0:  # Desktop
             # Always expanded on desktop
@@ -471,14 +471,14 @@ func _update_responsive_state() -> void:
             tween.tween_property(self, "size:x", custom_minimum_size.x, ANIMATION_DURATION)
 
 func _show_labels(show: bool) -> void:
-    """Show or hide text labels in sections and items"""
+    ## Show or hide text labels in sections and items
     for section_id in _section_nodes:
         var section_node = _section_nodes[section_id]
         if section_node.has_method("show_labels"):
             section_node.show_labels(show)
 
 func _save_state() -> void:
-    """Save current state using ComponentStateManager"""
+    ## Save current state using ComponentStateManager
     if not _component_state_manager or not _component_state_manager.has_method("save_component_state"):
         return
     
@@ -499,7 +499,7 @@ func _save_state() -> void:
     _component_state_manager.save_component_state("navigation_sidebar", state)
 
 func _restore_state() -> void:
-    """Restore state from ComponentStateManager"""
+    ## Restore state from ComponentStateManager
     if not _component_state_manager or not _component_state_manager.has_method("restore_component_state"):
         return
     
@@ -540,11 +540,11 @@ func _restore_state() -> void:
 
 # === EVENT HANDLERS ===
 func _on_toggle_button_pressed() -> void:
-    """Handle sidebar toggle button press"""
+    ## Handle sidebar toggle button press
     toggle_expanded()
 
 func _on_section_toggled(expanded: bool, section_id: String) -> void:
-    """Handle section toggle"""
+    ## Handle section toggle
     if not section_id in _sections:
         return
     
@@ -559,5 +559,5 @@ func _on_section_toggled(expanded: bool, section_id: String) -> void:
     emit_signal("section_toggled", section_id, expanded)
 
 func _on_item_selected(item_id: String, section_id: String) -> void:
-    """Handle item selection"""
+    ## Handle item selection
     select_item(section_id, item_id)

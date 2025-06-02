@@ -123,7 +123,7 @@ var _current_tween: Tween
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the camera controller"""
+	## Initialize the camera controller
 	if not camera:
 		push_error("[MedicalCameraController] No camera assigned! Controller will not function.")
 		return
@@ -145,7 +145,7 @@ func _ready() -> void:
 	print("[MedicalCameraController] Initialized with camera: " + camera.name)
 
 func _process(delta: float) -> void:
-	"""Process camera movement"""
+	## Process camera movement
 	if not _is_initialized or not camera or is_transitioning:
 		return
 	
@@ -153,7 +153,7 @@ func _process(delta: float) -> void:
 		_handle_input(delta)
 
 func _input(event: InputEvent) -> void:
-	"""Handle input events"""
+	## Handle input events
 	if not _is_initialized or not camera or not inputs_enabled:
 		return
 	
@@ -186,7 +186,7 @@ func _input(event: InputEvent) -> void:
 ## @param instant: bool whether to transition instantly
 ## @returns: bool indicating success
 func apply_anatomical_view(view: int, instant: bool = false) -> bool:
-	"""Apply a standard anatomical view"""
+	## Apply a standard anatomical view
 	if not _is_initialized or not camera:
 		return false
 	
@@ -225,7 +225,7 @@ func apply_anatomical_view(view: int, instant: bool = false) -> bool:
 ## @returns: bool indicating success
 func focus_on_structure(mesh_instance: MeshInstance3D, structure_name: String, 
 		distance_factor: float = 1.0) -> bool:
-	"""Focus camera on a specific structure"""
+	## Focus camera on a specific structure
 	if not _is_initialized or not camera or not mesh_instance:
 		return false
 	
@@ -274,7 +274,7 @@ func focus_on_structure(mesh_instance: MeshInstance3D, structure_name: String,
 ## @param distance_factor: float for zoom level (1.0 = default)
 ## @returns: bool indicating success
 func focus_on_model_bounds(distance_factor: float = 1.0) -> bool:
-	"""Focus camera to see the entire model"""
+	## Focus camera to see the entire model
 	if not _is_initialized or not camera:
 		return false
 	
@@ -338,7 +338,7 @@ func focus_on_model_bounds(distance_factor: float = 1.0) -> bool:
 ## Reset camera to initial state
 ## @returns: bool indicating success
 func reset_camera() -> bool:
-	"""Reset camera to initial position and state"""
+	## Reset camera to initial position and state
 	if not _is_initialized or not camera:
 		return false
 	
@@ -360,7 +360,7 @@ func reset_camera() -> bool:
 ## @param height: int screenshot height (0 for current resolution)
 ## @returns: bool indicating success
 func take_educational_screenshot(file_path: String, width: int = 0, height: int = 0) -> bool:
-	"""Take a screenshot optimized for educational purposes"""
+	## Take a screenshot optimized for educational purposes
 	if not _is_initialized or not camera:
 		return false
 	
@@ -405,7 +405,7 @@ func take_educational_screenshot(file_path: String, width: int = 0, height: int 
 ## @param use_dof: bool whether to enable depth of field
 ## @returns: bool indicating success
 func add_custom_view_preset(name: String, transform: Transform3D, use_dof: bool = false) -> bool:
-	"""Add a custom anatomical view preset"""
+	## Add a custom anatomical view preset
 	if not _is_initialized:
 		return false
 	
@@ -421,7 +421,7 @@ func add_custom_view_preset(name: String, transform: Transform3D, use_dof: bool 
 ## @param params: Dictionary of parameters to update
 ## @returns: bool indicating success
 func update_camera_parameters(params: Dictionary) -> bool:
-	"""Update camera movement parameters"""
+	## Update camera movement parameters
 	if params.has("movement_speed"):
 		movement_speed = params.movement_speed
 	
@@ -447,7 +447,7 @@ func update_camera_parameters(params: Dictionary) -> bool:
 
 # === PRIVATE METHODS ===
 func _setup_environment() -> void:
-	"""Set up camera environment and effects"""
+	## Set up camera environment and effects
 	# Create environment if camera doesn't have one
 	if camera.environment:
 		_environment = camera.environment
@@ -463,7 +463,7 @@ func _setup_environment() -> void:
 	_update_depth_of_field()
 
 func _initialize_view_presets() -> void:
-	"""Initialize standard anatomical view presets"""
+	## Initialize standard anatomical view presets
 	# Anterior view (front)
 	_view_presets[AnatomicalView.ANTERIOR] = {
 		"name": "Anterior",
@@ -528,7 +528,7 @@ func _initialize_view_presets() -> void:
 	}
 
 func _handle_input(delta: float) -> void:
-	"""Handle camera input for different modes"""
+	## Handle camera input for different modes
 	if camera_mode == CameraMode.LOCKED:
 		return
 	
@@ -545,7 +545,7 @@ func _handle_input(delta: float) -> void:
 			_handle_focus_input(delta)
 
 func _handle_orbit_input(delta: float) -> void:
-	"""Handle orbit camera input"""
+	## Handle orbit camera input
 	var input_dir = Vector2.ZERO
 	
 	# Get input direction from keyboard or from mouse if button is pressed
@@ -605,7 +605,7 @@ func _handle_orbit_input(delta: float) -> void:
 		camera.global_position = target_position + direction * _camera_distance
 
 func _handle_pan_input(delta: float) -> void:
-	"""Handle pan camera input"""
+	## Handle pan camera input
 	var input_dir = Vector3.ZERO
 	
 	# Get input direction
@@ -643,7 +643,7 @@ func _handle_pan_input(delta: float) -> void:
 		current_view = AnatomicalView.CUSTOM
 
 func _handle_zoom_input(delta: float) -> void:
-	"""Handle zoom camera input"""
+	## Handle zoom camera input
 	var zoom_input = 0.0
 	
 	# Get input from keyboard
@@ -671,7 +671,7 @@ func _handle_zoom_input(delta: float) -> void:
 		current_view = AnatomicalView.CUSTOM
 
 func _handle_fly_input(delta: float) -> void:
-	"""Handle fly camera input"""
+	## Handle fly camera input
 	var input_dir = Vector3.ZERO
 	
 	# Get input direction
@@ -718,12 +718,12 @@ func _handle_fly_input(delta: float) -> void:
 		target_position = camera.global_position + forward_dir * _camera_distance
 
 func _handle_focus_input(delta: float) -> void:
-	"""Handle focus mode input (limited movement)"""
+	## Handle focus mode input (limited movement)
 	# Only allow orbit in focus mode
 	_handle_orbit_input(delta * 0.5)  # Slower movement in focus mode
 
 func _transition_to_transform(target_transform: Transform3D) -> void:
-	"""Smoothly transition camera to a target transform"""
+	## Smoothly transition camera to a target transform
 	if not camera:
 		return
 	
@@ -760,7 +760,7 @@ func _transition_to_transform(target_transform: Transform3D) -> void:
 	)
 
 func _apply_transform(transform: Transform3D) -> void:
-	"""Immediately apply a transform to the camera"""
+	## Immediately apply a transform to the camera
 	if not camera:
 		return
 	
@@ -773,7 +773,7 @@ func _apply_transform(transform: Transform3D) -> void:
 	camera_movement_completed.emit()
 
 func _on_transition_completed() -> void:
-	"""Handle camera transition completion"""
+	## Handle camera transition completion
 	is_transitioning = false
 	
 	# Ensure final transform is applied exactly
@@ -792,7 +792,7 @@ func _on_transition_completed() -> void:
 	camera_movement_completed.emit()
 
 func _update_depth_of_field() -> void:
-	"""Update depth of field effect based on settings"""
+	## Update depth of field effect based on settings
 	if not _environment:
 		return
 	
@@ -814,7 +814,7 @@ func _update_depth_of_field() -> void:
 		_environment.dof_blur_near_enabled = false
 
 func _create_screenshot_environment() -> Environment:
-	"""Create optimized environment for screenshots"""
+	## Create optimized environment for screenshots
 	var screenshot_env = _environment.duplicate()
 	
 	# Enhanced settings for screenshots
@@ -837,7 +837,7 @@ func _create_screenshot_environment() -> Environment:
 	return screenshot_env
 
 func _find_visible_meshes(node: Node, result: Array) -> void:
-	"""Recursively find all visible mesh instances in the scene"""
+	## Recursively find all visible mesh instances in the scene
 	if node is MeshInstance3D and node.visible:
 		if node.mesh:
 			result.append(node)

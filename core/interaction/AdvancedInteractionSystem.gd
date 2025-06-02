@@ -109,7 +109,7 @@ func _ready() -> void:
 	print("[AdvancedInteraction] System initialized")
 
 func _setup_interaction_system() -> void:
-	"""Setup the interaction system"""
+	## Setup the interaction system
 	# Set process mode for consistent input handling
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
@@ -119,7 +119,7 @@ func _setup_interaction_system() -> void:
 	_context_menus_enabled = FeatureFlags.is_enabled(FeatureFlags.UI_CONTEXT_MENUS)
 
 func _setup_context_menu() -> void:
-	"""Setup context menu system"""
+	## Setup context menu system
 	if not _context_menus_enabled:
 		return
 	
@@ -132,7 +132,7 @@ func _setup_context_menu() -> void:
 	_context_menu.popup_hide.connect(_on_context_menu_hidden)
 
 func _setup_gesture_recognition() -> void:
-	"""Setup gesture recognition system"""
+	## Setup gesture recognition system
 	if not _gesture_recognition_enabled:
 		return
 	
@@ -157,7 +157,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_drag_input(event)
 
 func _handle_mouse_button(event: InputEventMouseButton) -> void:
-	"""Handle mouse button events"""
+	## Handle mouse button events
 	match event.button_index:
 		MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -174,7 +174,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				_on_middle_click(event.position)
 
 func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
-	"""Handle mouse motion events"""
+	## Handle mouse motion events
 	_mouse_current_position = event.position
 	
 	# Check for drag threshold
@@ -189,7 +189,7 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 			_update_drag_operation(event.position)
 
 func _handle_keyboard_input(event: InputEventKey) -> void:
-	"""Handle keyboard input for educational shortcuts"""
+	## Handle keyboard input for educational shortcuts
 	if not event.pressed:
 		return
 	
@@ -210,19 +210,19 @@ func _handle_keyboard_input(event: InputEventKey) -> void:
 				_trigger_educational_action("bookmark_structure")
 
 func _handle_touch_input(event: InputEventScreenTouch) -> void:
-	"""Handle touch input for mobile/tablet support"""
+	## Handle touch input for mobile/tablet support
 	if event.pressed:
 		_on_touch_start(event.position)
 	else:
 		_on_touch_end(event.position)
 
 func _handle_drag_input(event: InputEventScreenDrag) -> void:
-	"""Handle touch drag input"""
+	## Handle touch drag input
 	_update_gesture_recognition(event.position)
 
 # === CLICK HANDLING ===
 func _on_left_click_start(position: Vector2) -> void:
-	"""Handle left click start"""
+	## Handle left click start
 	_mouse_start_position = position
 	_mouse_current_position = position
 	_drag_threshold_exceeded = false
@@ -235,7 +235,7 @@ func _on_left_click_start(position: Vector2) -> void:
 		timer.timeout.connect(_on_long_press_detected.bind(position))
 
 func _on_left_click_end(position: Vector2) -> void:
-	"""Handle left click end"""
+	## Handle left click end
 	if _is_dragging:
 		_end_drag_operation(position)
 		return
@@ -259,7 +259,7 @@ func _on_left_click_end(position: Vector2) -> void:
 		_click_count = 0
 
 func _on_right_click(position: Vector2) -> void:
-	"""Handle right click for context menu"""
+	## Handle right click for context menu
 	if not _context_menus_enabled:
 		return
 	
@@ -267,24 +267,24 @@ func _on_right_click(position: Vector2) -> void:
 	_show_context_menu(position, context)
 
 func _on_middle_click(position: Vector2) -> void:
-	"""Handle middle click for special actions"""
+	## Handle middle click for special actions
 	_trigger_educational_action("quick_info", {"position": position})
 
 # === CLICK ACTIONS ===
 func _handle_single_click(position: Vector2) -> void:
-	"""Handle single click/tap"""
+	## Handle single click/tap
 	var target = _get_control_at_position(position)
 	if target:
 		_select_target(target, "click")
 
 func _handle_double_click(position: Vector2) -> void:
-	"""Handle double click/tap"""
+	## Handle double click/tap
 	var target = _get_control_at_position(position)
 	if target:
 		_focus_target(target, "double_click")
 
 func _on_long_press_detected(position: Vector2) -> void:
-	"""Handle long press detection"""
+	## Handle long press detection
 	if _is_dragging or _is_long_press_active:
 		return
 	
@@ -294,7 +294,7 @@ func _on_long_press_detected(position: Vector2) -> void:
 
 # === DRAG & DROP SYSTEM ===
 func _start_drag_operation(position: Vector2) -> void:
-	"""Start drag operation"""
+	## Start drag operation
 	var source = _get_control_at_position(_mouse_start_position)
 	if not source or not _is_draggable(source):
 		return
@@ -313,7 +313,7 @@ func _start_drag_operation(position: Vector2) -> void:
 	print("[AdvancedInteraction] Drag started: %s" % source.name)
 
 func _update_drag_operation(position: Vector2) -> void:
-	"""Update drag operation"""
+	## Update drag operation
 	if not _is_dragging or not _drag_preview:
 		return
 	
@@ -326,7 +326,7 @@ func _update_drag_operation(position: Vector2) -> void:
 		_update_drop_target_highlight(drop_target)
 
 func _end_drag_operation(position: Vector2) -> void:
-	"""End drag operation"""
+	## End drag operation
 	if not _is_dragging:
 		return
 	
@@ -340,7 +340,7 @@ func _end_drag_operation(position: Vector2) -> void:
 	_cleanup_drag_operation()
 
 func _cleanup_drag_operation() -> void:
-	"""Clean up drag operation"""
+	## Clean up drag operation
 	_is_dragging = false
 	_drag_threshold_exceeded = false
 	
@@ -355,7 +355,7 @@ func _cleanup_drag_operation() -> void:
 
 # === CONTEXT MENU SYSTEM ===
 func _show_context_menu(position: Vector2, context: Dictionary) -> void:
-	"""Show context menu"""
+	## Show context menu
 	if not _context_menu:
 		return
 	
@@ -369,7 +369,7 @@ func _show_context_menu(position: Vector2, context: Dictionary) -> void:
 	context_menu_requested.emit(position, context)
 
 func _populate_context_menu(context: Dictionary) -> void:
-	"""Populate context menu with relevant options"""
+	## Populate context menu with relevant options
 	_context_menu.clear()
 	
 	var structure_name = context.get("structure_name", "")
@@ -386,7 +386,7 @@ func _populate_context_menu(context: Dictionary) -> void:
 			_add_default_menu_items()
 
 func _add_structure_menu_items(structure_name: String) -> void:
-	"""Add structure-specific menu items"""
+	## Add structure-specific menu items
 	_context_menu.add_item("📖 Learn About " + structure_name, 1)
 	_context_menu.add_item("🔍 Focus View", 2)
 	_context_menu.add_item("⭐ Bookmark", 3)
@@ -395,7 +395,7 @@ func _add_structure_menu_items(structure_name: String) -> void:
 	_context_menu.add_item("📤 Share", 5)
 
 func _add_panel_menu_items() -> void:
-	"""Add panel-specific menu items"""
+	## Add panel-specific menu items
 	_context_menu.add_item("📌 Pin Panel", 1)
 	_context_menu.add_item("🔄 Refresh", 2)
 	_context_menu.add_item("⚙️ Settings", 3)
@@ -403,7 +403,7 @@ func _add_panel_menu_items() -> void:
 	_context_menu.add_item("❌ Close", 4)
 
 func _add_educational_menu_items() -> void:
-	"""Add educational menu items"""
+	## Add educational menu items
 	_context_menu.add_item("❓ Help", 1)
 	_context_menu.add_item("💡 Hint", 2)
 	_context_menu.add_item("📝 Take Quiz", 3)
@@ -411,22 +411,22 @@ func _add_educational_menu_items() -> void:
 	_context_menu.add_item("📊 Progress", 4)
 
 func _add_default_menu_items() -> void:
-	"""Add default menu items"""
+	## Add default menu items
 	_context_menu.add_item("⚙️ Settings", 1)
 	_context_menu.add_item("❓ Help", 2)
 
 func _on_context_menu_item_selected(id: int) -> void:
-	"""Handle context menu item selection"""
+	## Handle context menu item selection
 	var action = _get_context_menu_action(id)
 	_trigger_educational_action(action, _context_menu_data)
 
 func _on_context_menu_hidden() -> void:
-	"""Handle context menu hiding"""
+	## Handle context menu hiding
 	_context_menu_data.clear()
 
 # === GESTURE RECOGNITION ===
 func _update_gesture_recognition(position: Vector2) -> void:
-	"""Update gesture recognition"""
+	## Update gesture recognition
 	if not _gesture_recognition_enabled:
 		return
 	
@@ -441,7 +441,7 @@ func _update_gesture_recognition(position: Vector2) -> void:
 		_analyze_gesture()
 
 func _analyze_gesture() -> void:
-	"""Analyze current gesture pattern"""
+	## Analyze current gesture pattern
 	if _gesture_points.size() < 3:
 		return
 	
@@ -450,7 +450,7 @@ func _analyze_gesture() -> void:
 		_trigger_gesture(gesture)
 
 func _recognize_gesture_pattern() -> GestureType:
-	"""Recognize gesture pattern from points"""
+	## Recognize gesture pattern from points
 	var start_point = _gesture_points[0]
 	var end_point = _gesture_points[-1]
 	var total_distance = start_point.distance_to(end_point)
@@ -468,7 +468,7 @@ func _recognize_gesture_pattern() -> GestureType:
 		return GestureType.SWIPE_DOWN if direction.y > 0 else GestureType.SWIPE_UP
 
 func _trigger_gesture(gesture_type: GestureType) -> void:
-	"""Trigger gesture action"""
+	## Trigger gesture action
 	var gesture_data = {
 		"type": gesture_type,
 		"points": _gesture_points.duplicate(),
@@ -482,7 +482,7 @@ func _trigger_gesture(gesture_type: GestureType) -> void:
 	_gesture_points.clear()
 
 func _handle_gesture_action(gesture_type: GestureType, data: Dictionary) -> void:
-	"""Handle gesture action"""
+	## Handle gesture action
 	match gesture_type:
 		GestureType.SWIPE_LEFT:
 			_trigger_educational_action("navigate_previous")
@@ -495,7 +495,7 @@ func _handle_gesture_action(gesture_type: GestureType, data: Dictionary) -> void
 
 # === EDUCATIONAL ACTIONS ===
 func _trigger_educational_action(action: String, context: Dictionary = {}) -> void:
-	"""Trigger educational action"""
+	## Trigger educational action
 	var action_data = {
 		"action": action,
 		"context": context,
@@ -515,7 +515,7 @@ func _trigger_educational_action(action: String, context: Dictionary = {}) -> vo
 
 # === UTILITY METHODS ===
 func _get_control_at_position(position: Vector2) -> Control:
-	"""Get control at screen position"""
+	## Get control at screen position
 	var viewport = get_viewport()
 	if not viewport:
 		return null
@@ -524,7 +524,7 @@ func _get_control_at_position(position: Vector2) -> Control:
 	return viewport.gui_get_focus_owner()
 
 func _get_interaction_context(position: Vector2) -> Dictionary:
-	"""Get interaction context for position"""
+	## Get interaction context for position
 	var target = _get_control_at_position(position)
 	var context = {
 		"position": position,
@@ -548,11 +548,11 @@ func _get_interaction_context(position: Vector2) -> Dictionary:
 	return context
 
 func _is_draggable(control: Control) -> bool:
-	"""Check if control is draggable"""
+	## Check if control is draggable
 	return control.has_meta("draggable") and control.get_meta("draggable", false)
 
 func _get_drag_data(source: Control) -> Dictionary:
-	"""Get drag data from source"""
+	## Get drag data from source
 	return {
 		"source": source,
 		"type": source.get_meta("drag_type", "generic"),
@@ -560,7 +560,7 @@ func _get_drag_data(source: Control) -> Dictionary:
 	}
 
 func _get_context_menu_action(id: int) -> String:
-	"""Get action name for context menu ID"""
+	## Get action name for context menu ID
 	var actions = {
 		1: "primary_action",
 		2: "secondary_action", 
@@ -572,30 +572,30 @@ func _get_context_menu_action(id: int) -> String:
 
 # === PUBLIC API ===
 func set_interaction_mode(mode: InteractionMode) -> void:
-	"""Set current interaction mode"""
+	## Set current interaction mode
 	_current_mode = mode
 	print("[AdvancedInteraction] Mode changed to: %s" % InteractionMode.keys()[mode])
 
 func get_interaction_mode() -> InteractionMode:
-	"""Get current interaction mode"""
+	## Get current interaction mode
 	return _current_mode
 
 func enable_gestures(enabled: bool) -> void:
-	"""Enable/disable gesture recognition"""
+	## Enable/disable gesture recognition
 	_gesture_recognition_enabled = enabled
 	print("[AdvancedInteraction] Gestures: %s" % enabled)
 
 func enable_context_menus(enabled: bool) -> void:
-	"""Enable/disable context menus"""
+	## Enable/disable context menus
 	_context_menus_enabled = enabled
 	print("[AdvancedInteraction] Context menus: %s" % enabled)
 
 func get_interaction_history() -> Array[Dictionary]:
-	"""Get interaction history"""
+	## Get interaction history
 	return _interaction_history.duplicate()
 
 func clear_interaction_history() -> void:
-	"""Clear interaction history"""
+	## Clear interaction history
 	_interaction_history.clear()
 	print("[AdvancedInteraction] History cleared")
 

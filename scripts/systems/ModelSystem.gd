@@ -25,7 +25,7 @@ func _ready() -> void:
 ## Public interface methods
 
 func load_model(path: String) -> bool:
-	"""Load a single model from path"""
+	## Load a single model from path
 	if not model_coordinator:
 		print("[MODEL_SYSTEM] Warning: No model coordinator available")
 		return false
@@ -49,7 +49,7 @@ func load_model(path: String) -> bool:
 	return false
 
 func load_default_models() -> bool:
-	"""Load the default brain models"""
+	## Load the default brain models
 	if not model_coordinator:
 		print("[MODEL_SYSTEM] Warning: No model coordinator available")
 		return false
@@ -64,15 +64,15 @@ func load_default_models() -> bool:
 	return false
 
 func get_current_model() -> Node3D:
-	"""Get the current model parent node"""
+	## Get the current model parent node
 	return brain_model_parent
 
 func get_loaded_models() -> Array:
-	"""Get array of currently loaded model names"""
+	## Get array of currently loaded model names
 	return current_models
 
 func clear_model() -> void:
-	"""Clear all loaded models"""
+	## Clear all loaded models
 	if brain_model_parent:
 		# Clear all children of the brain model parent
 		for child in brain_model_parent.get_children():
@@ -83,17 +83,17 @@ func clear_model() -> void:
 		print("[MODEL_SYSTEM] All models cleared")
 
 func get_model_count() -> int:
-	"""Get the number of loaded models"""
+	## Get the number of loaded models
 	return current_models.size()
 
 func is_model_loaded(model_name: String) -> bool:
-	"""Check if a specific model is loaded"""
+	## Check if a specific model is loaded
 	return model_name in current_models
 
 ## Configuration and setup
 
 func initialize_with_model_coordinator(coordinator: Node, brain_parent: Node3D = null) -> void:
-	"""Initialize with reference to the model coordinator"""
+	## Initialize with reference to the model coordinator
 	if not coordinator:
 		print("[MODEL_SYSTEM] Error: Cannot initialize with null model coordinator")
 		return
@@ -114,7 +114,7 @@ func initialize_with_model_coordinator(coordinator: Node, brain_parent: Node3D =
 		model_coordinator.model_load_failed.connect(_on_coordinator_model_load_failed)
 
 func set_brain_model_parent(parent: Node3D) -> void:
-	"""Set the parent node for brain models"""
+	## Set the parent node for brain models
 	brain_model_parent = parent
 	if model_coordinator and model_coordinator.has_method("set_model_parent"):
 		model_coordinator.set_model_parent(parent)
@@ -123,13 +123,13 @@ func set_brain_model_parent(parent: Node3D) -> void:
 ## Model management helpers
 
 func add_model_definition(path: String, position: Vector3 = Vector3.ZERO, rotation: Vector3 = Vector3.ZERO, scale: Vector3 = Vector3.ONE) -> void:
-	"""Add a model definition for loading"""
+	## Add a model definition for loading
 	if model_coordinator and model_coordinator.has_method("add_model_definition"):
 		model_coordinator.add_model_definition(path, position, rotation, scale)
 		print("[MODEL_SYSTEM] Added model definition: ", path)
 
 func get_model_definitions() -> Array:
-	"""Get current model definitions from coordinator"""
+	## Get current model definitions from coordinator
 	if model_coordinator and model_coordinator.has_method("get_model_definitions"):
 		return model_coordinator.get_model_definitions()
 	return []
@@ -137,7 +137,7 @@ func get_model_definitions() -> Array:
 ## Signal handlers
 
 func _on_coordinator_models_loaded(model_names: Array) -> void:
-	"""Handle models loaded from the coordinator"""
+	## Handle models loaded from the coordinator
 	current_models = model_names
 	models_loaded_successfully = true
 	
@@ -151,7 +151,7 @@ func _on_coordinator_models_loaded(model_names: Array) -> void:
 	all_models_loaded.emit(model_names)
 
 func _on_coordinator_model_load_failed(model_path: String, error: String) -> void:
-	"""Handle model load failure from the coordinator"""
+	## Handle model load failure from the coordinator
 	var error_msg = "Model load failed"
 	if not model_path.is_empty():
 		error_msg += " for " + model_path
@@ -164,7 +164,7 @@ func _on_coordinator_model_load_failed(model_path: String, error: String) -> voi
 ## Status and debugging
 
 func get_load_status() -> Dictionary:
-	"""Get detailed load status information"""
+	## Get detailed load status information
 	return {
 		"models_loaded": models_loaded_successfully,
 		"model_count": current_models.size(),
@@ -174,7 +174,7 @@ func get_load_status() -> Dictionary:
 	}
 
 func print_status() -> void:
-	"""Print current status for debugging"""
+	## Print current status for debugging
 	print("=== MODEL SYSTEM STATUS ===")
 	var status = get_load_status()
 	for key in status.keys():
@@ -183,7 +183,7 @@ func print_status() -> void:
 ## Cleanup
 
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	if model_coordinator:
 		# Disconnect signals
 		if model_coordinator.has_signal("models_loaded") and model_coordinator.models_loaded.is_connected(_on_coordinator_models_loaded):

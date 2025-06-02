@@ -50,7 +50,7 @@ var _dismiss_timer: Timer
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the error notification component"""
+	## Initialize the error notification component
 	# Check if we're in core development mode
 	if Engine.has_singleton("FeatureFlags"):
 		var FeatureFlagsRef = Engine.get_singleton("FeatureFlags")
@@ -70,7 +70,7 @@ func _ready() -> void:
 ## @param message: The error message to display
 ## @param type: The type of notification (error, warning, info, success)
 func show_notification(message: String, type: NotificationType = NotificationType.ERROR) -> void:
-	"""Display an educational error notification"""
+	## Display an educational error notification
 	notification_type = type
 	
 	if _label:
@@ -98,7 +98,7 @@ func show_notification(message: String, type: NotificationType = NotificationTyp
 
 # Simple fallback animation when UIThemeManager is not available
 func _animate_entrance_fallback() -> void:
-	"""Fallback animation for testing environments"""
+	## Fallback animation for testing environments
 	modulate = Color.TRANSPARENT
 	scale = Vector2(0.9, 0.9)
 	
@@ -109,7 +109,7 @@ func _animate_entrance_fallback() -> void:
 
 ## Dismiss the notification
 func dismiss_notification() -> void:
-	"""Dismiss the notification with animation"""
+	## Dismiss the notification with animation
 	if _dismiss_timer:
 		_dismiss_timer.stop()
 	
@@ -121,13 +121,13 @@ func dismiss_notification() -> void:
 ## Set the notification message
 ## @param message: The message text to display
 func set_message(message: String) -> void:
-	"""Set the notification message"""
+	## Set the notification message
 	if _label:
 		_label.text = message
 
 # === PRIVATE METHODS ===
 func _setup_ui_structure() -> void:
-	"""Setup the UI structure for the notification"""
+	## Setup the UI structure for the notification
 	# Main background panel
 	_background_panel = Panel.new()
 	_background_panel.name = "BackgroundPanel"
@@ -167,7 +167,7 @@ func _setup_ui_structure() -> void:
 	add_child(_dismiss_timer)
 
 func _apply_educational_theme() -> void:
-	"""Apply educational theme styling"""
+	## Apply educational theme styling
 	# Set size and position regardless of theme availability
 	custom_minimum_size = Vector2(320, 80)
 	anchor_left = 1.0
@@ -200,7 +200,7 @@ func _apply_educational_theme() -> void:
 
 # Apply basic styling when UIThemeManager is not available (testing mode)
 func _apply_fallback_styling() -> void:
-	"""Apply minimal styling when UIThemeManager is unavailable"""
+	## Apply minimal styling when UIThemeManager is unavailable
 	if _background_panel:
 		var style = StyleBoxFlat.new()
 		style.bg_color = Color(0.15, 0.15, 0.15, 0.9)
@@ -228,7 +228,7 @@ func _apply_fallback_styling() -> void:
 		_close_button.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
 
 func _apply_type_styling(type: NotificationType) -> void:
-	"""Apply styling based on notification type"""
+	## Apply styling based on notification type
 	var color: Color
 	
 	# Handle case when UIThemeManager is not available
@@ -272,7 +272,7 @@ func _apply_type_styling(type: NotificationType) -> void:
 			_background_panel.add_theme_stylebox_override("panel", style)
 
 func _setup_interactions() -> void:
-	"""Setup interaction handling"""
+	## Setup interaction handling
 	# Close button
 	if _close_button:
 		_close_button.pressed.connect(_on_close_button_pressed)
@@ -285,7 +285,7 @@ func _setup_interactions() -> void:
 	gui_input.connect(_on_notification_input)
 
 func _get_icon_for_type(type: NotificationType) -> String:
-	"""Get icon character for notification type"""
+	## Get icon character for notification type
 	match type:
 		NotificationType.ERROR:
 			return ERROR_ICON
@@ -299,27 +299,27 @@ func _get_icon_for_type(type: NotificationType) -> String:
 			return ERROR_ICON
 
 func _start_dismiss_timer() -> void:
-	"""Start the auto-dismiss timer"""
+	## Start the auto-dismiss timer
 	if _dismiss_timer:
 		_dismiss_timer.start(dismiss_duration)
 
 # === EVENT HANDLERS ===
 func _on_close_button_pressed() -> void:
-	"""Handle close button press"""
+	## Handle close button press
 	dismiss_notification()
 
 func _on_dismiss_timer_timeout() -> void:
-	"""Handle auto-dismiss timer timeout"""
+	## Handle auto-dismiss timer timeout
 	dismiss_notification()
 
 func _on_notification_input(event: InputEvent) -> void:
-	"""Handle notification click"""
+	## Handle notification click
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		notification_clicked.emit()
 		# Don't auto-dismiss on click, let the user decide
 
 func _on_notification_dismissed() -> void:
-	"""Handle notification dismissal"""
+	## Handle notification dismissal
 	notification_dismissed.emit()
 	queue_free()
 
@@ -329,7 +329,7 @@ func _on_notification_dismissed() -> void:
 ## @param parent: Parent node to add notification to
 ## @returns: ErrorNotification instance
 static func show_error(message: String, parent: Node) -> ErrorNotification:
-	"""Factory method to create and show an error notification"""
+	## Factory method to create and show an error notification
 	var notification = ErrorNotification.new()
 	parent.add_child(notification)
 	notification.show_notification(message, NotificationType.ERROR)
@@ -340,7 +340,7 @@ static func show_error(message: String, parent: Node) -> ErrorNotification:
 ## @param parent: Parent node to add notification to
 ## @returns: ErrorNotification instance
 static func show_warning(message: String, parent: Node) -> ErrorNotification:
-	"""Factory method to create and show a warning notification"""
+	## Factory method to create and show a warning notification
 	var notification = ErrorNotification.new()
 	parent.add_child(notification)
 	notification.show_notification(message, NotificationType.WARNING)
@@ -351,7 +351,7 @@ static func show_warning(message: String, parent: Node) -> ErrorNotification:
 ## @param parent: Parent node to add notification to
 ## @returns: ErrorNotification instance
 static func show_info(message: String, parent: Node) -> ErrorNotification:
-	"""Factory method to create and show an info notification"""
+	## Factory method to create and show an info notification
 	var notification = ErrorNotification.new()
 	parent.add_child(notification)
 	notification.show_notification(message, NotificationType.INFO)
@@ -362,7 +362,7 @@ static func show_info(message: String, parent: Node) -> ErrorNotification:
 ## @param parent: Parent node to add notification to
 ## @returns: ErrorNotification instance
 static func show_success(message: String, parent: Node) -> ErrorNotification:
-	"""Factory method to create and show a success notification"""
+	## Factory method to create and show a success notification
 	var notification = ErrorNotification.new()
 	parent.add_child(notification)
 	notification.show_notification(message, NotificationType.SUCCESS)

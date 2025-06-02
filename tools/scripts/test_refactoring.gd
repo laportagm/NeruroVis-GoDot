@@ -14,7 +14,7 @@ func _ready():
 	get_tree().quit()
 
 func run_component_tests():
-	"""Run basic validation tests for refactored components"""
+	## Run basic validation tests for refactored components
 	
 	print("\n1. Testing SystemBootstrap creation...")
 	await test_system_bootstrap_creation()
@@ -29,7 +29,7 @@ func run_component_tests():
 	await test_component_integration()
 
 func test_system_bootstrap_creation():
-	"""Test SystemBootstrap component creation"""
+	## Test SystemBootstrap component creation
 	var bootstrap = SystemBootstrap.new()
 	if bootstrap:
 		print("✓ SystemBootstrap created successfully")
@@ -40,7 +40,7 @@ func test_system_bootstrap_creation():
 		print("✗ SystemBootstrap creation failed")
 
 func test_input_router_creation():
-	"""Test InputRouter component creation"""
+	## Test InputRouter component creation
 	var router = InputRouter.new()
 	if router:
 		print("✓ InputRouter created successfully")
@@ -52,7 +52,7 @@ func test_input_router_creation():
 		print("✗ InputRouter creation failed")
 
 func test_main_scene_creation():
-	"""Test MainSceneRefactored creation"""
+	## Test MainSceneRefactored creation
 	var scene = MainSceneRefactored.new()
 	if scene:
 		print("✓ MainSceneRefactored created successfully")
@@ -63,7 +63,7 @@ func test_main_scene_creation():
 		print("✗ MainSceneRefactored creation failed")
 
 func test_component_integration():
-	"""Test basic integration between components"""
+	## Test basic integration between components
 	var scene = MainSceneRefactored.new()
 	var bootstrap = SystemBootstrap.new()
 	var router = InputRouter.new()

@@ -203,7 +203,7 @@ func generate_benchmark_report():
 	generate_performance_summary()
 
 func generate_performance_summary():
-	var summary_content = """# 📊 Performance Benchmark Results
+	var summary_content = ## # 📊 Performance Benchmark Results
 
 ## Summary
 - **Total Duration:** %dms
@@ -221,7 +221,7 @@ func generate_performance_summary():
 | System | File Operations | %.4fms avg |
 
 ## Performance Status
-""" % [
+ % [
 		benchmark_results.get("meta_total_duration_ms", 0),
 		benchmark_results.get("meta_platform", "Unknown"),
 		str(benchmark_results.get("meta_godot_version", {})),

@@ -87,7 +87,7 @@ static func _ensure_initialized() -> void:
 		print("[StyleEngine] Initialized with theme: %s" % ThemeMode.keys()[_current_theme])
 
 static func _load_style_configuration() -> void:
-	"""Load style configuration from feature flags and user preferences"""
+	## Load style configuration from feature flags and user preferences
 	
 	# Check theme preference from feature flags
 	if FeatureFlags.is_enabled(FeatureFlags.UI_MINIMAL_THEME):
@@ -104,7 +104,7 @@ static func _load_style_configuration() -> void:
 	_animation_enabled = FeatureFlags.is_enabled(FeatureFlags.UI_SMOOTH_ANIMATIONS)
 
 static func _setup_responsive_system() -> void:
-	"""Setup responsive design system"""
+	## Setup responsive design system
 	var viewport_size = DisplayServer.screen_get_size()
 	var width = viewport_size.x
 	
@@ -121,13 +121,13 @@ static func _setup_responsive_system() -> void:
 	print("[StyleEngine] Responsive scale: %.1f (screen: %dx%d)" % [_responsive_scale, width, viewport_size.y])
 
 static func _initialize_animation_system() -> void:
-	"""Initialize animation coordination system"""
+	## Initialize animation coordination system
 	_style_cache.clear()
 	print("[StyleEngine] Animation system initialized (enabled: %s)" % _animation_enabled)
 
 # === PUBLIC THEME API ===
 static func set_theme_mode(mode: ThemeMode) -> void:
-	"""Set the global theme mode"""
+	## Set the global theme mode
 	_ensure_initialized()
 	
 	if _current_theme != mode:
@@ -141,24 +141,24 @@ static func set_theme_mode(mode: ThemeMode) -> void:
 		_broadcast_theme_change()
 
 static func get_theme_mode() -> ThemeMode:
-	"""Get current theme mode"""
+	## Get current theme mode
 	_ensure_initialized()
 	return _current_theme
 
 static func set_interaction_mode(mode: InteractionMode) -> void:
-	"""Set the global interaction mode"""
+	## Set the global interaction mode
 	_ensure_initialized()
 	_current_interaction_mode = mode
 	print("[StyleEngine] Interaction mode: %s" % InteractionMode.keys()[mode])
 
 static func get_interaction_mode() -> InteractionMode:
-	"""Get current interaction mode"""
+	## Get current interaction mode
 	_ensure_initialized()
 	return _current_interaction_mode
 
 # === COLOR SYSTEM ===
 static func get_color(color_name: String) -> Color:
-	"""Get color for current theme"""
+	## Get color for current theme
 	_ensure_initialized()
 	
 	var cache_key = "color_%s_%s" % [color_name, _current_theme]
@@ -181,7 +181,7 @@ static func get_color(color_name: String) -> Color:
 	return color
 
 static func _get_high_contrast_color(color_name: String) -> Color:
-	"""Get high contrast color for accessibility"""
+	## Get high contrast color for accessibility
 	var contrast_colors = {
 		"primary": Color.WHITE,
 		"secondary": Color.BLACK,
@@ -194,7 +194,7 @@ static func _get_high_contrast_color(color_name: String) -> Color:
 	return contrast_colors.get(color_name, Color.WHITE)
 
 static func get_color_palette() -> Dictionary:
-	"""Get complete color palette for current theme"""
+	## Get complete color palette for current theme
 	_ensure_initialized()
 	
 	var palette = {}
@@ -207,17 +207,17 @@ static func get_color_palette() -> Dictionary:
 
 # === RESPONSIVE DESIGN ===
 static func get_responsive_size(base_size: Vector2) -> Vector2:
-	"""Get responsive size based on screen scale"""
+	## Get responsive size based on screen scale
 	_ensure_initialized()
 	return base_size * _responsive_scale
 
 static func get_responsive_scale() -> float:
-	"""Get current responsive scale factor"""
+	## Get current responsive scale factor
 	_ensure_initialized()
 	return _responsive_scale
 
 static func get_font_size(size_category: String) -> int:
-	"""Get responsive font size"""
+	## Get responsive font size
 	_ensure_initialized()
 	
 	var base_sizes = {
@@ -232,18 +232,18 @@ static func get_font_size(size_category: String) -> int:
 	return int(base_size * _responsive_scale)
 
 static func is_mobile_layout() -> bool:
-	"""Check if mobile layout should be used"""
+	## Check if mobile layout should be used
 	var screen_width = DisplayServer.screen_get_size().x
 	return screen_width <= RESPONSIVE_BREAKPOINTS.mobile
 
 static func is_tablet_layout() -> bool:
-	"""Check if tablet layout should be used"""
+	## Check if tablet layout should be used
 	var screen_width = DisplayServer.screen_get_size().x
 	return screen_width <= RESPONSIVE_BREAKPOINTS.tablet and screen_width > RESPONSIVE_BREAKPOINTS.mobile
 
 # === ANIMATION SYSTEM ===
 static func get_animation_duration(duration_type: String) -> float:
-	"""Get animation duration for current settings"""
+	## Get animation duration for current settings
 	_ensure_initialized()
 	
 	if not _animation_enabled:
@@ -258,7 +258,7 @@ static func get_animation_duration(duration_type: String) -> float:
 	return base_duration
 
 static func create_fade_transition(control: Control, fade_in: bool = true, duration: float = -1.0) -> Tween:
-	"""Create fade transition animation"""
+	## Create fade transition animation
 	_ensure_initialized()
 	
 	if duration < 0:
@@ -277,7 +277,7 @@ static func create_fade_transition(control: Control, fade_in: bool = true, durat
 	return tween
 
 static func create_slide_transition(control: Control, from_pos: Vector2, to_pos: Vector2, duration: float = -1.0) -> Tween:
-	"""Create slide transition animation"""
+	## Create slide transition animation
 	_ensure_initialized()
 	
 	if duration < 0:
@@ -293,7 +293,7 @@ static func create_slide_transition(control: Control, from_pos: Vector2, to_pos:
 	return tween
 
 static func create_scale_animation(control: Control, from_scale: Vector2, to_scale: Vector2, duration: float = -1.0) -> Tween:
-	"""Create scale animation"""
+	## Create scale animation
 	_ensure_initialized()
 	
 	if duration < 0:
@@ -310,7 +310,7 @@ static func create_scale_animation(control: Control, from_scale: Vector2, to_sca
 
 # === COMPONENT STYLING ===
 static func apply_component_style(component: Control, style_config: Dictionary) -> void:
-	"""Apply unified styling to a component"""
+	## Apply unified styling to a component
 	_ensure_initialized()
 	
 	var component_type = style_config.get("type", "generic")
@@ -329,7 +329,7 @@ static func apply_component_style(component: Control, style_config: Dictionary) 
 	_apply_cached_style(component, computed_style)
 
 static func _compute_component_style(component_type: String, variant: String, config: Dictionary) -> Dictionary:
-	"""Compute styling for a component type"""
+	## Compute styling for a component type
 	var style = {}
 	
 	match component_type:
@@ -347,7 +347,7 @@ static func _compute_component_style(component_type: String, variant: String, co
 	return style
 
 static func _compute_panel_style(variant: String, config: Dictionary) -> Dictionary:
-	"""Compute panel styling"""
+	## Compute panel styling
 	var style = {
 		"background_color": get_color("surface"),
 		"border_color": get_color("primary"),
@@ -369,7 +369,7 @@ static func _compute_panel_style(variant: String, config: Dictionary) -> Diction
 	return style
 
 static func _compute_button_style(variant: String, config: Dictionary) -> Dictionary:
-	"""Compute button styling"""
+	## Compute button styling
 	var style = {
 		"background_color": get_color("primary"),
 		"text_color": get_color("text_primary"),
@@ -394,7 +394,7 @@ static func _compute_button_style(variant: String, config: Dictionary) -> Dictio
 	return style
 
 static func _compute_label_style(variant: String, config: Dictionary) -> Dictionary:
-	"""Compute label styling"""
+	## Compute label styling
 	var style = {
 		"text_color": get_color("text_primary"),
 		"font_size": get_font_size("body"),
@@ -413,7 +413,7 @@ static func _compute_label_style(variant: String, config: Dictionary) -> Diction
 	return style
 
 static func _compute_header_style(variant: String, config: Dictionary) -> Dictionary:
-	"""Compute header styling"""
+	## Compute header styling
 	var style = {
 		"background_color": get_color("primary"),
 		"text_color": get_color("text_primary"),
@@ -425,7 +425,7 @@ static func _compute_header_style(variant: String, config: Dictionary) -> Dictio
 	return style
 
 static func _compute_generic_style(variant: String, config: Dictionary) -> Dictionary:
-	"""Compute generic component styling"""
+	## Compute generic component styling
 	return {
 		"background_color": get_color("surface"),
 		"text_color": get_color("text_primary"),
@@ -434,12 +434,12 @@ static func _compute_generic_style(variant: String, config: Dictionary) -> Dicti
 	}
 
 static func _apply_cached_style(component: Control, style: Dictionary) -> void:
-	"""Apply cached style to component"""
+	## Apply cached style to component
 	for property in style.keys():
 		_apply_style_property(component, property, style[property])
 
 static func _apply_style_property(component: Control, property: String, value) -> void:
-	"""Apply individual style property"""
+	## Apply individual style property
 	match property:
 		"background_color":
 			if component.has_method("add_theme_color_override"):
@@ -459,7 +459,7 @@ static func _apply_style_property(component: Control, property: String, value) -
 
 # === ACCESSIBILITY ===
 static func enable_accessibility_mode(enabled: bool) -> void:
-	"""Enable/disable accessibility mode"""
+	## Enable/disable accessibility mode
 	_ensure_initialized()
 	_accessibility_enabled = enabled
 	
@@ -471,25 +471,25 @@ static func enable_accessibility_mode(enabled: bool) -> void:
 	print("[StyleEngine] Accessibility mode: %s" % enabled)
 
 static func is_accessibility_enabled() -> bool:
-	"""Check if accessibility mode is enabled"""
+	## Check if accessibility mode is enabled
 	_ensure_initialized()
 	return _accessibility_enabled
 
 # === UTILITY METHODS ===
 static func _broadcast_theme_change() -> void:
-	"""Broadcast theme change to listening components"""
+	## Broadcast theme change to listening components
 	# This would notify all registered components about theme changes
 	# For now, we'll use a simple signal system when needed
 	print("[StyleEngine] Broadcasting theme change to components")
 
 static func clear_style_cache() -> void:
-	"""Clear all cached styles (useful for theme switching)"""
+	## Clear all cached styles (useful for theme switching)
 	_style_cache.clear()
 	_component_styles.clear()
 	print("[StyleEngine] Style cache cleared")
 
 static func get_style_stats() -> Dictionary:
-	"""Get style engine statistics"""
+	## Get style engine statistics
 	return {
 		"theme_mode": ThemeMode.keys()[_current_theme],
 		"interaction_mode": InteractionMode.keys()[_current_interaction_mode],
@@ -501,7 +501,7 @@ static func get_style_stats() -> Dictionary:
 	}
 
 static func print_style_stats() -> void:
-	"""Print style engine statistics"""
+	## Print style engine statistics
 	var stats = get_style_stats()
 	print("\n=== STYLE ENGINE STATS ===")
 	print("Theme: %s" % stats.theme_mode)

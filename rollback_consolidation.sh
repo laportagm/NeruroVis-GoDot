@@ -1,0 +1,178 @@
+#!/bin/bash
+# NeuroVis Consolidation Rollback Script
+# Restores project to pre-consolidation state
+
+set -e
+
+echo "🔄 NeuroVis Consolidation Rollback"
+echo "📅 $(date)"
+
+# Colors
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+success() { echo -e "${GREEN}[✓]${NC} $1"; }
+error() { echo -e "${RED}[✗]${NC} $1"; }
+warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+
+# Find the most recent Phase 2 backup
+echo "🔍 Looking for Phase 2 backup..."
+BACKUP_DIR=""
+
+# Look for phase2 backup first, then any backup
+for pattern in "../neurovis_phase2_backup_*" "../neurovis_backup_*"; do
+    LATEST=$(ls -1d $pattern 2>/dev/null | tail -1 || echo "")
+    if [ -n "$LATEST" ]; then
+        BACKUP_DIR="$LATEST"
+        break
+    fi
+done
+
+if [ -z "$BACKUP_DIR" ]; then
+    error "❌ No backup found!"
+    error "Looked for:"
+    error "  - ../neurovis_phase2_backup_*"
+    error "  - ../neurovis_backup_*"
+    echo ""
+    error "Cannot perform rollback without backup."
+    echo ""
+    warning "If you have a manual backup, restore it manually:"
+    warning "  1. cd .. && cp -r your_backup_dir/* neurovis_current_dir/"
+    warning "  2. Verify project.godot and main files are intact"
+    exit 1
+fi
+
+echo ""
+warning "⚠️  ROLLBACK WARNING ⚠️"
+warning "This will completely replace the current project with backup:"
+warning "  Source: $BACKUP_DIR"
+warning "  Target: $(pwd)"
+warning ""
+warning "ALL current changes since consolidation will be LOST!"
+warning "This includes any new files or modifications made after Phase 2."
+echo ""
+
+# Confirmation prompt
+read -p "Are you sure you want to proceed with rollback? (yes/no): " -r
+if [[ ! $REPLY =~ ^[Yy][Ee][Ss]$ ]]; then
+    echo "Rollback cancelled."
+    exit 0
+fi
+
+echo ""
+echo "📦 Starting rollback from: $BACKUP_DIR"
+
+# Create a rollback backup (backup of current state before rollback)
+ROLLBACK_BACKUP="../neurovis_pre_rollback_$(date +%Y%m%d_%H%M%S)"
+echo "🛡️  Creating rollback backup at: $ROLLBACK_BACKUP"
+cp -r . "$ROLLBACK_BACKUP"
+
+# Remove current problematic state (but keep our scripts!)
+echo "🗑️  Clearing current state..."
+# Save our rollback tools
+cp rollback_consolidation.sh /tmp/
+cp validate_consolidation.sh /tmp/ 2>/dev/null || true
+cp phase2_consolidation.sh /tmp/ 2>/dev/null || true
+
+# Remove everything except these scripts and .git
+find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.git' ! -name 'rollback_consolidation.sh' -exec rm -rf {} +
+
+# Restore from backup
+echo "📥 Restoring from backup..."
+cp -r "$BACKUP_DIR"/* .
+
+# Restore our rollback tools
+cp /tmp/rollback_consolidation.sh .
+cp /tmp/validate_consolidation.sh . 2>/dev/null || true
+cp /tmp/phase2_consolidation.sh . 2>/dev/null || true
+chmod +x *.sh 2>/dev/null || true
+
+echo ""
+echo "✅ Rollback completed!"
+echo ""
+success "📊 Rollback Summary:"
+success "  ✓ Project restored from: $(basename $BACKUP_DIR)"
+success "  ✓ Current state backed up to: $(basename $ROLLBACK_BACKUP)"
+success "  ✓ Rollback tools preserved"
+
+echo ""
+success "🔍 Post-Rollback Validation:"
+
+# Quick validation
+CRITICAL_FILES=(
+    "project.godot"
+    "scenes/main/node_3d.gd"
+    "scenes/main/node_3d.tscn"
+    "core/knowledge/KnowledgeService.gd"
+)
+
+VALIDATION_OK=true
+for file in "${CRITICAL_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        success "  ✓ $file restored"
+    else
+        error "  ✗ $file missing after rollback!"
+        VALIDATION_OK=false
+    fi
+done
+
+if [ "$VALIDATION_OK" = true ]; then
+    success "🎉 Rollback successful!"
+    echo ""
+    echo "Next steps:"
+    echo "  1. Test project in Godot"
+    echo "  2. Verify educational functionality" 
+    echo "  3. Check autoloads with: test autoloads"
+    echo ""
+    echo "If everything works correctly, you can safely delete:"
+    echo "  - $ROLLBACK_BACKUP (pre-rollback state)"
+    echo "  - $BACKUP_DIR (original backup)"
+else
+    error "❌ Rollback validation failed!"
+    error "Manual intervention required."
+    echo ""
+    echo "Available backups:"
+    echo "  - Pre-rollback: $ROLLBACK_BACKUP"
+    echo "  - Original: $BACKUP_DIR"
+fi
+
+# Generate rollback report
+cat > ROLLBACK_REPORT.md << EOF
+# Consolidation Rollback Report
+
+**Date**: $(date)
+**Status**: $(if [ "$VALIDATION_OK" = true ]; then echo "✅ SUCCESS"; else echo "❌ NEEDS ATTENTION"; fi)
+
+## Rollback Details
+- **Source Backup**: \`$(basename $BACKUP_DIR)\`
+- **Pre-Rollback Backup**: \`$(basename $ROLLBACK_BACKUP)\`
+- **Restoration Method**: Full directory replacement
+
+## Files Validated Post-Rollback
+$(for file in "${CRITICAL_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        echo "- ✅ \`$file\`"
+    else
+        echo "- ❌ \`$file\` (MISSING)"
+    fi
+done)
+
+## Next Steps
+$(if [ "$VALIDATION_OK" = true ]; then
+    echo "- Test project functionality in Godot"
+    echo "- Run validation tests"
+    echo "- Consider cleanup of backup directories"
+else
+    echo "- Manual file restoration required"
+    echo "- Check backup directories for missing files"
+    echo "- Contact development team if issues persist"
+fi)
+
+---
+Generated by rollback script
+EOF
+
+echo ""
+success "📋 Rollback report saved to ROLLBACK_REPORT.md"

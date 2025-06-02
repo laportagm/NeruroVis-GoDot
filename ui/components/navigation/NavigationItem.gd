@@ -136,7 +136,7 @@ func get_id() -> String:
 
 # === PRIVATE METHODS ===
 func _load_dependencies() -> void:
-    """Load required dependencies safely"""
+    ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
     var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
@@ -149,7 +149,7 @@ func _load_dependencies() -> void:
         _theme_manager = get_node_or_null("/root/UIThemeManager")
 
 func _load_theme_colors() -> void:
-    """Load theme colors from UIThemeManager if available"""
+    ## Load theme colors from UIThemeManager if available
     if _theme_manager:
         if _theme_manager.has_method("get_color"):
             _color_accent = _theme_manager.get_color("accent") if _theme_manager.get_color("accent") else _color_accent
@@ -159,7 +159,7 @@ func _load_theme_colors() -> void:
             _color_bg_selected = _theme_manager.get_color("surface_selected") if _theme_manager.get_color("surface_selected") else _color_bg_selected
 
 func _create_ui() -> void:
-    """Create the item UI structure"""
+    ## Create the item UI structure
     custom_minimum_size = Vector2(0, 32)
     size_flags_horizontal = Control.SIZE_EXPAND_FILL
     
@@ -194,7 +194,7 @@ func _create_ui() -> void:
     _update_badge()
 
 func _create_styles() -> void:
-    """Create the item styles"""
+    ## Create the item styles
     # Default style (transparent background)
     _default_style = StyleBoxFlat.new()
     _default_style.bg_color = Color.TRANSPARENT
@@ -219,7 +219,7 @@ func _create_styles() -> void:
     _selected_style.content_margin_left = 5  # Compensate for border
 
 func _update_style() -> void:
-    """Update the item style based on state"""
+    ## Update the item style based on state
     if is_selected:
         add_theme_stylebox_override("panel", _selected_style)
         if _label:
@@ -234,7 +234,7 @@ func _update_style() -> void:
             _icon.modulate = _color_text_secondary
 
 func _update_badge() -> void:
-    """Update badge visibility and text"""
+    ## Update badge visibility and text
     if not _badge:
         return
     
@@ -262,7 +262,7 @@ func _update_badge() -> void:
 
 # === EVENT HANDLERS ===
 func _on_mouse_entered() -> void:
-    """Handle mouse enter event"""
+    ## Handle mouse enter event
     if not is_selected:
         add_theme_stylebox_override("panel", _hover_style)
         if _label:
@@ -273,12 +273,12 @@ func _on_mouse_entered() -> void:
     mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _on_mouse_exited() -> void:
-    """Handle mouse exit event"""
+    ## Handle mouse exit event
     if not is_selected:
         _update_style()
 
 func _on_gui_input(event: InputEvent) -> void:
-    """Handle GUI input"""
+    ## Handle GUI input
     if event is InputEventMouseButton:
         if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
             emit_signal("clicked")
@@ -286,7 +286,7 @@ func _on_gui_input(event: InputEvent) -> void:
 
 # Static method to create the scene structure
 static func create_scene() -> PackedScene:
-    """Create a packed scene for this component"""
+    ## Create a packed scene for this component
     var scene = PackedScene.new()
     
     # Root node

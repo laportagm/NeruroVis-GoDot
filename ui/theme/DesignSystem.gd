@@ -249,7 +249,7 @@ static func create_button_theme(variant: String = "primary") -> Theme:
     return theme
 
 static func apply_design_system(control: Control) -> void:
-    """Apply design system to any control"""
+    ## Apply design system to any control
     if control is Button:
         control.theme = create_button_theme()
     elif control is Label:

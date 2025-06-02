@@ -12,6 +12,8 @@ extends Node
 
 # === PRELOADS ===
 const SelectionReliabilityTest = preload("res://tests/qa/SelectionReliabilityTest.gd")
+# Prevent loading UIThemeManager with 5-argument apply_modern_label issue
+const UIThemeManager = preload("res://ui/panels/UIThemeManager.gd")
 
 # === PRIVATE VARIABLES ===
 var _test_instance: SelectionReliabilityTest
@@ -22,7 +24,7 @@ var _test_mode: String = "full"  # full, quick, structure
 # === PUBLIC METHODS ===
 ## Initialize the test runner with main scene reference
 func initialize(main_scene: Node3D) -> void:
-    """Initialize the selection test runner"""
+    ## Initialize the selection test runner
     _main_scene = main_scene
     
     # Register debug commands
@@ -32,7 +34,7 @@ func initialize(main_scene: Node3D) -> void:
 
 ## Run the selection reliability test
 func run_selection_test(mode: String = "full", target_structure: String = "") -> void:
-    """Run selection reliability test in specified mode"""
+    ## Run selection reliability test in specified mode
     if _is_test_running:
         print("[SelectionTestRunner] Test already in progress")
         return
@@ -90,7 +92,7 @@ func run_selection_test(mode: String = "full", target_structure: String = "") ->
 
 ## Stop the current test
 func stop_test() -> void:
-    """Stop the running test"""
+    ## Stop the running test
     if not _is_test_running or not _test_instance:
         print("[SelectionTestRunner] No test is running")
         return
@@ -101,7 +103,7 @@ func stop_test() -> void:
 
 ## Get current test status
 func get_test_status() -> void:
-    """Print current test status"""
+    ## Print current test status
     if not _is_test_running or not _test_instance:
         print("[SelectionTestRunner] No test is running")
         return
@@ -122,7 +124,7 @@ func get_test_status() -> void:
 
 # === PRIVATE METHODS ===
 func _register_debug_commands() -> void:
-    """Register debug console commands"""
+    ## Register debug console commands
     if not DebugCmd:
         push_warning("[SelectionTestRunner] DebugCmd not available - commands not registered")
         return
@@ -157,7 +159,7 @@ func _register_debug_commands() -> void:
     print("[SelectionTestRunner] Debug commands registered")
 
 func _cmd_run_test(args: String = "") -> void:
-    """Debug command to run test"""
+    ## Debug command to run test
     var parts = args.split(" ", false)
     var mode = "full"
     var structure = ""
@@ -171,15 +173,15 @@ func _cmd_run_test(args: String = "") -> void:
     run_selection_test(mode, structure)
 
 func _cmd_stop_test(_args: String = "") -> void:
-    """Debug command to stop test"""
+    ## Debug command to stop test
     stop_test()
 
 func _cmd_test_status(_args: String = "") -> void:
-    """Debug command to show test status"""
+    ## Debug command to show test status
     get_test_status()
 
 func _cmd_analyze_selection(_args: String = "") -> void:
-    """Analyze current selection system"""
+    ## Analyze current selection system
     print("\n=== SELECTION SYSTEM ANALYSIS ===")
     
     var selection_manager = _main_scene.get_node_or_null("BrainStructureSelectionManager")
@@ -223,7 +225,7 @@ func _cmd_analyze_selection(_args: String = "") -> void:
     print("\n=================================\n")
 
 func _cmd_show_bounds(args: String = "") -> void:
-    """Show bounds visualization for structures"""
+    ## Show bounds visualization for structures
     var structure_name = args.strip_edges()
     
     if structure_name.is_empty():
@@ -255,7 +257,7 @@ func _cmd_show_bounds(args: String = "") -> void:
         print("No meshes found for structure: %s" % structure_name)
 
 func _cmd_simulate_clicks(args: String = "") -> void:
-    """Simulate clicks on a structure"""
+    ## Simulate clicks on a structure
     var parts = args.split(" ", false)
     if parts.size() < 1:
         print("Usage: qa_simulate <structure_name> [count]")
@@ -329,7 +331,7 @@ func _cmd_simulate_clicks(args: String = "") -> void:
     print("\nSimulation complete: %d/%d successful" % [success_count, count])
 
 func _run_quick_test() -> void:
-    """Run a quick subset test"""
+    ## Run a quick subset test
     # Modify test to only test 5 structures
     if _test_instance:
         # Configure test for quick mode
@@ -341,14 +343,14 @@ func _run_quick_test() -> void:
         _test_instance.start_test()
 
 func _run_single_structure_test(structure_name: String) -> void:
-    """Run test for a single structure"""
+    ## Run test for a single structure
     if _test_instance:
         # Configure test for single structure
         _test_instance.set_test_configuration("single", [structure_name])
         _test_instance.start_test()
 
 func _print_component_status(selection_manager: Node, camera_controller: Node, camera: Camera3D) -> void:
-    """Print status of required components"""
+    ## Print status of required components
     print("\n=== COMPONENT STATUS ===")
     print("Selection Manager: %s" % ("✅ Found" if selection_manager else "❌ Missing"))
     print("Camera Controller: %s" % ("✅ Found" if camera_controller else "❌ Missing"))
@@ -356,7 +358,7 @@ func _print_component_status(selection_manager: Node, camera_controller: Node, c
     print("=======================\n")
 
 func _count_meshes_recursive(node: Node3D) -> int:
-    """Count all mesh instances recursively"""
+    ## Count all mesh instances recursively
     var count = 0
     if node is MeshInstance3D:
         count = 1
@@ -368,7 +370,7 @@ func _count_meshes_recursive(node: Node3D) -> int:
     return count
 
 func _count_collisions_recursive(node: Node3D) -> int:
-    """Count all collision shapes recursively"""
+    ## Count all collision shapes recursively
     var count = 0
     if node is CollisionShape3D:
         count = 1
@@ -380,7 +382,7 @@ func _count_collisions_recursive(node: Node3D) -> int:
     return count
 
 func _find_structure_meshes(node: Node3D, structure_name: String) -> Array[MeshInstance3D]:
-    """Find all meshes for a structure"""
+    ## Find all meshes for a structure
     var meshes: Array[MeshInstance3D] = []
     
     if node is MeshInstance3D:
@@ -397,7 +399,7 @@ func _find_structure_meshes(node: Node3D, structure_name: String) -> Array[MeshI
     return meshes
 
 func _cleanup_test() -> void:
-    """Clean up test instance"""
+    ## Clean up test instance
     if _test_instance:
         _test_instance.queue_free()
         _test_instance = null
@@ -408,7 +410,7 @@ var _perf_validator: Node = null
 var _is_perf_testing: bool = false
 
 func _cmd_performance_test(_args: String = "") -> void:
-    """Run performance validation test"""
+    ## Run performance validation test
     if _is_perf_testing:
         print("[PerfTest] Performance test already running")
         return
@@ -447,7 +449,7 @@ func _cmd_performance_test(_args: String = "") -> void:
     _perf_validator.start_validation_test()
 
 func _cmd_performance_status(_args: String = "") -> void:
-    """Check performance test status"""
+    ## Check performance test status
     if not _is_perf_testing or not _perf_validator:
         print("[PerfTest] No performance test is running")
         return
@@ -456,19 +458,19 @@ func _cmd_performance_status(_args: String = "") -> void:
     print("[PerfTest] Progress: %.1f%%" % progress)
 
 func _on_perf_test_started() -> void:
-    """Handle performance test start"""
+    ## Handle performance test start
     print("\n⚡ PERFORMANCE VALIDATION STARTED ⚡")
     print("Testing enhanced selection system...")
     print("Duration: 10 seconds")
     print("=====================================\n")
 
 func _on_perf_test_progress(percentage: float) -> void:
-    """Handle performance test progress"""
+    ## Handle performance test progress
     if int(percentage) % 20 == 0 and int(percentage) > 0:
         print("[PerfTest] Progress: %.0f%%" % percentage)
 
 func _on_perf_test_completed(results: Dictionary) -> void:
-    """Handle performance test completion"""
+    ## Handle performance test completion
     print("\n✅ PERFORMANCE VALIDATION COMPLETED ✅")
     print("=====================================")
     print("Average FPS: %.1f" % results.get("avg_fps", 0.0))
@@ -495,21 +497,21 @@ func _on_perf_test_completed(results: Dictionary) -> void:
 
 # === SIGNAL HANDLERS ===
 func _on_test_started() -> void:
-    """Handle test start"""
+    ## Handle test start
     print("\n🧪 SELECTION RELIABILITY TEST STARTED 🧪")
     print("Mode: %s" % _test_mode.to_upper())
     print("Time: %s" % Time.get_datetime_string_from_system())
     print("=====================================\n")
 
 func _on_test_progress(completed: int, total: int) -> void:
-    """Handle test progress updates"""
+    ## Handle test progress updates
     # Update progress every 10%
     var percentage = float(completed) / float(total) * 100.0
     if int(percentage) % 10 == 0 and int(percentage) > 0:
         print("Progress: %.0f%% (%d/%d tests)" % [percentage, completed, total])
 
 func _on_test_completed(results: Dictionary) -> void:
-    """Handle test completion"""
+    ## Handle test completion
     print("\n✅ SELECTION RELIABILITY TEST COMPLETED ✅")
     print("=====================================")
     
@@ -534,7 +536,7 @@ func _on_test_completed(results: Dictionary) -> void:
     _cleanup_test()
 
 func _on_structure_test_completed(structure_name: String, results: Dictionary) -> void:
-    """Handle individual structure test completion"""
+    ## Handle individual structure test completion
     print("✓ %s - %.1f%% success rate (%s)" % [
         structure_name,
         results["success_rate"],

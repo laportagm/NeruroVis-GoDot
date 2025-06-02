@@ -29,7 +29,7 @@ func _ready() -> void:
 ## @param service_name: Unique identifier for the service
 ## @param service_instance: The service instance to register
 func register_service(service_name: String, service_instance) -> void:
-	"""Register an educational service in the registry"""
+	## Register an educational service in the registry
 	if _services.has(service_name):
 		push_warning("[ServiceLocator] Replacing existing service: %s" % service_name)
 	
@@ -40,7 +40,7 @@ func register_service(service_name: String, service_instance) -> void:
 ## @param service_name: Unique identifier for the service
 ## @param fallback_instance: The fallback service instance
 func register_fallback(service_name: String, fallback_instance) -> void:
-	"""Register a fallback educational service for graceful degradation"""
+	## Register a fallback educational service for graceful degradation
 	_fallback_services[service_name] = fallback_instance
 	print("[ServiceLocator] Registered fallback for: %s" % service_name)
 
@@ -48,7 +48,7 @@ func register_fallback(service_name: String, fallback_instance) -> void:
 ## @param service_name: Unique identifier for the service
 ## @param factory: Callable that creates and returns the service
 func register_factory(service_name: String, factory: Callable) -> void:
-	"""Register factory for lazy educational service initialization"""
+	## Register factory for lazy educational service initialization
 	_factories[service_name] = factory
 	print("[ServiceLocator] Registered factory for: %s" % service_name)
 
@@ -56,7 +56,7 @@ func register_factory(service_name: String, factory: Callable) -> void:
 ## @param service_name: Name of the service to retrieve
 ## @returns: The service instance or null if not found
 func get_service(service_name: String):
-	"""Get educational service from registry with fallback support"""
+	## Get educational service from registry with fallback support
 	# Check if we already have the service
 	if _services.has(service_name):
 		return _services[service_name]
@@ -80,13 +80,13 @@ func get_service(service_name: String):
 ## @param service_name: Name of the service to check
 ## @returns: true if service exists (including fallbacks), false otherwise
 func has_service(service_name: String) -> bool:
-	"""Check if educational service is available (including fallbacks)"""
+	## Check if educational service is available (including fallbacks)
 	return _services.has(service_name) or _fallback_services.has(service_name) or _factories.has(service_name)
 
 ## Unregister a service
 ## @param service_name: Name of the service to remove
 func unregister_service(service_name: String) -> void:
-	"""Unregister an educational service"""
+	## Unregister an educational service
 	if _services.has(service_name):
 		_services.erase(service_name)
 		print("[ServiceLocator] Unregistered service: %s" % service_name)
@@ -96,7 +96,7 @@ func unregister_service(service_name: String) -> void:
 ## Get all registered service names
 ## @returns: Array of registered service names
 func get_available_services() -> Array:
-	"""Get list of all available educational services"""
+	## Get list of all available educational services
 	var services = []
 	
 	# Add primary services
@@ -118,7 +118,7 @@ func get_available_services() -> Array:
 # === DEBUGGING ===
 ## Print the status of all registered services
 func print_service_status() -> void:
-	"""Print all educational services for debugging"""
+	## Print all educational services for debugging
 	print("\n=== SERVICE LOCATOR STATUS ===")
 	print("Registered services: %d" % _services.size())
 	
@@ -135,7 +135,7 @@ func print_service_status() -> void:
 
 # === PRIVATE METHODS ===
 func _create_service_from_factory(service_name: String):
-	"""Create service instance from registered factory"""
+	## Create service instance from registered factory
 	if not _factories.has(service_name):
 		return null
 	

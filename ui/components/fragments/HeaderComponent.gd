@@ -30,7 +30,7 @@ func _ready() -> void:
 	_apply_header_styling()
 
 func _setup_header_structure() -> void:
-	"""Setup the header layout and components"""
+	## Setup the header layout and components
 	
 	# Configure container
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -52,7 +52,7 @@ func _setup_header_structure() -> void:
 	add_child(actions_container)
 
 func _apply_header_styling() -> void:
-	"""Apply styling to header elements"""
+	## Apply styling to header elements
 	
 	# Add subtle border bottom
 	var style = StyleBoxFlat.new()
@@ -63,7 +63,7 @@ func _apply_header_styling() -> void:
 
 # === PUBLIC API ===
 func configure_header(config: Dictionary) -> void:
-	"""Configure header with settings"""
+	## Configure header with settings
 	header_config = config.duplicate()
 	
 	# Set title
@@ -79,17 +79,17 @@ func configure_header(config: Dictionary) -> void:
 		_setup_action_buttons(config.actions)
 
 func set_title(new_title: String) -> void:
-	"""Set header title"""
+	## Set header title
 	if title_label:
 		title_label.text = new_title
 		title_changed.emit(new_title)
 
 func get_title() -> String:
-	"""Get current title"""
+	## Get current title
 	return title_label.text if title_label else ""
 
 func set_bookmark_state(bookmarked: bool) -> void:
-	"""Update bookmark button state"""
+	## Update bookmark button state
 	bookmark_state = bookmarked
 	
 	if action_buttons.has("bookmark"):
@@ -102,7 +102,7 @@ func set_bookmark_state(bookmarked: bool) -> void:
 		UIThemeManager.apply_enhanced_button_style(bookmark_btn, button_type)
 
 func add_action_button(action: String, icon: String = "", tooltip: String = "") -> Button:
-	"""Add an action button to the header"""
+	## Add an action button to the header
 	var button = Button.new()
 	button.text = icon if icon != "" else _get_default_icon(action)
 	button.custom_minimum_size = Vector2(36, 36)
@@ -130,14 +130,14 @@ func add_action_button(action: String, icon: String = "", tooltip: String = "") 
 	return button
 
 func remove_action_button(action: String) -> void:
-	"""Remove an action button"""
+	## Remove an action button
 	if action_buttons.has(action):
 		var button = action_buttons[action]
 		button.queue_free()
 		action_buttons.erase(action)
 
 func update_responsive_config(config: Dictionary) -> void:
-	"""Update header for responsive layout"""
+	## Update header for responsive layout
 	is_mobile = config.get("is_mobile", false)
 	
 	if is_mobile:
@@ -158,7 +158,7 @@ func update_responsive_config(config: Dictionary) -> void:
 		UIThemeManager.apply_enhanced_typography(title_label, "heading")
 
 func apply_theme(theme: String) -> void:
-	"""Apply theme to header"""
+	## Apply theme to header
 	current_theme = theme
 	
 	# Update title styling
@@ -174,7 +174,7 @@ func apply_theme(theme: String) -> void:
 
 # === PRIVATE METHODS ===
 func _setup_action_buttons(actions: Array) -> void:
-	"""Setup action buttons from configuration"""
+	## Setup action buttons from configuration
 	
 	# Clear existing buttons
 	for button in action_buttons.values():
@@ -193,7 +193,7 @@ func _setup_action_buttons(actions: Array) -> void:
 			)
 
 func _get_default_icon(action: String) -> String:
-	"""Get default icon for action"""
+	## Get default icon for action
 	var icons = {
 		"close": "×",
 		"bookmark": "☆",
@@ -211,7 +211,7 @@ func _get_default_icon(action: String) -> String:
 	return icons.get(action, "•")
 
 func _get_default_tooltip(action: String) -> String:
-	"""Get default tooltip for action"""
+	## Get default tooltip for action
 	var tooltips = {
 		"close": "Close panel",
 		"bookmark": "Bookmark this structure",
@@ -229,7 +229,7 @@ func _get_default_tooltip(action: String) -> String:
 	return tooltips.get(action, "Action: " + action)
 
 func _on_action_button_pressed(action: String) -> void:
-	"""Handle action button press"""
+	## Handle action button press
 	
 	# Handle special actions
 	match action:
@@ -247,7 +247,7 @@ func _on_action_button_pressed(action: String) -> void:
 
 # === ACCESSIBILITY ===
 func _setup_accessibility() -> void:
-	"""Setup accessibility features"""
+	## Setup accessibility features
 	
 	# Set focus order
 	var buttons = action_buttons.values()
@@ -267,7 +267,7 @@ func _setup_accessibility() -> void:
 
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> HeaderComponent:
-	"""Factory method to create configured header"""
+	## Factory method to create configured header
 	var header = HeaderComponent.new()
 	header.configure_header(config)
 	return header

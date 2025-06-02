@@ -86,7 +86,7 @@ func _ready() -> void:
     print("[INIT] NeuroVis ready!")
 
 func _initialize_ui_safety() -> void:
-    """Initialize UI safety framework"""
+    ## Initialize UI safety framework
     print("[INIT] Initializing UI safety framework...")
     
     # Log autoload status for debugging
@@ -118,7 +118,7 @@ func _initialize_ui_safety() -> void:
         print("[INIT] ⚠ UI safety framework has issues - proceeding with caution")
 
 func _initialize_foundation_layer() -> void:
-    """Initialize the new foundation layer systems"""
+    ## Initialize the new foundation layer systems
     print("[INIT] Initializing foundation layer...")
     
     # Load feature flags configuration
@@ -162,7 +162,7 @@ func _initialize_foundation_layer() -> void:
         print("[INIT] - ComponentStateManager disabled (feature flag off)")
 
 func _initialize_ui_components() -> void:
-    """Initialize UI components safely"""
+    ## Initialize UI components safely
     print("[INIT] Initializing UI components...")
     
     # Check if we should use new component system
@@ -179,7 +179,7 @@ func _initialize_ui_components() -> void:
     print("[INIT] - AccessibilityManager temporarily disabled for progressive enablement")
 
 func _initialize_qa_testing() -> void:
-    """Initialize QA testing system for selection reliability"""
+    ## Initialize QA testing system for selection reliability
     print("[INIT] Initializing QA testing system...")
     
     selection_test_runner = SelectionTestRunner.new()
@@ -194,7 +194,7 @@ func _initialize_qa_testing() -> void:
         + "\n  - qa_analyze - Analyze selection system")
 
 func initialize_core_systems() -> void:
-    """Initialize core systems in proper order"""
+    ## Initialize core systems in proper order
     # Validate essential nodes exist
     if not _validate_essential_nodes():
         var error_msg = "[CRITICAL] Essential UI nodes missing - cannot initialize"
@@ -227,7 +227,7 @@ func initialize_core_systems() -> void:
     call_deferred("_check_gemini_setup")
 
 func _validate_essential_nodes() -> bool:
-    """Validate that essential nodes exist"""
+    ## Validate that essential nodes exist
     var valid = true
     
     if not camera:
@@ -249,7 +249,7 @@ func _validate_essential_nodes() -> bool:
     return valid
 
 func _setup_selection_manager() -> void:
-    """Setup multi-structure selection manager"""
+    ## Setup multi-structure selection manager
     selection_manager = MultiStructureSelectionManagerScript.new()
     add_child(selection_manager)
     
@@ -273,7 +273,7 @@ func _setup_selection_manager() -> void:
     print("[INIT] Selection manager ready")
 
 func _setup_camera_controller() -> void:
-    """Setup camera controller"""
+    ## Setup camera controller
     camera_controller = CameraBehaviorControllerScript.new()
     add_child(camera_controller)
     camera_controller.initialize(camera, brain_model_parent)
@@ -281,7 +281,7 @@ func _setup_camera_controller() -> void:
     print("[INIT] Camera controller ready")
 
 func _setup_model_coordinator() -> void:
-    """Setup model coordinator"""
+    ## Setup model coordinator
     model_coordinator = ModelCoordinatorScene.new()
     add_child(model_coordinator)
     model_coordinator.set_model_parent(brain_model_parent)
@@ -293,7 +293,7 @@ func _setup_model_coordinator() -> void:
     print("[INIT] Model coordinator ready")
 
 func _setup_enhanced_ui() -> void:
-    """Setup enhanced UI layer with new component system"""
+    ## Setup enhanced UI layer with new component system
     # Get the UI layer
     var ui_layer = get_node_or_null("UI_Layer")
     if not ui_layer or not ui_layer is CanvasLayer:
@@ -349,7 +349,7 @@ func _setup_enhanced_ui() -> void:
     print("[ENHANCED_UI] New UI component system setup complete")
 
 func _setup_ui_connections() -> void:
-    """Setup UI connections and styling"""
+    ## Setup UI connections and styling
     # Setup object label
     object_name_label.text = "Selected: None"
     
@@ -364,7 +364,7 @@ func _setup_ui_connections() -> void:
     print("[INIT] UI connections complete")
 
 func _connect_modular_panel_signals() -> void:
-    """Connect signals for the new modular info panel"""
+    ## Connect signals for the new modular info panel
     if not info_panel:
         return
     
@@ -385,11 +385,11 @@ func _connect_modular_panel_signals() -> void:
 
 # Legacy panel connection method (for backward compatibility)
 func _connect_legacy_panel_signals() -> void:
-    """Connect signals for legacy info panels"""
+    ## Connect signals for legacy info panels
     _connect_modular_panel_signals()
 
 func _apply_modern_theme() -> void:
-    """Apply modern glass morphism theme using UIThemeManager"""
+    ## Apply modern glass morphism theme using UIThemeManager
     var theme_manager = load("res://ui/panels/UIThemeManager.gd")
     
     # Apply glass styling to object label
@@ -546,7 +546,7 @@ func _display_structure_info(structure_name: String) -> void:
         _display_with_legacy_system(structure_name, structure_data)
 
 func _display_with_new_component_system(structure_name: String, structure_data: Dictionary) -> void:
-    """Display structure info using new component registry system"""
+    ## Display structure info using new component registry system
     print("[NEW_UI] Using new component system for: " + structure_name)
     
     # Get UI layer
@@ -622,7 +622,7 @@ func _display_with_new_component_system(structure_name: String, structure_data: 
     print("[NEW_UI] ✓ Info panel created through ComponentRegistry for: " + display_name)
 
 func _display_with_legacy_system(structure_name: String, structure_data: Dictionary) -> void:
-    """Display structure info using legacy system"""
+    ## Display structure info using legacy system
     print("[LEGACY_UI] Using legacy system for: " + structure_name)
     
     # Get UI layer
@@ -678,7 +678,7 @@ func _display_with_legacy_system(structure_name: String, structure_data: Diction
     print("[LEGACY_UI] ✓ Info panel created and displayed for: " + display_name)
 
 func _save_panel_state(component_id: String, panel: Control) -> void:
-    """Save panel state for persistence"""
+    ## Save panel state for persistence
     if not panel:
         return
     
@@ -699,7 +699,7 @@ func _save_panel_state(component_id: String, panel: Control) -> void:
     ComponentStateManager.save_component_state(component_id, state)
 
 func _restore_panel_state(component_id: String, panel: Control) -> void:
-    """Restore panel state from persistence"""
+    ## Restore panel state from persistence
     if not panel:
         return
     
@@ -720,7 +720,7 @@ func _restore_panel_state(component_id: String, panel: Control) -> void:
             panel.modulate = state.modulate
 
 func _connect_panel_signals(panel: Control) -> void:
-    """Connect panel signals consistently"""
+    ## Connect panel signals consistently
     if not panel:
         return
     
@@ -733,7 +733,7 @@ func _connect_panel_signals(panel: Control) -> void:
             panel.closed.connect(_on_info_panel_closed)
 
 func _find_structure_id(mesh_name: String) -> String:
-    """Find structure ID by mesh name (legacy method for backward compatibility)"""
+    ## Find structure ID by mesh name (legacy method for backward compatibility)
     if KnowledgeService and KnowledgeService.is_initialized():
         # Use new KnowledgeService for better search
         var search_results = KnowledgeService.search_structures(mesh_name)
@@ -763,7 +763,7 @@ func _find_structure_id(mesh_name: String) -> String:
 
 # Refresh panel with new theme
 func refresh_info_panel() -> void:
-    """Recreate the info panel with the current theme if one is visible"""
+    ## Recreate the info panel with the current theme if one is visible
     if info_panel and info_panel.visible and not last_selected_structure.is_empty():
         print("[THEME] Refreshing panel for: " + last_selected_structure)
         # Let the old panel finish freeing before creating new one
@@ -812,7 +812,7 @@ func _on_panel_action_triggered(action: String, data: Dictionary) -> void:
             print("[MODULAR_UI] Unknown action: %s" % action)
 
 func _on_theme_toggle_pressed() -> void:
-    """Handle theme toggle button press"""
+    ## Handle theme toggle button press
     var theme_manager = preload("res://ui/panels/UIThemeManager.gd")
     
     # Toggle between enhanced and minimal themes
@@ -826,7 +826,7 @@ func _on_theme_toggle_pressed() -> void:
     refresh_info_panel()
 
 func _on_ai_toggle_pressed() -> void:
-    """Handle AI assistant toggle button press"""
+    ## Handle AI assistant toggle button press
     #if ai_assistant_panel and ai_assistant_panel.visible:
         # Hide AI assistant
         #ai_assistant_panel.animate_hide()
@@ -836,22 +836,22 @@ func _on_ai_toggle_pressed() -> void:
 
 # New action handlers for modular panel
 func _show_detailed_info(structure_id: String) -> void:
-    """Show detailed information for a structure"""
+    ## Show detailed information for a structure
     print("[ACTION] Showing detailed info for: %s" % structure_id)
     # TODO: Create detailed view or expand current panel
 
 func _highlight_related_structure(structure_id: String) -> void:
-    """Highlight a related structure in the 3D view"""
+    ## Highlight a related structure in the 3D view
     print("[ACTION] Highlighting related structure: %s" % structure_id)
     # TODO: Use selection manager to highlight structure
 
 func _toggle_bookmark(structure_id: String) -> void:
-    """Toggle bookmark status for a structure"""
+    ## Toggle bookmark status for a structure
     print("[ACTION] Toggling bookmark for: %s" % structure_id)
     # TODO: Implement bookmark persistence
 
 func _perform_structure_search(query: String) -> void:
-    """Perform search across all brain structures"""
+    ## Perform search across all brain structures
     print("[ACTION] Searching for: %s" % query)
     
     if KnowledgeService and KnowledgeService.is_initialized():
@@ -882,7 +882,7 @@ func _on_related_structure_selected(structure_id: String) -> void:
 
 # === AI ASSISTANT METHODS ===
 func _show_ai_assistant() -> void:
-    """Show the AI assistant panel"""
+    ## Show the AI assistant panel
     var ui_layer = get_node_or_null("UI_Layer")
     if not ui_layer or not ui_layer is CanvasLayer:
         push_error("[AI] UI_Layer not found or wrong type!")
@@ -919,7 +919,7 @@ func _show_ai_assistant() -> void:
     print("[AI] AI Assistant panel created and displayed")
 
 func _position_ai_assistant_panel() -> void:
-    """Position the AI assistant panel responsively"""
+    ## Position the AI assistant panel responsively
     #if not ai_assistant_panel:
         #return
     
@@ -937,7 +937,7 @@ func _position_ai_assistant_panel() -> void:
     pass
 
 func _connect_ai_panel_signals() -> void:
-    """Connect AI assistant panel signals"""
+    ## Connect AI assistant panel signals
     #if not ai_assistant_panel:
         #return
     
@@ -955,19 +955,19 @@ func _connect_ai_panel_signals() -> void:
     pass
 
 func _on_ai_panel_closed() -> void:
-    """Handle AI panel close"""
+    ## Handle AI panel close
     #if ai_assistant_panel:
         #ai_assistant_panel.queue_free()
         #ai_assistant_panel = null
     print("[AI] AI Assistant panel closed")
 
 func _on_ai_question_asked(question: String) -> void:
-    """Handle AI question asked"""
+    ## Handle AI question asked
     print("[AI] Question asked: %s" % question)
     # Questions are handled automatically by the AI service
 
 func _on_ai_feedback_given(rating: int, comment: String) -> void:
-    """Handle AI feedback"""
+    ## Handle AI feedback
     print("[AI] Feedback received - Rating: %d, Comment: %s" % [rating, comment])
     # TODO: Store feedback for AI service improvement
 
@@ -991,7 +991,7 @@ func _debug_test_selection() -> void:
 
 # === FOUNDATION LAYER DEBUG COMMANDS ===
 func _register_foundation_debug_commands() -> void:
-    """Register debug commands for foundation layer"""
+    ## Register debug commands for foundation layer
     if not OS.is_debug_build() or not DebugCmd:
         return
     
@@ -1131,7 +1131,7 @@ func _debug_migration_test() -> void:
     print("Migration test completed - check console output for system usage")
 
 func _debug_test_new_components() -> void:
-    """Test the new component system Phase 2 implementation"""
+    ## Test the new component system Phase 2 implementation
     print("\n=== TESTING NEW COMPONENT SYSTEM (PHASE 2) ===")
     
     # Test InfoPanel creation with new system
@@ -1184,7 +1184,7 @@ func _debug_test_new_components() -> void:
     print("=== NEW COMPONENT TESTS COMPLETED ===\n")
 
 func _test_fragment_components() -> void:
-    """Test individual fragment components"""
+    ## Test individual fragment components
     
     # Test header fragment
     var header_config = {
@@ -1240,7 +1240,7 @@ func _test_fragment_components() -> void:
         print("✗ Section fragment failed")
 
 func _debug_test_phase3() -> void:
-    """Test Phase 3: StyleEngine and AdvancedInteractionSystem"""
+    ## Test Phase 3: StyleEngine and AdvancedInteractionSystem
     print("\n=== TESTING PHASE 3: STYLE ENGINE & ADVANCED INTERACTIONS ===")
     
     # Enable Phase 3 features for testing
@@ -1268,7 +1268,7 @@ func _debug_test_phase3() -> void:
 
 # === MULTI-SELECTION HANDLERS ===
 func _on_multi_selection_changed(selections: Array) -> void:
-    """Handle changes to multi-selection state"""
+    ## Handle changes to multi-selection state
     # Update UI based on number of selections
     if selections.size() == 0:
         # No selection - hide panels
@@ -1301,14 +1301,14 @@ func _on_multi_selection_changed(selections: Array) -> void:
     print("[MultiSelect] Selection changed: %d structures" % selections.size())
 
 func _on_comparison_mode_entered() -> void:
-    """Handle entering comparison mode"""
+    ## Handle entering comparison mode
     print("[MultiSelect] Entered comparison mode")
     
     # Show comparison mode indicator (optional)
     # Could add visual feedback here
 
 func _on_comparison_mode_exited() -> void:
-    """Handle exiting comparison mode"""
+    ## Handle exiting comparison mode
     print("[MultiSelect] Exited comparison mode")
     
     # Hide comparative panel
@@ -1316,7 +1316,7 @@ func _on_comparison_mode_exited() -> void:
         comparative_panel.hide()
 
 func _on_selection_limit_reached() -> void:
-    """Handle when selection limit is reached"""
+    ## Handle when selection limit is reached
     print("[MultiSelect] Selection limit reached!")
     
     # Show user feedback
@@ -1340,7 +1340,7 @@ func _on_selection_limit_reached() -> void:
         notification.queue_free()
 
 func _show_comparative_panel(selections: Array) -> void:
-    """Show the comparative information panel"""
+    ## Show the comparative information panel
     var ui_layer = get_node_or_null("UI_Layer")
     if not ui_layer:
         push_error("[MultiSelect] UI_Layer not found!")
@@ -1367,7 +1367,7 @@ func _show_comparative_panel(selections: Array) -> void:
     comparative_panel.show()
 
 func _on_comparative_structure_focused(structure_name: String) -> void:
-    """Handle focus request from comparative panel"""
+    ## Handle focus request from comparative panel
     # Find the mesh for this structure
     var meshes = _get_all_brain_meshes()
     for mesh in meshes:
@@ -1378,21 +1378,21 @@ func _on_comparative_structure_focused(structure_name: String) -> void:
             break
 
 func _get_all_brain_meshes() -> Array:
-    """Get all brain mesh instances from the brain model parent"""
+    ## Get all brain mesh instances from the brain model parent
     var meshes: Array = []
     if brain_model_parent:
         _collect_meshes_recursive(brain_model_parent, meshes)
     return meshes
 
 func _collect_meshes_recursive(node: Node, meshes: Array) -> void:
-    """Recursively collect all MeshInstance3D nodes"""
+    ## Recursively collect all MeshInstance3D nodes
     if node is MeshInstance3D:
         meshes.append(node)
     for child in node.get_children():
         _collect_meshes_recursive(child, meshes)
 
 func _check_gemini_setup() -> void:
-    """Check if Gemini needs setup on first launch"""
+    ## Check if Gemini needs setup on first launch
     if _gemini_setup_shown:
         return
     
@@ -1412,7 +1412,7 @@ func _check_gemini_setup() -> void:
         print("[Gemini] Setup not needed, already configured")
 
 func _show_gemini_setup_dialog() -> void:
-    """Show the Gemini setup wizard"""
+    ## Show the Gemini setup wizard
     var ui_layer = get_node_or_null("UI_Layer")
     if not ui_layer:
         ui_layer = self  # Fallback to adding to self
@@ -1453,7 +1453,7 @@ func _show_gemini_setup_dialog() -> void:
     print("[Gemini] Setup dialog shown")
 
 func _on_gemini_setup_completed(dialog: Control) -> void:
-    """Handle successful Gemini setup"""
+    ## Handle successful Gemini setup
     print("[Gemini] Setup completed successfully")
     dialog.queue_free()
     
@@ -1463,6 +1463,6 @@ func _on_gemini_setup_completed(dialog: Control) -> void:
         ai_service.set_provider(AIAssistantService.AIProvider.GEMINI_USER)
 
 func _on_gemini_setup_cancelled(dialog: Control) -> void:
-    """Handle cancelled Gemini setup"""
+    ## Handle cancelled Gemini setup
     print("[Gemini] Setup cancelled")
     dialog.queue_free()

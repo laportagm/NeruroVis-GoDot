@@ -165,7 +165,7 @@ var _preset_data: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the medical lighting system"""
+	## Initialize the medical lighting system
 	_create_lighting_components()
 	_create_environment()
 	_initialize_presets()
@@ -178,7 +178,7 @@ func _ready() -> void:
 ## @param preset: LightingPreset to apply
 ## @returns: bool indicating success
 func apply_preset(preset: int) -> bool:
-	"""Apply a predefined lighting preset"""
+	## Apply a predefined lighting preset
 	if preset < 0 or preset > LightingPreset.CUSTOM:
 		push_warning("[MedicalLighting] Invalid preset: " + str(preset))
 		return false
@@ -200,7 +200,7 @@ func apply_preset(preset: int) -> bool:
 ## @returns: bool indicating success
 func create_custom_preset(key_color: Color, key_energy: float, fill_color: Color, fill_energy: float,
 		rim_color: Color, rim_energy: float, ambient_color: Color, ambient_energy: float) -> bool:
-	"""Create a custom lighting preset"""
+	## Create a custom lighting preset
 	# Store custom preset settings
 	var custom_preset = {
 		"key_light_color": key_color,
@@ -225,7 +225,7 @@ func create_custom_preset(key_color: Color, key_energy: float, fill_color: Color
 ## @param transition_time: float time for transition in seconds (0 for instant)
 ## @returns: bool indicating success
 func focus_on_position(position: Vector3, transition_time: float = 0.0) -> bool:
-	"""Adjust lighting to focus on a specific position"""
+	## Adjust lighting to focus on a specific position
 	if not _initialized:
 		return false
 	
@@ -263,7 +263,7 @@ func focus_on_position(position: Vector3, transition_time: float = 0.0) -> bool:
 ## @param intensity_multiplier: float to multiply all light energies by
 ## @returns: bool indicating success
 func adjust_intensity(intensity_multiplier: float) -> bool:
-	"""Adjust the intensity of all lights by a multiplier"""
+	## Adjust the intensity of all lights by a multiplier
 	if not _initialized:
 		return false
 	
@@ -281,7 +281,7 @@ func adjust_intensity(intensity_multiplier: float) -> bool:
 ## Save current lighting setup as a custom preset
 ## @returns: bool indicating success
 func save_current_as_custom() -> bool:
-	"""Save the current lighting setup as a custom preset"""
+	## Save the current lighting setup as a custom preset
 	return create_custom_preset(
 		key_light_color,
 		key_light_energy,
@@ -296,7 +296,7 @@ func save_current_as_custom() -> bool:
 ## Reset lighting to default for current preset
 ## @returns: bool indicating success
 func reset_to_preset_default() -> bool:
-	"""Reset lighting to the default values for the current preset"""
+	## Reset lighting to the default values for the current preset
 	if not _preset_data.has(active_preset):
 		return false
 	
@@ -305,7 +305,7 @@ func reset_to_preset_default() -> bool:
 
 # === PRIVATE METHODS ===
 func _create_lighting_components() -> void:
-	"""Create the three-point lighting components"""
+	## Create the three-point lighting components
 	# Key Light (main directional light)
 	_key_light = DirectionalLight3D.new()
 	_key_light.name = "KeyLight"
@@ -343,7 +343,7 @@ func _create_lighting_components() -> void:
 	add_child(_rim_light)
 
 func _create_environment() -> void:
-	"""Create the environment settings"""
+	## Create the environment settings
 	_environment = Environment.new()
 	
 	# Basic settings
@@ -387,7 +387,7 @@ func _create_environment() -> void:
 	add_child(_world_environment)
 
 func _initialize_presets() -> void:
-	"""Initialize the lighting presets"""
+	## Initialize the lighting presets
 	# Educational preset (default)
 	_preset_data[LightingPreset.EDUCATIONAL] = {
 		"key_light_color": Color(1.0, 0.96, 0.9),
@@ -467,7 +467,7 @@ func _initialize_presets() -> void:
 	_preset_data[LightingPreset.CUSTOM] = _preset_data[LightingPreset.EDUCATIONAL].duplicate()
 
 func _apply_preset(preset: int) -> void:
-	"""Apply a preset to the lighting setup"""
+	## Apply a preset to the lighting setup
 	if not _preset_data.has(preset):
 		push_warning("[MedicalLighting] Preset not found: " + str(preset))
 		return
@@ -497,7 +497,7 @@ func _apply_preset(preset: int) -> void:
 	print("[MedicalLighting] Applied preset: " + _get_preset_name(preset))
 
 func _update_environment() -> void:
-	"""Update environment settings based on current properties"""
+	## Update environment settings based on current properties
 	if not _environment:
 		return
 	
@@ -518,13 +518,13 @@ func _update_environment() -> void:
 	_environment.ambient_light_energy = ambient_light_energy
 
 func _animate_property(object: Object, property: String, start_value, end_value, duration: float) -> void:
-	"""Animate a property over time"""
+	## Animate a property over time
 	var tween = create_tween()
 	tween.tween_property(object, property, end_value, duration)
 	tween.play()
 
 func _get_preset_name(preset: int) -> String:
-	"""Get the name of a preset from its enum value"""
+	## Get the name of a preset from its enum value
 	match preset:
 		LightingPreset.EDUCATIONAL:
 			return "Educational"

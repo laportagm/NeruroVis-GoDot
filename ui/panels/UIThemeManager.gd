@@ -464,7 +464,7 @@ static func get_animation_duration(duration_name: String) -> float:
 # Methods that may be called from other scripts
 
 static func apply_search_field_styling(line_edit: LineEdit, placeholder: String = "") -> void:
-	"""Apply enhanced styling to search/input fields"""
+	## Apply enhanced styling to search/input fields
 	if not line_edit:
 		return
 	
@@ -495,7 +495,7 @@ static func apply_search_field_styling(line_edit: LineEdit, placeholder: String 
 		line_edit.placeholder_text = placeholder
 
 static func apply_progress_bar_styling(progress_bar: ProgressBar, color: Color = ACCENT_BLUE) -> void:
-	"""Apply enhanced styling to progress bars"""
+	## Apply enhanced styling to progress bars
 	if not progress_bar:
 		return
 	
@@ -519,7 +519,7 @@ static func apply_progress_bar_styling(progress_bar: ProgressBar, color: Color =
 	progress_bar.add_theme_stylebox_override("fill", fill_style)
 
 static func create_educational_card_style(style_type: String = "default") -> StyleBoxFlat:
-	"""Create educational card styles for different content types"""
+	## Create educational card styles for different content types
 	var style = create_enhanced_glass_style()
 	var colors = get_current_colors()
 	
@@ -540,7 +540,7 @@ static func create_educational_card_style(style_type: String = "default") -> Sty
 	return style
 
 static func apply_rich_text_styling(rich_text: RichTextLabel, font_size: int, _style_type: String = "default") -> void:
-	"""Apply enhanced styling to RichTextLabel controls"""
+	## Apply enhanced styling to RichTextLabel controls
 	if not rich_text:
 		return
 	
@@ -553,7 +553,7 @@ static func apply_rich_text_styling(rich_text: RichTextLabel, font_size: int, _s
 	rich_text.fit_content = true
 
 static func animate_button_press(button: Button, color: Color = ACCENT_BLUE) -> void:
-	"""Animate button press with enhanced effects"""
+	## Animate button press with enhanced effects
 	if not button:
 		return
 	
@@ -569,7 +569,7 @@ static func animate_button_press(button: Button, color: Color = ACCENT_BLUE) -> 
 	tween.tween_property(button, "modulate", Color.WHITE, 0.1).set_delay(0.1)
 
 static func animate_hover_glow(control: Control, color: Color = ACCENT_BLUE, intensity: float = 0.2) -> void:
-	"""Add hover glow effect to controls"""
+	## Add hover glow effect to controls
 	if not control:
 		return
 	
@@ -579,7 +579,7 @@ static func animate_hover_glow(control: Control, color: Color = ACCENT_BLUE, int
 	tween.tween_property(control, "modulate", glow_color, ANIMATION.hover_duration)
 
 static func animate_hover_glow_off(control: Control) -> void:
-	"""Remove hover glow effect"""
+	## Remove hover glow effect
 	if not control:
 		return
 	
@@ -587,7 +587,7 @@ static func animate_hover_glow_off(control: Control) -> void:
 	tween.tween_property(control, "modulate", Color.WHITE, ANIMATION.hover_duration)
 
 static func apply_theme_to_control(control: Control) -> void:
-	"""Apply current theme to any control"""
+	## Apply current theme to any control
 	if not control:
 		return
 	
@@ -606,7 +606,7 @@ static func apply_theme_to_control(control: Control) -> void:
 	control.theme = theme
 
 static func create_styled_label(text: String, font_size_key: String = "body") -> Label:
-	"""Create a properly styled label with current theme"""
+	## Create a properly styled label with current theme
 	var label = Label.new()
 	label.text = text
 	
@@ -618,7 +618,7 @@ static func create_styled_label(text: String, font_size_key: String = "body") ->
 
 # === CACHE MANAGEMENT ===
 static func _add_to_cache(key: String, style: StyleBoxFlat) -> void:
-	"""Add a style to the cache with size management"""
+	## Add a style to the cache with size management
 	if _style_cache.size() >= _max_cache_size:
 		# Remove oldest entry (first key)
 		var keys = _style_cache.keys()
@@ -628,12 +628,12 @@ static func _add_to_cache(key: String, style: StyleBoxFlat) -> void:
 	_style_cache[key] = style
 
 static func clear_style_cache() -> void:
-	"""Clear all cached styles"""
+	## Clear all cached styles
 	_style_cache.clear()
 	print("[UIThemeManager] Style cache cleared")
 
 static func set_cache_enabled(enabled: bool) -> void:
-	"""Enable or disable style caching"""
+	## Enable or disable style caching
 	_cache_enabled = enabled
 	if not enabled:
 		clear_style_cache()

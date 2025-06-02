@@ -62,14 +62,14 @@ func _ready() -> void:
     _setup_animation_system()
 
 func initialize(model_parent: Node3D, cam: Camera3D, sel_manager: Node) -> void:
-    """Initialize with required references"""
+    ## Initialize with required references
     brain_model_parent = model_parent
     camera = cam
     selection_manager = sel_manager
 
 # === SHADER LOADING ===
 func _load_shaders() -> void:
-    """Load custom shaders for advanced effects"""
+    ## Load custom shaders for advanced effects
     # Cross-section shader
     slice_shader = load("res://shaders/cross_section.gdshader")
     
@@ -81,7 +81,7 @@ func _load_shaders() -> void:
 
 # === CROSS-SECTIONAL VIEWS ===
 func _create_slice_planes() -> void:
-    """Create invisible slice planes for each axis"""
+    ## Create invisible slice planes for each axis
     for axis in SliceAxis.values():
         var plane = MeshInstance3D.new()
         plane.mesh = PlaneMesh.new()
@@ -103,7 +103,7 @@ func _create_slice_planes() -> void:
         slice_planes[axis] = plane
 
 func enable_cross_section(axis: SliceAxis, position: float = 0.0) -> void:
-    """Enable cross-sectional view for specified axis"""
+    ## Enable cross-sectional view for specified axis
     current_view_mode = ViewMode.CROSS_SECTION
     
     # Show slice plane
@@ -125,7 +125,7 @@ func enable_cross_section(axis: SliceAxis, position: float = 0.0) -> void:
     slice_position_changed.emit(_get_axis_name(axis), position)
 
 func update_slice_position(axis: SliceAxis, position: float) -> void:
-    """Update position of slice plane"""
+    ## Update position of slice plane
     if current_view_mode != ViewMode.CROSS_SECTION:
         return
     
@@ -145,7 +145,7 @@ func update_slice_position(axis: SliceAxis, position: float) -> void:
     slice_position_changed.emit(_get_axis_name(axis), position)
 
 func disable_cross_section() -> void:
-    """Disable cross-sectional view"""
+    ## Disable cross-sectional view
     for plane in slice_planes.values():
         plane.visible = false
     
@@ -155,7 +155,7 @@ func disable_cross_section() -> void:
     current_view_mode = ViewMode.NORMAL
 
 func _apply_slice_shader(axis: SliceAxis, position: float) -> void:
-    """Apply slicing shader to all brain models"""
+    ## Apply slicing shader to all brain models
     for model in brain_model_parent.get_children():
         if model is MeshInstance3D:
             var mat = ShaderMaterial.new()
@@ -169,13 +169,13 @@ func _apply_slice_shader(axis: SliceAxis, position: float) -> void:
             model.material_override = mat
 
 func _update_slice_shader(axis: SliceAxis, position: float) -> void:
-    """Update slice shader parameters"""
+    ## Update slice shader parameters
     for model in brain_model_parent.get_children():
         if model is MeshInstance3D and model.material_override is ShaderMaterial:
             model.material_override.set_shader_parameter("slice_position", position)
 
 func _remove_slice_shader() -> void:
-    """Remove slice shader and restore original materials"""
+    ## Remove slice shader and restore original materials
     for model in brain_model_parent.get_children():
         if model is MeshInstance3D:
             var original_mat = model.get_meta("original_material", null)
@@ -185,11 +185,11 @@ func _remove_slice_shader() -> void:
 
 # === ANIMATION SYSTEM ===
 func _setup_animation_system() -> void:
-    """Setup animation players and timers"""
+    ## Setup animation players and timers
     pass  # Animations are created dynamically
 
 func play_structure_highlight_animation(structure_id: String) -> void:
-    """Animate structure highlighting"""
+    ## Animate structure highlighting
     if not enable_animations:
         return
     
@@ -219,7 +219,7 @@ func play_structure_highlight_animation(structure_id: String) -> void:
     )
 
 func play_pathway_animation(pathway_id: String, structures: Array) -> void:
-    """Animate neural pathway flow"""
+    ## Animate neural pathway flow
     if not enable_animations or structures.size() < 2:
         return
     
@@ -252,7 +252,7 @@ func play_pathway_animation(pathway_id: String, structures: Array) -> void:
     )
 
 func play_exploded_view_animation(expand: bool = true) -> void:
-    """Animate exploded view of brain structures"""
+    ## Animate exploded view of brain structures
     if not enable_animations:
         return
     
@@ -285,7 +285,7 @@ func play_exploded_view_animation(expand: bool = true) -> void:
     )
 
 func play_rotation_animation(duration: float = 10.0) -> void:
-    """Animate full rotation of brain model"""
+    ## Animate full rotation of brain model
     if not enable_animations:
         return
     
@@ -299,7 +299,7 @@ func play_rotation_animation(duration: float = 10.0) -> void:
     active_animations["rotation"] = tween
 
 func stop_rotation_animation() -> void:
-    """Stop rotation animation"""
+    ## Stop rotation animation
     if "rotation" in active_animations:
         active_animations["rotation"].kill()
         active_animations.erase("rotation")
@@ -307,7 +307,7 @@ func stop_rotation_animation() -> void:
 
 # === TRANSPARENCY MODE ===
 func set_transparency_mode(enabled: bool, opacity: float = 0.3) -> void:
-    """Enable/disable transparency mode"""
+    ## Enable/disable transparency mode
     current_view_mode = ViewMode.TRANSPARENT if enabled else ViewMode.NORMAL
     
     for model in brain_model_parent.get_children():
@@ -330,7 +330,7 @@ func set_transparency_mode(enabled: bool, opacity: float = 0.3) -> void:
 
 # === FUNCTIONAL COLORING ===
 func apply_functional_coloring(color_map: Dictionary) -> void:
-    """Apply colors based on functional regions"""
+    ## Apply colors based on functional regions
     current_view_mode = ViewMode.FUNCTIONAL
     
     for structure_id in color_map:
@@ -348,7 +348,7 @@ func apply_functional_coloring(color_map: Dictionary) -> void:
             structure.material_override = mat
 
 func clear_functional_coloring() -> void:
-    """Clear functional coloring"""
+    ## Clear functional coloring
     for model in brain_model_parent.get_children():
         if model is MeshInstance3D:
             var original_mat = model.get_meta("original_material", null)
@@ -360,7 +360,7 @@ func clear_functional_coloring() -> void:
 
 # === PATHWAY VISUALIZATION ===
 func visualize_neural_pathway(pathway_data: Dictionary) -> void:
-    """Visualize a neural pathway"""
+    ## Visualize a neural pathway
     current_view_mode = ViewMode.PATHWAY
     
     var structures = pathway_data.get("structures", [])
@@ -381,7 +381,7 @@ func visualize_neural_pathway(pathway_data: Dictionary) -> void:
         pathway_visualizations.append(line)
 
 func clear_pathway_visualization() -> void:
-    """Clear all pathway visualizations"""
+    ## Clear all pathway visualizations
     # Remove highlighted structures
     for structure_id in highlighted_structures:
         highlight_structure(structure_id, false)
@@ -395,7 +395,7 @@ func clear_pathway_visualization() -> void:
 
 # === STRUCTURE HIGHLIGHTING ===
 func highlight_structure(structure_id: String, highlight: bool) -> void:
-    """Highlight or unhighlight a structure"""
+    ## Highlight or unhighlight a structure
     var structure = _find_structure_mesh(structure_id)
     if not structure:
         return
@@ -424,21 +424,21 @@ func highlight_structure(structure_id: String, highlight: bool) -> void:
 
 # === UTILITY METHODS ===
 func _find_structure_mesh(structure_id: String) -> MeshInstance3D:
-    """Find mesh instance for structure ID"""
+    ## Find mesh instance for structure ID
     for model in brain_model_parent.get_children():
         if model is MeshInstance3D and model.name.to_lower().contains(structure_id.to_lower()):
             return model
     return null
 
 func _get_structure_position(structure_id: String) -> Vector3:
-    """Get world position of structure"""
+    ## Get world position of structure
     var structure = _find_structure_mesh(structure_id)
     if structure:
         return structure.global_position
     return Vector3.ZERO
 
 func _create_pathway_visualization(structures: Array) -> Node3D:
-    """Create visual representation of pathway"""
+    ## Create visual representation of pathway
     var pathway_node = Node3D.new()
     pathway_node.name = "Pathway_Visualization"
     
@@ -455,7 +455,7 @@ func _create_pathway_visualization(structures: Array) -> Node3D:
     return pathway_node
 
 func _create_connection_line(from_id: String, to_id: String, strength: float) -> Node3D:
-    """Create a visual connection line between structures"""
+    ## Create a visual connection line between structures
     var line_node = Node3D.new()
     
     var from_pos = _get_structure_position(from_id)
@@ -483,7 +483,7 @@ func _create_connection_line(from_id: String, to_id: String, strength: float) ->
     return line_node
 
 func _create_signal_particle() -> GPUParticles3D:
-    """Create particle effect for signal flow"""
+    ## Create particle effect for signal flow
     var particles = GPUParticles3D.new()
     particles.amount = 10
     particles.lifetime = 1.0
@@ -508,7 +508,7 @@ func _create_signal_particle() -> GPUParticles3D:
     return particles
 
 func _get_axis_name(axis: SliceAxis) -> String:
-    """Get string name for axis"""
+    ## Get string name for axis
     match axis:
         SliceAxis.SAGITTAL: return "sagittal"
         SliceAxis.CORONAL: return "coronal"
@@ -517,11 +517,11 @@ func _get_axis_name(axis: SliceAxis) -> String:
 
 # === PUBLIC API ===
 func get_current_view_mode() -> ViewMode:
-    """Get current view mode"""
+    ## Get current view mode
     return current_view_mode
 
 func reset_view() -> void:
-    """Reset to normal view"""
+    ## Reset to normal view
     disable_cross_section()
     clear_pathway_visualization()
     clear_functional_coloring()
@@ -537,7 +537,7 @@ func reset_view() -> void:
     view_mode_changed.emit("normal")
 
 func take_screenshot(filename: String = "") -> void:
-    """Take screenshot of current view"""
+    ## Take screenshot of current view
     if filename.is_empty():
         filename = "neurovis_" + Time.get_datetime_string_from_system() + ".png"
     

@@ -35,7 +35,7 @@ static func _ensure_initialized() -> void:
 
 # === PUBLIC API ===
 static func save_component_state(component_id: String, state_data: Dictionary, persist: bool = false) -> void:
-	"""Save component state with optional persistence"""
+	## Save component state with optional persistence
 	_ensure_initialized()
 	
 	if not FeatureFlags.is_enabled(FeatureFlags.UI_STATE_PERSISTENCE):
@@ -65,7 +65,7 @@ static func save_component_state(component_id: String, state_data: Dictionary, p
 		print("[StateManager] Saved state for: %s (persist: %s)" % [component_id, persist])
 
 static func restore_component_state(component_id: String) -> Dictionary:
-	"""Restore component state if available"""
+	## Restore component state if available
 	_ensure_initialized()
 	
 	if not FeatureFlags.is_enabled(FeatureFlags.UI_STATE_PERSISTENCE):
@@ -94,7 +94,7 @@ static func restore_component_state(component_id: String) -> Dictionary:
 	return restored_data
 
 static func remove_component_state(component_id: String) -> void:
-	"""Remove component state"""
+	## Remove component state
 	_component_states.erase(component_id)
 	_session_states.erase(component_id)
 	
@@ -108,12 +108,12 @@ static func remove_component_state(component_id: String) -> void:
 		print("[StateManager] Removed state for: %s" % component_id)
 
 static func has_component_state(component_id: String) -> bool:
-	"""Check if component has saved state"""
+	## Check if component has saved state
 	_ensure_initialized()
 	return _component_states.has(component_id)
 
 static func get_state_age(component_id: String) -> float:
-	"""Get age of component state in seconds"""
+	## Get age of component state in seconds
 	var state_entry = _component_states.get(component_id, {})
 	if state_entry.is_empty():
 		return -1.0
@@ -123,12 +123,12 @@ static func get_state_age(component_id: String) -> float:
 
 # === BULK OPERATIONS ===
 static func save_multiple_states(states: Dictionary, persist: bool = false) -> void:
-	"""Save multiple component states at once"""
+	## Save multiple component states at once
 	for component_id in states:
 		save_component_state(component_id, states[component_id], persist)
 
 static func restore_multiple_states(component_ids: Array) -> Dictionary:
-	"""Restore multiple component states"""
+	## Restore multiple component states
 	var restored_states = {}
 	for component_id in component_ids:
 		var state = restore_component_state(component_id)
@@ -137,7 +137,7 @@ static func restore_multiple_states(component_ids: Array) -> Dictionary:
 	return restored_states
 
 static func clear_session_states() -> void:
-	"""Clear all session states (non-persistent)"""
+	## Clear all session states (non-persistent)
 	_session_states.clear()
 	
 	# Remove session states from main dictionary
@@ -149,7 +149,7 @@ static func clear_session_states() -> void:
 	print("[StateManager] Cleared session states")
 
 static func clear_all_states() -> void:
-	"""Clear all states including persistent ones"""
+	## Clear all states including persistent ones
 	_component_states.clear()
 	_session_states.clear()
 	_persistent_states.clear()
@@ -159,7 +159,7 @@ static func clear_all_states() -> void:
 
 # === STATE FILTERING ===
 static func get_states_by_type(component_type: String) -> Dictionary:
-	"""Get all states for a specific component type"""
+	## Get all states for a specific component type
 	var filtered_states = {}
 	
 	for component_id in _component_states:
@@ -170,7 +170,7 @@ static func get_states_by_type(component_type: String) -> Dictionary:
 	return filtered_states
 
 static func get_recent_states(max_age: float = 300.0) -> Dictionary:
-	"""Get states that are newer than max_age seconds"""
+	## Get states that are newer than max_age seconds
 	var recent_states = {}
 	var current_time = Time.get_unix_time_from_system()
 	
@@ -184,7 +184,7 @@ static func get_recent_states(max_age: float = 300.0) -> Dictionary:
 	return recent_states
 
 static func get_persistent_states() -> Dictionary:
-	"""Get all persistent states"""
+	## Get all persistent states
 	var persistent_data = {}
 	for component_id in _persistent_states:
 		persistent_data[component_id] = _persistent_states[component_id].get("data", {})
@@ -192,19 +192,19 @@ static func get_persistent_states() -> Dictionary:
 
 # === STATE LISTENERS ===
 static func add_state_listener(component_id: String, callback: Callable) -> void:
-	"""Add listener for state changes"""
+	## Add listener for state changes
 	if not _state_listeners.has(component_id):
 		_state_listeners[component_id] = []
 	
 	_state_listeners[component_id].append(callback)
 
 static func remove_state_listener(component_id: String, callback: Callable) -> void:
-	"""Remove state change listener"""
+	## Remove state change listener
 	if _state_listeners.has(component_id):
 		_state_listeners[component_id].erase(callback)
 
 static func _notify_state_listeners(component_id: String, event_type: String, state_data: Dictionary) -> void:
-	"""Notify listeners of state changes"""
+	## Notify listeners of state changes
 	if _state_listeners.has(component_id):
 		for callback in _state_listeners[component_id]:
 			if callback.is_valid():
@@ -212,7 +212,7 @@ static func _notify_state_listeners(component_id: String, event_type: String, st
 
 # === PERSISTENCE ===
 static func _load_persistent_states() -> void:
-	"""Load persistent states from disk"""
+	## Load persistent states from disk
 	if not _persist_to_disk:
 		return
 	
@@ -230,7 +230,7 @@ static func _load_persistent_states() -> void:
 		print("[StateManager] Loaded %d persistent states" % _persistent_states.size())
 
 static func _save_persistent_states() -> void:
-	"""Save persistent states to disk"""
+	## Save persistent states to disk
 	if not _persist_to_disk:
 		return
 	
@@ -241,13 +241,13 @@ static func _save_persistent_states() -> void:
 
 # === CLEANUP ===
 static func _setup_auto_cleanup() -> void:
-	"""Setup automatic cleanup of old states"""
+	## Setup automatic cleanup of old states
 	# Note: In a real implementation, you'd want to create a proper timer
 	# For now, we'll rely on manual cleanup calls
 	pass
 
 static func cleanup_old_states() -> void:
-	"""Clean up old and invalid states"""
+	## Clean up old and invalid states
 	var current_time = Time.get_unix_time_from_system()
 	var cleaned_states = []
 	
@@ -270,7 +270,7 @@ static func cleanup_old_states() -> void:
 		print("[StateManager] Cleaned up %d old states" % cleaned_states.size())
 
 static func _limit_states_per_type() -> void:
-	"""Limit the number of states per component type"""
+	## Limit the number of states per component type
 	var _type_counts = {}
 	var type_states = {}
 	
@@ -309,7 +309,7 @@ static func _limit_states_per_type() -> void:
 
 # === DEBUGGING AND STATS ===
 static func get_state_stats() -> Dictionary:
-	"""Get state management statistics"""
+	## Get state management statistics
 	return {
 		"total_states": _component_states.size(),
 		"session_states": _session_states.size(),
@@ -321,7 +321,7 @@ static func get_state_stats() -> Dictionary:
 	}
 
 static func print_state_stats() -> void:
-	"""Print state management statistics"""
+	## Print state management statistics
 	var stats = get_state_stats()
 	print("\n=== COMPONENT STATE STATS ===")
 	print("Total states: %d" % stats.total_states)
@@ -334,7 +334,7 @@ static func print_state_stats() -> void:
 	print("=============================\n")
 
 static func get_component_state_info(component_id: String) -> Dictionary:
-	"""Get detailed information about a component's state"""
+	## Get detailed information about a component's state
 	var state_entry = _component_states.get(component_id, {})
 	
 	if state_entry.is_empty():
@@ -353,12 +353,12 @@ static func get_component_state_info(component_id: String) -> Dictionary:
 	}
 
 static func list_all_component_states() -> Array:
-	"""List all component state IDs"""
+	## List all component state IDs
 	return _component_states.keys()
 
 # === UTILITY METHODS ===
 static func export_states_to_json() -> String:
-	"""Export all states to JSON string (for backup/debugging)"""
+	## Export all states to JSON string (for backup/debugging)
 	var export_data = {
 		"session_states": _session_states,
 		"persistent_states": _persistent_states,
@@ -369,7 +369,7 @@ static func export_states_to_json() -> String:
 	return JSON.stringify(export_data)
 
 static func import_states_from_json(json_string: String) -> bool:
-	"""Import states from JSON string"""
+	## Import states from JSON string
 	var json = JSON.new()
 	var parse_result = json.parse(json_string)
 	
@@ -403,12 +403,12 @@ static func import_states_from_json(json_string: String) -> bool:
 
 # === MIGRATION HELPERS ===
 static func migrate_legacy_states() -> void:
-	"""Migrate states from legacy systems"""
+	## Migrate states from legacy systems
 	# This would be implemented based on existing state storage
 	print("[StateManager] Legacy state migration not implemented")
 
 static func backup_current_states() -> void:
-	"""Create backup of current states"""
+	## Create backup of current states
 	var backup_data = export_states_to_json()
 	var file = FileAccess.open("user://component_states_backup.json", FileAccess.WRITE)
 	if file:
@@ -417,7 +417,7 @@ static func backup_current_states() -> void:
 		print("[StateManager] States backed up to component_states_backup.json")
 
 static func restore_from_backup() -> bool:
-	"""Restore states from backup"""
+	## Restore states from backup
 	var file = FileAccess.open("user://component_states_backup.json", FileAccess.READ)
 	if file:
 		var backup_data = file.get_as_text()

@@ -42,6 +42,9 @@ var history_size: int = 120 # samples
 var performance_issues: Dictionary = {}
 var optimization_in_progress: bool = false
 
+# === SERVICE CONNECTIONS ===
+var memory_manager: MemoryManager
+
 # === UI OVERLAY ===
 var debug_overlay: CanvasLayer
 var debug_panel: Control
@@ -55,6 +58,11 @@ func _ready() -> void:
         metrics_history[metric] = []
         current_metrics[metric] = 0.0
     
+    # Connect to MemoryManager if available
+    if has_node("/root/MemoryManager"):
+        memory_manager = get_node("/root/MemoryManager")
+        print("[PerformanceMonitor] Connected to MemoryManager")
+    
     # Create debug overlay
     if show_overlay:
         _create_debug_overlay()
@@ -64,7 +72,7 @@ func _ready() -> void:
 
 # === MONITORING ===
 func _start_monitoring() -> void:
-    """Start performance monitoring loop"""
+    ## Start performance monitoring loop
     if not monitoring_enabled:
         return
     
@@ -76,15 +84,20 @@ func _start_monitoring() -> void:
         await get_tree().create_timer(sample_rate).timeout
 
 func _sample_metrics() -> void:
-    """Sample current performance metrics"""
+    ## Sample current performance metrics
     # FPS and frame time
     current_metrics[MetricType.FPS] = Performance.get_monitor(Performance.TIME_FPS)
     current_metrics[MetricType.FRAME_TIME] = Performance.get_monitor(Performance.TIME_PROCESS)
     
-    # Memory usage  
+    # Memory usage - enhanced with MemoryManager data
     var static_memory = Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0 # Convert to MB
-    # Note: MEMORY_DYNAMIC not available in Godot 4.4, using static memory only
-    current_metrics[MetricType.MEMORY_USAGE] = static_memory
+    
+    # Get more accurate memory info from MemoryManager if available
+    if memory_manager:
+        var memory_info = memory_manager.get_memory_info()
+        current_metrics[MetricType.MEMORY_USAGE] = memory_info.total_mb
+    else:
+        current_metrics[MetricType.MEMORY_USAGE] = static_memory
     
     # Rendering metrics
     current_metrics[MetricType.DRAW_CALLS] = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
@@ -100,7 +113,7 @@ func _sample_metrics() -> void:
         metrics_history[metric].append(current_metrics[metric])
 
 func _analyze_performance() -> void:
-    """Analyze performance and detect issues"""
+    ## Analyze performance and detect issues
     var new_issues = {}
     
     # Check FPS
@@ -140,7 +153,7 @@ func _analyze_performance() -> void:
 
 # === OPTIMIZATION SUGGESTIONS ===
 func _suggest_optimizations() -> void:
-    """Generate optimization suggestions based on current issues"""
+    ## Generate optimization suggestions based on current issues
     var suggestions = []
     
     if "fps" in performance_issues:
@@ -184,7 +197,7 @@ func _suggest_optimizations() -> void:
 
 # === AUTO-OPTIMIZATION ===
 func apply_auto_optimizations() -> void:
-    """Apply automatic optimizations based on performance"""
+    ## Apply automatic optimizations based on performance
     optimization_in_progress = true
     
     print("[Performance] Applying automatic optimizations...")
@@ -205,7 +218,7 @@ func apply_auto_optimizations() -> void:
     print("[Performance] Optimizations applied")
 
 func _optimize_for_fps() -> void:
-    """Apply FPS optimizations"""
+    ## Apply FPS optimizations
     # Reduce shadow quality
     RenderingServer.directional_shadow_atlas_set_size(2048, true)
     
@@ -219,7 +232,7 @@ func _optimize_for_fps() -> void:
     get_tree().call_group("particles", "reduce_emission_amount", 0.5)
 
 func _optimize_memory_usage() -> void:
-    """Apply memory optimizations"""
+    ## Apply memory optimizations
     # Clear unused resources
     OS.low_processor_usage_mode = true
     
@@ -230,7 +243,7 @@ func _optimize_memory_usage() -> void:
     get_tree().call_group("textured_objects", "use_compressed_textures")
 
 func _optimize_draw_calls() -> void:
-    """Apply draw call optimizations"""
+    ## Apply draw call optimizations
     # Enable batching
     get_tree().call_group("batchable", "enable_batching")
     
@@ -239,7 +252,7 @@ func _optimize_draw_calls() -> void:
 
 # === DEBUG OVERLAY ===
 func _create_debug_overlay() -> void:
-    """Create performance debug overlay"""
+    ## Create performance debug overlay
     debug_overlay = CanvasLayer.new()
     debug_overlay.layer = 99
     add_child(debug_overlay)
@@ -276,7 +289,7 @@ func _create_debug_overlay() -> void:
     debug_overlay.visible = show_overlay
 
 func _update_overlay() -> void:
-    """Update debug overlay display"""
+    ## Update debug overlay display
     if not debug_overlay or not debug_overlay.visible:
         return
     
@@ -311,7 +324,7 @@ func _update_overlay() -> void:
     metrics_label.text = text
 
 func _get_metric_color(metric: MetricType, value: float) -> Color:
-    """Get color based on metric performance"""
+    ## Get color based on metric performance
     match metric:
         MetricType.FPS:
             if value >= THRESHOLDS.fps_target:
@@ -349,7 +362,7 @@ func _get_metric_color(metric: MetricType, value: float) -> Color:
             return Color.WHITE
 
 func _get_metric_type_from_key(key: String) -> MetricType:
-    """Convert issue key to metric type"""
+    ## Convert issue key to metric type
     match key:
         "fps": return MetricType.FPS
         "memory": return MetricType.MEMORY_USAGE
@@ -358,11 +371,11 @@ func _get_metric_type_from_key(key: String) -> MetricType:
 
 # === PUBLIC API ===
 func get_current_fps() -> float:
-    """Get current FPS"""
+    ## Get current FPS
     return current_metrics.get(MetricType.FPS, 0.0)
 
 func get_average_fps(duration: float = 1.0) -> float:
-    """Get average FPS over duration"""
+    ## Get average FPS over duration
     var samples = int(duration / sample_rate)
     var history = metrics_history[MetricType.FPS]
     
@@ -379,17 +392,17 @@ func get_average_fps(duration: float = 1.0) -> float:
     return sum / samples
 
 func get_memory_usage() -> float:
-    """Get current memory usage in MB"""
+    ## Get current memory usage in MB
     return current_metrics.get(MetricType.MEMORY_USAGE, 0.0)
 
 func toggle_overlay() -> void:
-    """Toggle debug overlay visibility"""
+    ## Toggle debug overlay visibility
     show_overlay = not show_overlay
     if debug_overlay:
         debug_overlay.visible = show_overlay
 
 func set_monitoring_enabled(enabled: bool) -> void:
-    """Enable/disable monitoring"""
+    ## Enable/disable monitoring
     monitoring_enabled = enabled
     if enabled and not is_inside_tree():
         _start_monitoring()

@@ -122,7 +122,7 @@ func _ready() -> void:
 	print("[TOOLTIP_MANAGER] Educational tooltip system initialized")
 
 func _setup_tooltip_ui() -> void:
-	"""Create sophisticated tooltip UI structure"""
+	## Create sophisticated tooltip UI structure
 	# Main tooltip panel
 	tooltip_panel = PanelContainer.new()
 	tooltip_panel.name = "TooltipPanel"
@@ -159,7 +159,7 @@ func _setup_tooltip_ui() -> void:
 	# Category badge
 	tooltip_category = Label.new()
 	tooltip_category.name = "TooltipCategory"
-	UIThemeManager.apply_modern_label(tooltip_category, UIThemeManager.FONT_SIZE_TINY, UIThemeManager.ACCENT_CYAN, "badge", true)
+	UIThemeManager.apply_modern_label(tooltip_category, UIThemeManager.FONT_SIZE_TINY, UIThemeManager.ACCENT_CYAN, "badge")
 	header_container.add_child(tooltip_category)
 	
 	# Main description
@@ -187,7 +187,7 @@ func _setup_tooltip_ui() -> void:
 	tooltip_footer.add_child(tooltip_difficulty)
 
 func _setup_timers() -> void:
-	"""Setup timing controls for tooltip behavior"""
+	## Setup timing controls for tooltip behavior
 	# Hover delay timer
 	hover_timer = Timer.new()
 	hover_timer.wait_time = HOVER_DELAY
@@ -203,7 +203,7 @@ func _setup_timers() -> void:
 	add_child(fade_timer)
 
 func register_tooltip(target: Control, tooltip_id: String, category: String = "ui_elements") -> void:
-	"""Register a control for educational tooltips"""
+	## Register a control for educational tooltips
 	if not target:
 		print("[TOOLTIP_MANAGER] Warning: Null target provided for tooltip registration")
 		return
@@ -218,7 +218,7 @@ func register_tooltip(target: Control, tooltip_id: String, category: String = "u
 	print("[TOOLTIP_MANAGER] Registered tooltip for: %s" % tooltip_id)
 
 func register_structure_tooltip(target: Control, structure_id: String, structure_data: Dictionary = {}) -> void:
-	"""Register tooltip for brain structure with dynamic content"""
+	## Register tooltip for brain structure with dynamic content
 	if not target:
 		return
 	
@@ -241,7 +241,7 @@ func register_structure_tooltip(target: Control, structure_id: String, structure
 	register_tooltip(target, structure_id, "brain_structures")
 
 func _assess_difficulty(description: String, functions: Array) -> String:
-	"""Assess content difficulty based on complexity"""
+	## Assess content difficulty based on complexity
 	var word_count = description.split(" ").size()
 	var function_count = functions.size()
 	var complexity_score = word_count + (function_count * 10)
@@ -254,7 +254,7 @@ func _assess_difficulty(description: String, functions: Array) -> String:
 		return "advanced"
 
 func _extract_quick_facts(functions: Array) -> Array:
-	"""Extract quick facts from function list"""
+	## Extract quick facts from function list
 	var facts = []
 	for i in range(min(3, functions.size())):
 		var function_text = str(functions[i])
@@ -265,7 +265,7 @@ func _extract_quick_facts(functions: Array) -> Array:
 	return facts
 
 func _generate_learning_tip(structure_name: String) -> String:
-	"""Generate mnemonic or learning tip"""
+	## Generate mnemonic or learning tip
 	var tips = {
 		"Hippocampus": "Remember: 'Hip-po-campus' = Horse-shaped learning center!",
 		"Thalamus": "Think: 'Through-all-of-us' - everything passes through!",
@@ -277,7 +277,7 @@ func _generate_learning_tip(structure_name: String) -> String:
 	return tips.get(structure_name, "Break down the name to remember its function!")
 
 func show_tooltip(target: Control, tooltip_id: String, category: String = "ui_elements") -> void:
-	"""Display educational tooltip with rich content"""
+	## Display educational tooltip with rich content
 	if is_showing and current_target == target:
 		return
 	
@@ -297,7 +297,7 @@ func show_tooltip(target: Control, tooltip_id: String, category: String = "ui_el
 	emit_signal("tooltip_shown", target, tooltip_data)
 
 func _update_tooltip_content() -> void:
-	"""Update tooltip content with educational information"""
+	## Update tooltip content with educational information
 	# Header
 	tooltip_header.text = tooltip_data.get("title", "Information")
 	
@@ -352,7 +352,7 @@ func _update_tooltip_content() -> void:
 	UIThemeManager.apply_modern_label(tooltip_difficulty, UIThemeManager.FONT_SIZE_TINY, difficulty_color, "caption")
 
 func _get_difficulty_icon(difficulty: String) -> String:
-	"""Get icon for difficulty level"""
+	## Get icon for difficulty level
 	match difficulty:
 		"beginner": return "🟢"
 		"intermediate": return "🟡"
@@ -360,7 +360,7 @@ func _get_difficulty_icon(difficulty: String) -> String:
 		_: return "⚪"
 
 func _get_difficulty_color(difficulty: String) -> Color:
-	"""Get color for difficulty level"""
+	## Get color for difficulty level
 	match difficulty:
 		"beginner": return UIThemeManager.ACCENT_GREEN
 		"intermediate": return UIThemeManager.ACCENT_ORANGE
@@ -368,7 +368,7 @@ func _get_difficulty_color(difficulty: String) -> Color:
 		_: return UIThemeManager.TEXT_SECONDARY
 
 func _position_tooltip(target: Control) -> void:
-	"""Position tooltip relative to target with smart positioning"""
+	## Position tooltip relative to target with smart positioning
 	if not target:
 		return
 	
@@ -400,7 +400,7 @@ func _position_tooltip(target: Control) -> void:
 	global_position = preferred_pos
 
 func _show_with_animation() -> void:
-	"""Show tooltip with educational-style animation"""
+	## Show tooltip with educational-style animation
 	visible = true
 	is_showing = true
 	
@@ -415,7 +415,7 @@ func _show_with_animation() -> void:
 	tween.tween_property(self, "scale", Vector2.ONE, UIThemeManager.ANIM_DURATION_FAST).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 func hide_tooltip() -> void:
-	"""Hide tooltip with smooth animation"""
+	## Hide tooltip with smooth animation
 	if not is_showing:
 		return
 	
@@ -433,7 +433,7 @@ func hide_tooltip() -> void:
 
 # Signal handlers
 func _on_target_mouse_entered(target: Control, tooltip_id: String, category: String) -> void:
-	"""Handle mouse entering registered target"""
+	## Handle mouse entering registered target
 	if current_target == target:
 		return
 	
@@ -443,10 +443,10 @@ func _on_target_mouse_entered(target: Control, tooltip_id: String, category: Str
 	
 	# Start hover delay
 	hover_timer.start()
-	hover_timer.timeout.connect(func(): show_tooltip(target, tooltip_id, category), CONNECT_ONE_SHOT)
+	hover_timer.timeout.connect(func(): show_tooltip(target, tooltip_id, category), Object.CONNECT_ONE_SHOT)
 
 func _on_target_mouse_exited(target: Control) -> void:
-	"""Handle mouse exiting registered target"""
+	## Handle mouse exiting registered target
 	if current_target != target:
 		return
 	
@@ -457,17 +457,17 @@ func _on_target_mouse_exited(target: Control) -> void:
 	hide_tooltip()
 
 func _on_hover_timeout() -> void:
-	"""Handle hover delay timeout"""
+	## Handle hover delay timeout
 	# This will be connected dynamically in _on_target_mouse_entered
 	pass
 
 func _on_fade_timeout() -> void:
-	"""Handle fade delay timeout"""
+	## Handle fade delay timeout
 	hide_tooltip()
 
 # Public interface
 func add_educational_content(tooltip_id: String, content: Dictionary, category: String = "ui_elements") -> void:
-	"""Add custom educational content to tooltip system"""
+	## Add custom educational content to tooltip system
 	if not educational_tooltips.has(category):
 		educational_tooltips[category] = {}
 	
@@ -475,7 +475,7 @@ func add_educational_content(tooltip_id: String, content: Dictionary, category: 
 	print("[TOOLTIP_MANAGER] Added educational content: %s" % tooltip_id)
 
 func update_structure_data(structure_id: String, structure_data: Dictionary) -> void:
-	"""Update tooltip data for a brain structure"""
+	## Update tooltip data for a brain structure
 	if not educational_tooltips["brain_structures"].has(structure_id):
 		educational_tooltips["brain_structures"][structure_id] = {}
 	
@@ -494,11 +494,11 @@ func update_structure_data(structure_id: String, structure_data: Dictionary) -> 
 	print("[TOOLTIP_MANAGER] Updated structure data: %s" % structure_id)
 
 func set_hover_delay(delay: float) -> void:
-	"""Set custom hover delay"""
+	## Set custom hover delay
 	hover_timer.wait_time = delay
 
 func force_hide() -> void:
-	"""Force hide tooltip immediately"""
+	## Force hide tooltip immediately
 	hover_timer.stop()
 	fade_timer.stop()
 	visible = false
@@ -507,10 +507,10 @@ func force_hide() -> void:
 
 # Cleanup
 func dispose() -> void:
-	"""Clean up tooltip manager"""
+	## Clean up tooltip manager
 	force_hide()
 	educational_tooltips.clear()
 
 func _exit_tree() -> void:
-	"""Cleanup on removal"""
+	## Cleanup on removal
 	dispose()

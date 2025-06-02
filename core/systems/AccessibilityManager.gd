@@ -47,7 +47,7 @@ var _config: ConfigFile
 
 # === INITIALIZATION ===
 func _ready() -> void:
-    """Initialize accessibility manager"""
+    ## Initialize accessibility manager
     _config = ConfigFile.new()
     load_settings()
     
@@ -59,7 +59,7 @@ func _ready() -> void:
 # === PUBLIC METHODS ===
 ## Set colorblind mode
 func set_colorblind_mode(mode: String) -> void:
-    """Change colorblind mode and notify systems"""
+    ## Change colorblind mode and notify systems
     if mode in COLORBLIND_MODES:
         colorblind_mode = mode
         colorblind_mode_changed.emit(mode)
@@ -68,7 +68,7 @@ func set_colorblind_mode(mode: String) -> void:
 
 ## Toggle reduce motion preference
 func set_reduce_motion(enabled: bool) -> void:
-    """Enable/disable motion reduction"""
+    ## Enable/disable motion reduction
     reduce_motion = enabled
     reduce_motion_changed.emit(enabled)
     settings_changed.emit()
@@ -76,7 +76,7 @@ func set_reduce_motion(enabled: bool) -> void:
 
 ## Toggle high contrast mode
 func set_high_contrast(enabled: bool) -> void:
-    """Enable/disable high contrast mode"""
+    ## Enable/disable high contrast mode
     high_contrast = enabled
     high_contrast_changed.emit(enabled)
     settings_changed.emit()
@@ -84,7 +84,7 @@ func set_high_contrast(enabled: bool) -> void:
 
 ## Set font size
 func set_font_size(size: float) -> void:
-    """Set UI font size"""
+    ## Set UI font size
     font_size = clamp(size, MIN_FONT_SIZE, MAX_FONT_SIZE)
     font_size_changed.emit(font_size)
     settings_changed.emit()
@@ -92,7 +92,7 @@ func set_font_size(size: float) -> void:
 
 ## Get colorblind-safe color
 func get_safe_color(original_color: Color, color_type: String = "default") -> Color:
-    """Convert color to colorblind-safe equivalent"""
+    ## Convert color to colorblind-safe equivalent
     match colorblind_mode:
         "deuteranope":
             return _convert_deuteranope(original_color)
@@ -107,7 +107,7 @@ func get_safe_color(original_color: Color, color_type: String = "default") -> Co
 
 ## Check if a color pair has sufficient contrast
 func check_contrast_ratio(foreground: Color, background: Color) -> float:
-    """Calculate WCAG contrast ratio between two colors"""
+    ## Calculate WCAG contrast ratio between two colors
     var l1 = _get_relative_luminance(foreground)
     var l2 = _get_relative_luminance(background)
     
@@ -118,7 +118,7 @@ func check_contrast_ratio(foreground: Color, background: Color) -> float:
 
 ## Get recommended colors for current settings
 func get_recommended_colors() -> Dictionary:
-    """Get color palette optimized for current accessibility settings"""
+    ## Get color palette optimized for current accessibility settings
     var colors = {
         "primary": Color("#00D9FF"),
         "secondary": Color("#FFD700"),
@@ -149,7 +149,7 @@ func get_recommended_colors() -> Dictionary:
 
 ## Load accessibility settings
 func load_settings() -> void:
-    """Load settings from file"""
+    ## Load settings from file
     var err = _config.load(SETTINGS_FILE)
     if err != OK:
         # Use defaults
@@ -169,7 +169,7 @@ func load_settings() -> void:
 
 ## Save accessibility settings
 func save_settings() -> void:
-    """Save settings to file"""
+    ## Save settings to file
     _config.set_value("accessibility", "colorblind_mode", colorblind_mode)
     _config.set_value("accessibility", "reduce_motion", reduce_motion)
     _config.set_value("accessibility", "high_contrast", high_contrast)
@@ -184,7 +184,7 @@ func save_settings() -> void:
 
 ## Get all current settings
 func get_settings() -> Dictionary:
-    """Return all accessibility settings"""
+    ## Return all accessibility settings
     return {
         "colorblind_mode": colorblind_mode,
         "reduce_motion": reduce_motion,
@@ -199,7 +199,7 @@ func get_settings() -> Dictionary:
 
 # === PRIVATE METHODS ===
 func _get_relative_luminance(color: Color) -> float:
-    """Calculate relative luminance for WCAG contrast"""
+    ## Calculate relative luminance for WCAG contrast
     # Convert to linear RGB
     var r = _srgb_to_linear(color.r)
     var g = _srgb_to_linear(color.g)
@@ -209,14 +209,14 @@ func _get_relative_luminance(color: Color) -> float:
     return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 func _srgb_to_linear(value: float) -> float:
-    """Convert sRGB to linear RGB"""
+    ## Convert sRGB to linear RGB
     if value <= 0.04045:
         return value / 12.92
     else:
         return pow((value + 0.055) / 1.055, 2.4)
 
 func _convert_deuteranope(color: Color) -> Color:
-    """Convert color for deuteranope (red-green) colorblindness"""
+    ## Convert color for deuteranope (red-green) colorblindness
     # Simplified deuteranope simulation
     var r = color.r
     var g = color.g
@@ -230,7 +230,7 @@ func _convert_deuteranope(color: Color) -> Color:
     return Color(new_r, new_g, new_b, color.a)
 
 func _convert_protanope(color: Color) -> Color:
-    """Convert color for protanope (red-green) colorblindness"""
+    ## Convert color for protanope (red-green) colorblindness
     var r = color.r
     var g = color.g
     var b = color.b
@@ -243,7 +243,7 @@ func _convert_protanope(color: Color) -> Color:
     return Color(new_r, new_g, new_b, color.a)
 
 func _convert_tritanope(color: Color) -> Color:
-    """Convert color for tritanope (blue-yellow) colorblindness"""
+    ## Convert color for tritanope (blue-yellow) colorblindness
     var r = color.r
     var g = color.g
     var b = color.b
@@ -256,13 +256,13 @@ func _convert_tritanope(color: Color) -> Color:
     return Color(new_r, new_g, new_b, color.a)
 
 func _convert_monochrome(color: Color) -> Color:
-    """Convert color to grayscale"""
+    ## Convert color to grayscale
     var gray = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
     return Color(gray, gray, gray, color.a)
 
 # === DEBUG METHODS ===
 func print_contrast_report() -> void:
-    """Print contrast ratio report for current color scheme"""
+    ## Print contrast ratio report for current color scheme
     var colors = get_recommended_colors()
     var bg = colors["background"]
     

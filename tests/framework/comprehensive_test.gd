@@ -21,7 +21,7 @@ func _init():
 	quit()
 
 func run_all_tests():
-	"""Run all comprehensive tests"""
+	## Run all comprehensive tests
 	
 	# Test 1: Component Loading
 	test_component_loading()
@@ -42,7 +42,7 @@ func run_all_tests():
 	test_file_structure()
 
 func test_component_loading():
-	"""Test that all components can be loaded"""
+	## Test that all components can be loaded
 	print("\n🧪 Test 1: Component Loading")
 	
 	var components = {
@@ -71,7 +71,7 @@ func test_component_loading():
 	record_test_result("Component Loading", success)
 
 func test_system_bootstrap():
-	"""Test SystemBootstrap functionality"""
+	## Test SystemBootstrap functionality
 	print("\n🧪 Test 2: SystemBootstrap Functionality")
 	
 	var bootstrap_script = load("res://core/systems/SystemBootstrap.gd")
@@ -111,7 +111,7 @@ func test_system_bootstrap():
 	record_test_result("SystemBootstrap Functionality", success)
 
 func test_input_router():
-	"""Test InputRouter functionality"""
+	## Test InputRouter functionality
 	print("\n🧪 Test 3: InputRouter Functionality")
 	
 	var router_script = load("res://core/interaction/InputRouter.gd")
@@ -161,7 +161,7 @@ func test_input_router():
 	record_test_result("InputRouter Functionality", success)
 
 func test_main_scene_integration():
-	"""Test main scene integration"""
+	## Test main scene integration
 	print("\n🧪 Test 4: Main Scene Integration")
 	
 	var scene_script = load("res://scenes/node_3d.gd")
@@ -205,7 +205,7 @@ func test_main_scene_integration():
 	record_test_result("Main Scene Integration", success)
 
 func test_autoload_system():
-	"""Test autoload system functionality"""
+	## Test autoload system functionality
 	print("\n🧪 Test 5: Autoload System")
 	
 	var autoload_scripts = [
@@ -228,7 +228,7 @@ func test_autoload_system():
 	record_test_result("Autoload System", success)
 
 func test_file_structure():
-	"""Test file structure integrity"""
+	## Test file structure integrity
 	print("\n🧪 Test 6: File Structure Validation")
 	
 	var required_dirs = [
@@ -268,14 +268,14 @@ func test_file_structure():
 	record_test_result("File Structure", success)
 
 func record_test_result(test_name: String, success: bool):
-	"""Record test result"""
+	## Record test result
 	test_results[test_name] = success
 	total_tests += 1
 	if success:
 		passed_tests += 1
 
 func print_test_summary():
-	"""Print comprehensive test summary"""
+	## Print comprehensive test summary
 	print("\n" + "=".repeat(50))
 	print("COMPREHENSIVE TEST SUMMARY")
 	print("=".repeat(50))

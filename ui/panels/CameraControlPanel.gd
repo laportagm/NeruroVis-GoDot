@@ -50,11 +50,11 @@ var _is_initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the CameraControlPanel component"""
+	## Initialize the CameraControlPanel component
 	_initialize()
 
 func _process(delta: float) -> void:
-	"""Called every frame"""
+	## Called every frame
 	if not _is_initialized:
 		return
 	
@@ -63,7 +63,7 @@ func _process(delta: float) -> void:
 
 # === PRIVATE METHODS ===
 func _initialize() -> void:
-	"""Initialize the component with default settings"""
+	## Initialize the component with default settings
 	
 	# Setup validation
 	if not _validate_setup():
@@ -79,13 +79,13 @@ func _initialize() -> void:
 	print("[CameraControlPanel] Initialized successfully")
 
 func _validate_setup() -> bool:
-	"""Validate that all required dependencies are available"""
+	## Validate that all required dependencies are available
 	
 	# Add validation logic
 	return true
 
 func _create_ui_layout() -> void:
-	"""Create the UI layout with controls"""
+	## Create the UI layout with controls
 	
 	# Create movement controls section
 	var movement_section = _create_movement_controls()
@@ -104,7 +104,7 @@ func _create_ui_layout() -> void:
 	add_child(preset_section)
 
 func _create_movement_controls() -> Control:
-	"""Create movement direction controls"""
+	## Create movement direction controls
 	
 	var section = VBoxContainer.new()
 	var label = Label.new()
@@ -129,7 +129,7 @@ func _create_movement_controls() -> Control:
 	return section
 
 func _create_rotation_controls() -> Control:
-	"""Create rotation controls"""
+	## Create rotation controls
 	
 	var section = VBoxContainer.new()
 	var label = Label.new()
@@ -169,7 +169,7 @@ func _create_rotation_controls() -> Control:
 	return section
 
 func _create_zoom_controls() -> Control:
-	"""Create zoom controls"""
+	## Create zoom controls
 	
 	var section = VBoxContainer.new()
 	var label = Label.new()
@@ -201,7 +201,7 @@ func _create_zoom_controls() -> Control:
 	return section
 
 func _create_preset_controls() -> Control:
-	"""Create camera preset controls"""
+	## Create camera preset controls
 	
 	var section = VBoxContainer.new()
 	var label = Label.new()
@@ -224,27 +224,27 @@ func _create_preset_controls() -> Control:
 	return section
 
 func _setup_connections() -> void:
-	"""Setup signal connections and dependencies"""
+	## Setup signal connections and dependencies
 	
 	# All connections are set up in the UI creation methods
 	pass
 
 func _apply_initial_state() -> void:
-	"""Apply initial state and configuration"""
+	## Apply initial state and configuration
 	
 	current_preset = "default"
 	if _preset_buttons.has("Default"):
 		_preset_buttons["Default"].button_pressed = true
 
 func _cleanup() -> void:
-	"""Clean up resources and connections"""
+	## Clean up resources and connections
 	
 	# Cleanup logic here
 	_is_initialized = false
 
 # === EVENT HANDLERS ===
 func _on_movement_button_pressed(direction: Vector3) -> void:
-	"""Handle movement button press"""
+	## Handle movement button press
 	
 	if not _is_initialized:
 		return
@@ -252,7 +252,7 @@ func _on_movement_button_pressed(direction: Vector3) -> void:
 	camera_move_requested.emit(direction * movement_sensitivity)
 
 func _on_pitch_changed(value: float) -> void:
-	"""Handle pitch slider change"""
+	## Handle pitch slider change
 	
 	if not _is_initialized:
 		return
@@ -260,7 +260,7 @@ func _on_pitch_changed(value: float) -> void:
 	camera_rotate_requested.emit(Vector2(deg_to_rad(value), 0.0))
 
 func _on_yaw_changed(value: float) -> void:
-	"""Handle yaw slider change"""
+	## Handle yaw slider change
 	
 	if not _is_initialized:
 		return
@@ -268,7 +268,7 @@ func _on_yaw_changed(value: float) -> void:
 	camera_rotate_requested.emit(Vector2(0.0, deg_to_rad(value)))
 
 func _on_zoom_in_pressed() -> void:
-	"""Handle zoom in button press"""
+	## Handle zoom in button press
 	
 	if not _is_initialized:
 		return
@@ -276,7 +276,7 @@ func _on_zoom_in_pressed() -> void:
 	camera_zoom_requested.emit(-ZOOM_SPEED)
 
 func _on_zoom_out_pressed() -> void:
-	"""Handle zoom out button press"""
+	## Handle zoom out button press
 	
 	if not _is_initialized:
 		return
@@ -284,7 +284,7 @@ func _on_zoom_out_pressed() -> void:
 	camera_zoom_requested.emit(ZOOM_SPEED)
 
 func _on_zoom_reset_pressed() -> void:
-	"""Handle zoom reset button press"""
+	## Handle zoom reset button press
 	
 	if not _is_initialized:
 		return
@@ -292,7 +292,7 @@ func _on_zoom_reset_pressed() -> void:
 	camera_zoom_requested.emit(0.0)  # Special value for reset
 
 func _on_preset_selected(preset_name: String) -> void:
-	"""Handle preset selection"""
+	## Handle preset selection
 	
 	if not _is_initialized:
 		return
@@ -303,17 +303,17 @@ func _on_preset_selected(preset_name: String) -> void:
 # === PUBLIC METHODS ===
 ## Set the sensitivity for camera movement
 func set_movement_sensitivity(sensitivity: float) -> void:
-	"""Update movement sensitivity"""
+	## Update movement sensitivity
 	movement_sensitivity = max(0.1, sensitivity)
 
 ## Get current camera preset
 func get_current_preset() -> String:
-	"""Get the currently selected camera preset"""
+	## Get the currently selected camera preset
 	return current_preset
 
 ## Reset all controls to default state
 func reset_controls() -> void:
-	"""Reset all controls to their default values"""
+	## Reset all controls to their default values
 	
 	if _rotation_sliders.has("pitch"):
 		_rotation_sliders["pitch"].value = 0.0
@@ -326,15 +326,15 @@ func reset_controls() -> void:
 
 # === UTILITY METHODS ===
 func _log_debug(message: String) -> void:
-	"""Log debug message with class context"""
+	## Log debug message with class context
 	if OS.is_debug_build():
 		print("[CameraControlPanel] " + message)
 
 func _log_error(message: String) -> void:
-	"""Log error message with class context"""
+	## Log error message with class context
 	push_error("[CameraControlPanel] " + message)
 
 # === CLEANUP ===
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	_cleanup()

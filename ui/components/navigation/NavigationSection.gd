@@ -193,7 +193,7 @@ func show_labels(show: bool) -> void:
 
 # === PRIVATE METHODS ===
 func _load_dependencies() -> void:
-    """Load required dependencies safely"""
+    ## Load required dependencies safely
     # Try to load SafeAutoloadAccess first if available
     var safe_autoload_script = load("res://ui/components/core/SafeAutoloadAccess.gd")
     if safe_autoload_script:
@@ -206,7 +206,7 @@ func _load_dependencies() -> void:
         _theme_manager = get_node_or_null("/root/UIThemeManager")
 
 func _create_ui() -> void:
-    """Create the section UI structure"""
+    ## Create the section UI structure
     # Main layout
     var main_container = VBoxContainer.new()
     main_container.add_theme_constant_override("separation", 0)
@@ -267,7 +267,7 @@ func _create_ui() -> void:
         _create_item_ui(item_id)
 
 func _create_item_ui(item_id: String) -> void:
-    """Create UI for an item"""
+    ## Create UI for an item
     var item_data = _items[item_id]
     
     # Try to instantiate via script
@@ -319,7 +319,7 @@ func _create_item_ui(item_id: String) -> void:
     _item_nodes[item_id] = item
 
 func _apply_styling() -> void:
-    """Apply styling to the section"""
+    ## Apply styling to the section
     # Use theme manager if available
     var accent_color = Color(0.15, 0.82, 0.81, 1.0)  # Default #26d0ce
     var bg_color = Color(0.12, 0.12, 0.12, 0.7)      # Default dark bg
@@ -362,11 +362,11 @@ func _apply_styling() -> void:
     _header_container.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _connect_signals() -> void:
-    """Connect internal signals"""
+    ## Connect internal signals
     _header_container.gui_input.connect(_on_header_gui_input)
 
 func _update_expanded_state() -> void:
-    """Update UI based on expanded state"""
+    ## Update UI based on expanded state
     if not is_inside_tree():
         return
     
@@ -404,14 +404,14 @@ func _update_expanded_state() -> void:
 
 # === EVENT HANDLERS ===
 func _on_header_gui_input(event: InputEvent) -> void:
-    """Handle header mouse input for expand/collapse"""
+    ## Handle header mouse input for expand/collapse
     if event is InputEventMouseButton:
         if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
             toggle()
             get_viewport().set_input_as_handled()
 
 func _on_item_clicked(item_id: String) -> void:
-    """Handle item click"""
+    ## Handle item click
     # Select the item
     select_item(item_id)
     

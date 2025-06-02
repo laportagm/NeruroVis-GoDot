@@ -135,7 +135,7 @@ func _ready() -> void:
 
 # === PUBLIC API ===
 func report_error(error_type: ErrorType, error_key: String, context: Dictionary = {}) -> String:
-    """Report an error to the system"""
+    ## Report an error to the system
     var error_id = _generate_error_id()
     var error_data = _create_error_data(error_type, error_key, context)
     error_data.id = error_id
@@ -156,17 +156,17 @@ func report_error(error_type: ErrorType, error_key: String, context: Dictionary 
     return error_id
 
 func dismiss_error(error_id: String) -> void:
-    """Dismiss a specific error"""
+    ## Dismiss a specific error
     if error_id in active_errors:
         active_errors.erase(error_id)
         error_dismissed.emit(error_id)
 
 func get_error_count() -> int:
-    """Get count of active errors"""
+    ## Get count of active errors
     return active_errors.size()
 
 func get_errors_by_type(error_type: ErrorType) -> Array:
-    """Get all errors of a specific type"""
+    ## Get all errors of a specific type
     var filtered = []
     for error in active_errors.values():
         if error.type == error_type:
@@ -174,13 +174,13 @@ func get_errors_by_type(error_type: ErrorType) -> Array:
     return filtered
 
 func clear_all_errors() -> void:
-    """Clear all active errors"""
+    ## Clear all active errors
     active_errors.clear()
     error_queue.clear()
 
 # === ERROR CREATION ===
 func _create_error_data(error_type: ErrorType, error_key: String, context: Dictionary) -> Dictionary:
-    """Create error data structure"""
+    ## Create error data structure
     var error_template = ERROR_MESSAGES.get(error_key, {
         "title": "Unknown Error",
         "message": "An unexpected error occurred.",
@@ -207,7 +207,7 @@ func _create_error_data(error_type: ErrorType, error_key: String, context: Dicti
     }
 
 func _determine_severity(error_type: ErrorType, error_key: String) -> ErrorSeverity:
-    """Determine error severity based on type and key"""
+    ## Determine error severity based on type and key
     match error_type:
         ErrorType.SYSTEM, ErrorType.RENDERING:
             return ErrorSeverity.CRITICAL
@@ -220,7 +220,7 @@ func _determine_severity(error_type: ErrorType, error_key: String) -> ErrorSever
 
 # === ERROR DISPLAY ===
 func _show_error_notification(error_data: Dictionary) -> void:
-    """Show error notification UI"""
+    ## Show error notification UI
     # Skip UI notifications in headless mode
     if is_headless_mode:
         print("[ErrorHandler] Headless mode: " + error_data.title + " - " + error_data.message)
@@ -258,7 +258,7 @@ func _show_error_notification(error_data: Dictionary) -> void:
         tween.tween_callback(_auto_dismiss_error.bind(error_data.id)).set_delay(5.0)
 
 func _create_notification_ui(error_data: Dictionary) -> Control:
-    """Create notification UI element"""
+    ## Create notification UI element
     # If ErrorNotificationScript is available, use that for a better UI experience
     if ErrorNotificationScript and not is_headless_mode:
         var notification = ErrorNotificationScript.new()
@@ -369,7 +369,7 @@ func _create_notification_ui(error_data: Dictionary) -> Control:
     return panel
 
 func _get_severity_color(severity: ErrorSeverity) -> Color:
-    """Get color for error severity"""
+    ## Get color for error severity
     match severity:
         ErrorSeverity.INFO:
             return Color(0.0, 0.7, 1.0, 1.0)  # Blue
@@ -384,11 +384,11 @@ func _get_severity_color(severity: ErrorSeverity) -> Color:
 
 # === ERROR ACTIONS ===
 func _on_close_pressed(error_id: String, panel: Control) -> void:
-    """Handle close button press"""
+    ## Handle close button press
     _dismiss_notification(error_id, panel)
 
 func _on_action_pressed(error_id: String, action_type: String, panel: Control) -> void:
-    """Handle action button press"""
+    ## Handle action button press
     error_action_taken.emit(error_id, action_type)
     
     # Handle specific actions
@@ -399,7 +399,7 @@ func _on_action_pressed(error_id: String, action_type: String, panel: Control) -
     _dismiss_notification(error_id, panel)
 
 func _handle_error_action(error_data: Dictionary, action_type: String) -> void:
-    """Handle specific error actions"""
+    ## Handle specific error actions
     match error_data.key:
         "network_connection_failed":
             if action_type == "primary":
@@ -418,7 +418,7 @@ func _handle_error_action(error_data: Dictionary, action_type: String) -> void:
                 get_tree().call_group("model_loader", "retry_load", model_name)
 
 func _auto_dismiss_error(error_id: String) -> void:
-    """Auto-dismiss error after timeout"""
+    ## Auto-dismiss error after timeout
     if error_id in active_errors:
         var panels = notification_container.get_child(0).get_children()
         for panel in panels:
@@ -427,7 +427,7 @@ func _auto_dismiss_error(error_id: String) -> void:
                 break
 
 func _dismiss_notification(error_id: String, panel: Control) -> void:
-    """Dismiss notification with animation"""
+    ## Dismiss notification with animation
     var tween = create_tween()
     tween.set_parallel(true)
     tween.tween_property(panel, "modulate:a", 0.0, 0.2)
@@ -438,7 +438,7 @@ func _dismiss_notification(error_id: String, panel: Control) -> void:
 
 # === ERROR LOGGING ===
 func _log_error(error_data: Dictionary) -> void:
-    """Log error to file and console"""
+    ## Log error to file and console
     error_log.append(error_data)
     
     # Console output
@@ -450,7 +450,7 @@ func _log_error(error_data: Dictionary) -> void:
         _write_error_log(error_data)
 
 func _write_error_log(error_data: Dictionary) -> void:
-    """Write error to log file"""
+    ## Write error to log file
     var log_file = FileAccess.open("user://error_log.txt", FileAccess.WRITE_READ)
     if log_file:
         log_file.seek_end()
@@ -464,7 +464,7 @@ func _write_error_log(error_data: Dictionary) -> void:
         log_file.close()
 
 func _generate_error_id() -> String:
-    """Generate unique error ID"""
+    ## Generate unique error ID
     return "err_" + str(Time.get_ticks_msec()) + "_" + str(randi() % 1000)
 
 # === SINGLETON SETUP ===

@@ -114,7 +114,7 @@ func get_last_results() -> Dictionary:
 # === PRIVATE VALIDATION METHODS ===
 
 func _validate_autoloads() -> void:
-	"""Validate all required autoloads for educational features"""
+	## Validate all required autoloads for educational features
 	validation_progress.emit(ValidationCategory.AUTOLOADS, 0.0)
 	
 	var required_autoloads: Array[String] = [
@@ -151,7 +151,7 @@ func _validate_autoloads() -> void:
 	}
 
 func _validate_resources() -> void:
-	"""Validate critical educational resources"""
+	## Validate critical educational resources
 	validation_progress.emit(ValidationCategory.RESOURCES, 0.0)
 	
 	var critical_resources: Array[Dictionary] = [
@@ -186,7 +186,7 @@ func _validate_resources() -> void:
 	}
 
 func _validate_ui_components() -> void:
-	"""Validate UI component system for educational interface"""
+	## Validate UI component system for educational interface
 	validation_progress.emit(ValidationCategory.UI_COMPONENTS, 0.0)
 	
 	# Test critical UI factories
@@ -220,7 +220,7 @@ func _validate_ui_components() -> void:
 	validation_progress.emit(ValidationCategory.UI_COMPONENTS, 1.0)
 
 func _validate_educational_content() -> void:
-	"""Validate educational content availability and integrity"""
+	## Validate educational content availability and integrity
 	validation_progress.emit(ValidationCategory.EDUCATIONAL_CONTENT, 0.0)
 	
 	var knowledge_service: Node = get_node_or_null("/root/KnowledgeService")
@@ -258,7 +258,7 @@ func _validate_educational_content() -> void:
 	validation_progress.emit(ValidationCategory.EDUCATIONAL_CONTENT, 1.0)
 
 func _validate_performance() -> void:
-	"""Validate performance meets educational platform requirements"""
+	## Validate performance meets educational platform requirements
 	validation_progress.emit(ValidationCategory.PERFORMANCE, 0.0)
 	
 	# Check FPS
@@ -300,7 +300,7 @@ func _validate_performance() -> void:
 		}
 
 func _validate_accessibility() -> void:
-	"""Validate accessibility features for diverse learners"""
+	## Validate accessibility features for diverse learners
 	validation_progress.emit(ValidationCategory.ACCESSIBILITY, 0.0)
 	
 	# Check if UIThemeManager supports accessibility
@@ -325,7 +325,7 @@ func _validate_accessibility() -> void:
 # === HELPER METHODS ===
 
 func _get_category_errors(category: ValidationCategory) -> Array[String]:
-	"""Get errors for specific category"""
+	## Get errors for specific category
 	var category_errors: Array[String] = []
 	for error in _critical_errors:
 		if error.contains(_get_category_name(category)):
@@ -333,7 +333,7 @@ func _get_category_errors(category: ValidationCategory) -> Array[String]:
 	return category_errors
 
 func _get_category_name(category: ValidationCategory) -> String:
-	"""Get human-readable category name"""
+	## Get human-readable category name
 	match category:
 		ValidationCategory.AUTOLOADS:
 			return "Autoloads"
@@ -351,7 +351,7 @@ func _get_category_name(category: ValidationCategory) -> String:
 			return "Unknown"
 
 func _compile_results(total_time: float) -> Dictionary:
-	"""Compile final validation results"""
+	## Compile final validation results
 	var passed_count: int = 0
 	var warning_count: int = 0
 	var failed_count: int = 0
@@ -381,7 +381,7 @@ func _compile_results(total_time: float) -> Dictionary:
 	}
 
 func _print_validation_summary(results: Dictionary) -> void:
-	"""Print validation summary to console"""
+	## Print validation summary to console
 	print("\n" + "=" * 50)
 	print("STARTUP VALIDATION COMPLETE")
 	print("=" * 50)

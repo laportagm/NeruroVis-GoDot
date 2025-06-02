@@ -60,7 +60,7 @@ var _performance_monitor: PerformanceMonitor
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the benchmark system"""
+	## Initialize the benchmark system
 	_setup_timers()
 	
 	# Get reference to the performance monitor if available
@@ -76,7 +76,7 @@ func _ready() -> void:
 	print("[RenderingBenchmark] Initialized")
 
 func _process(_delta: float) -> void:
-	"""Process frame for benchmarking"""
+	## Process frame for benchmarking
 	if is_benchmarking and _current_test != "":
 		_frame_count += 1
 
@@ -84,7 +84,7 @@ func _process(_delta: float) -> void:
 ## Start benchmark suite with all tests
 ## @returns: bool - true if benchmarking started successfully
 func start_full_benchmark() -> bool:
-	"""Run all benchmark tests"""
+	## Run all benchmark tests
 	if is_benchmarking:
 		push_warning("[RenderingBenchmark] Benchmark already in progress")
 		return false
@@ -115,7 +115,7 @@ func start_full_benchmark() -> bool:
 ## @param test_name: String name of test to run
 ## @returns: bool - true if test started successfully
 func run_single_test(test_name: String) -> bool:
-	"""Run a specific benchmark test"""
+	## Run a specific benchmark test
 	if is_benchmarking:
 		push_warning("[RenderingBenchmark] Benchmark already in progress")
 		return false
@@ -144,7 +144,7 @@ func run_single_test(test_name: String) -> bool:
 ## @param custom_path: Optional custom save path
 ## @returns: bool - true if saved successfully
 func save_results(custom_path: String = "") -> bool:
-	"""Save benchmark results to file"""
+	## Save benchmark results to file
 	if _results.is_empty():
 		push_warning("[RenderingBenchmark] No results to save")
 		return false
@@ -165,12 +165,12 @@ func save_results(custom_path: String = "") -> bool:
 ## Get the last benchmark results
 ## @returns: Dictionary with benchmark results
 func get_results() -> Dictionary:
-	"""Get the most recent benchmark results"""
+	## Get the most recent benchmark results
 	return _results
 
 ## Cancel current benchmarking
 func cancel_benchmark() -> void:
-	"""Cancel the current benchmark"""
+	## Cancel the current benchmark
 	if is_benchmarking:
 		is_benchmarking = false
 		_test_queue.clear()
@@ -181,7 +181,7 @@ func cancel_benchmark() -> void:
 
 # === PRIVATE METHODS ===
 func _setup_timers() -> void:
-	"""Setup benchmark timers"""
+	## Setup benchmark timers
 	# Benchmark duration timer
 	_benchmark_timer = Timer.new()
 	_benchmark_timer.one_shot = true
@@ -195,7 +195,7 @@ func _setup_timers() -> void:
 	add_child(_measurement_timer)
 
 func _start_next_test() -> void:
-	"""Start the next test in queue"""
+	## Start the next test in queue
 	if _test_queue.is_empty():
 		_complete_benchmark()
 		return
@@ -233,7 +233,7 @@ func _start_next_test() -> void:
 			_start_next_test()
 
 func _complete_benchmark() -> void:
-	"""Complete the benchmark suite"""
+	## Complete the benchmark suite
 	is_benchmarking = false
 	
 	# Calculate summary
@@ -247,7 +247,7 @@ func _complete_benchmark() -> void:
 	save_results()
 
 func _calculate_summary() -> void:
-	"""Calculate summary metrics from all test results"""
+	## Calculate summary metrics from all test results
 	var summary = {}
 	
 	# Average FPS across tests
@@ -279,7 +279,7 @@ func _calculate_summary() -> void:
 	_results["summary"] = summary
 
 func _on_benchmark_timer_timeout() -> void:
-	"""Handle benchmark timer completion"""
+	## Handle benchmark timer completion
 	# Complete current test
 	_complete_current_test()
 	
@@ -287,7 +287,7 @@ func _on_benchmark_timer_timeout() -> void:
 	_start_next_test()
 
 func _on_measurement_timer_timeout() -> void:
-	"""Take measurements at regular intervals"""
+	## Take measurements at regular intervals
 	if not is_benchmarking or _current_test == "":
 		return
 	
@@ -310,7 +310,7 @@ func _on_measurement_timer_timeout() -> void:
 			_take_detailed_memory_measurements()
 
 func _take_common_measurements() -> void:
-	"""Take common measurements for all tests"""
+	## Take common measurements for all tests
 	# FPS calculation from frame count since last measurement
 	var current_time = Time.get_ticks_msec() / 1000.0
 	var time_elapsed = current_time - _start_time
@@ -345,7 +345,7 @@ func _take_common_measurements() -> void:
 			])
 
 func _complete_current_test() -> void:
-	"""Complete the current test and calculate results"""
+	## Complete the current test and calculate results
 	if _current_test == "":
 		return
 	
@@ -379,7 +379,7 @@ func _complete_current_test() -> void:
 	_current_test = ""
 
 func _calculate_fps_test_results() -> Dictionary:
-	"""Calculate results for FPS tests"""
+	## Calculate results for FPS tests
 	var results = {}
 	
 	if _fps_samples.is_empty():
@@ -430,7 +430,7 @@ func _calculate_fps_test_results() -> Dictionary:
 	return results
 
 func _calculate_model_loading_results() -> Dictionary:
-	"""Calculate results for model loading test"""
+	## Calculate results for model loading test
 	var results = {}
 	
 	# Get loading times from model loader if available
@@ -462,7 +462,7 @@ func _calculate_model_loading_results() -> Dictionary:
 	return results
 
 func _calculate_selection_performance_results() -> Dictionary:
-	"""Calculate results for selection performance test"""
+	## Calculate results for selection performance test
 	var results = {}
 	
 	# Placeholder for selection times - in a real implementation,
@@ -490,7 +490,7 @@ func _calculate_selection_performance_results() -> Dictionary:
 	return results
 
 func _calculate_memory_usage_results() -> Dictionary:
-	"""Calculate results for memory usage test"""
+	## Calculate results for memory usage test
 	var results = {}
 	
 	if _memory_samples.is_empty():
@@ -526,13 +526,13 @@ func _calculate_memory_usage_results() -> Dictionary:
 	return results
 
 func _start_idle_fps_test() -> void:
-	"""Start idle FPS benchmark"""
+	## Start idle FPS benchmark
 	_start_time = Time.get_ticks_msec() / 1000.0
 	_measurement_timer.start(measurement_interval)
 	_benchmark_timer.start(test_duration)
 
 func _start_model_loading_test() -> void:
-	"""Start model loading benchmark"""
+	## Start model loading benchmark
 	# Reset models to ensure clean load
 	if _model_registry != null and _model_registry.has_method("clear_models"):
 		_model_registry.clear_models()
@@ -554,7 +554,7 @@ func _start_model_loading_test() -> void:
 		_benchmark_timer.start(test_duration)
 
 func _on_models_loaded(_model_names: Array) -> void:
-	"""Handle model loading completion"""
+	## Handle model loading completion
 	# Disconnect from signal
 	if _model_registry != null and _model_registry.has_signal("models_loaded"):
 		if _model_registry.models_loaded.is_connected(_on_models_loaded):
@@ -564,25 +564,25 @@ func _on_models_loaded(_model_names: Array) -> void:
 	_benchmark_timer.start(2.0)  # Short duration after loading completes
 
 func _start_rotation_fps_test() -> void:
-	"""Start rotation FPS benchmark"""
+	## Start rotation FPS benchmark
 	_start_time = Time.get_ticks_msec() / 1000.0
 	_measurement_timer.start(measurement_interval)
 	_benchmark_timer.start(test_duration)
 
 func _start_selection_performance_test() -> void:
-	"""Start selection performance benchmark"""
+	## Start selection performance benchmark
 	_start_time = Time.get_ticks_msec() / 1000.0
 	_measurement_timer.start(measurement_interval)
 	_benchmark_timer.start(test_duration)
 
 func _start_memory_usage_test() -> void:
-	"""Start memory usage benchmark"""
+	## Start memory usage benchmark
 	_start_time = Time.get_ticks_msec() / 1000.0
 	_measurement_timer.start(measurement_interval)
 	_benchmark_timer.start(test_duration)
 
 func _simulate_rotation() -> void:
-	"""Simulate camera rotation for rotation benchmark"""
+	## Simulate camera rotation for rotation benchmark
 	# Find the camera node
 	var camera = _find_camera_node()
 	if not camera:
@@ -592,7 +592,7 @@ func _simulate_rotation() -> void:
 	camera.rotate_y(0.01)
 
 func _simulate_selection() -> void:
-	"""Simulate structure selection for selection benchmark"""
+	## Simulate structure selection for selection benchmark
 	# This would typically involve raycasting and selection logic
 	# For this benchmark script, we'll just simulate the operation
 	# In a real implementation, you would call the actual selection methods
@@ -611,12 +611,12 @@ func _simulate_selection() -> void:
 		selection_manager.select_structure_at_index(index)
 
 func _take_detailed_memory_measurements() -> void:
-	"""Take more detailed memory measurements"""
+	## Take more detailed memory measurements
 	# Already covered by common measurements
 	pass
 
 func _find_camera_node() -> Camera3D:
-	"""Find the main camera in the scene"""
+	## Find the main camera in the scene
 	# Try common camera paths
 	var camera_paths = [
 		"/root/Main/Camera3D",
@@ -634,7 +634,7 @@ func _find_camera_node() -> Camera3D:
 	return _find_node_of_type(get_tree().root, Camera3D)
 
 func _find_selection_manager() -> Node:
-	"""Find the selection manager node"""
+	## Find the selection manager node
 	# Try known selection manager types
 	var selection_manager_paths = [
 		"/root/BrainStructureSelectionManager",
@@ -654,7 +654,7 @@ func _find_selection_manager() -> Node:
 	return _find_node_with_name_containing(get_tree().root, "SelectionManager")
 
 func _find_node_of_type(node: Node, type) -> Node:
-	"""Recursively find a node of a specific type"""
+	## Recursively find a node of a specific type
 	if node.is_class(type.get_class()):
 		return node
 	
@@ -666,7 +666,7 @@ func _find_node_of_type(node: Node, type) -> Node:
 	return null
 
 func _find_node_with_name_containing(node: Node, name_part: String) -> Node:
-	"""Recursively find a node with a name containing the specified string"""
+	## Recursively find a node with a name containing the specified string
 	if name_part.to_lower() in node.name.to_lower():
 		return node
 	

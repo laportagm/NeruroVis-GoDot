@@ -45,11 +45,11 @@ var _is_initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the ModelLoader component"""
+	## Initialize the ModelLoader component
 	_is_initialized = true
 
 func _process(delta: float) -> void:
-	"""Called every frame to check loading progress"""
+	## Called every frame to check loading progress
 	if not _is_initialized:
 		return
 	
@@ -61,7 +61,7 @@ func _process(delta: float) -> void:
 ## @param model_path: String path to the model file
 ## @return: bool true if loading started successfully
 func load_model_async(model_path: String) -> bool:
-	"""Load a 3D model file asynchronously with progress tracking"""
+	## Load a 3D model file asynchronously with progress tracking
 	
 	# Validation
 	if model_path.is_empty():
@@ -84,7 +84,7 @@ func load_model_async(model_path: String) -> bool:
 ## @param model_path: String path to the model
 ## @return: PackedScene or null if not cached
 func get_cached_model(model_path: String) -> PackedScene:
-	"""Get a cached model resource"""
+	## Get a cached model resource
 	
 	if enable_caching and _model_cache.has(model_path):
 		return _model_cache[model_path]
@@ -93,19 +93,19 @@ func get_cached_model(model_path: String) -> PackedScene:
 
 ## Clear the model cache
 func clear_cache() -> void:
-	"""Clear all cached models"""
+	## Clear all cached models
 	_model_cache.clear()
 
 # === PRIVATE METHODS ===
 func _process_loading_queue() -> void:
-	"""Process the model loading queue"""
+	## Process the model loading queue
 	
 	while _loading_queue.size() > 0 and _active_loads.size() < MAX_CONCURRENT_LOADS:
 		var model_path = _loading_queue.pop_front()
 		_start_model_load(model_path)
 
 func _start_model_load(model_path: String) -> void:
-	"""Start loading a specific model"""
+	## Start loading a specific model
 	
 	var loader = ResourceLoader.load_threaded_request(model_path)
 	if loader != OK:
@@ -116,7 +116,7 @@ func _start_model_load(model_path: String) -> void:
 	is_loading = _active_loads.size() > 0
 
 func _check_loading_progress() -> void:
-	"""Check progress of active loads"""
+	## Check progress of active loads
 	
 	for model_path in _active_loads.keys():
 		var progress = []
@@ -131,7 +131,7 @@ func _check_loading_progress() -> void:
 			loading_progress.emit(model_path, progress[0] if progress.size() > 0 else 0.0)
 
 func _on_model_loaded(model_path: String, resource: PackedScene) -> void:
-	"""Handle successful model load"""
+	## Handle successful model load
 	
 	_active_loads.erase(model_path)
 	is_loading = _active_loads.size() > 0
@@ -144,14 +144,14 @@ func _on_model_loaded(model_path: String, resource: PackedScene) -> void:
 	model_loaded.emit(model_path, resource)
 
 func _on_model_load_failed(model_path: String, error: String) -> void:
-	"""Handle failed model load"""
+	## Handle failed model load
 	
 	_active_loads.erase(model_path)
 	is_loading = _active_loads.size() > 0
 	model_load_failed.emit(model_path, error)
 
 func _enforce_cache_limits() -> void:
-	"""Enforce cache size limits"""
+	## Enforce cache size limits
 	
 	while _model_cache.size() > CACHE_SIZE_LIMIT:
 		var oldest_key = _model_cache.keys()[0]

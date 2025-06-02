@@ -55,7 +55,7 @@ func _ready() -> void:
 	_initialize_component()
 
 func _initialize_component() -> void:
-	"""Initialize the modern info panel component"""
+	## Initialize the modern info panel component
 	current_state = PanelState.INITIALIZING
 	
 	# Set component metadata
@@ -74,7 +74,7 @@ func _initialize_component() -> void:
 		print("[InfoPanelComponent] Initialized with ID: %s" % component_id)
 
 func _setup_layout() -> void:
-	"""Setup the main layout structure"""
+	## Setup the main layout structure
 	
 	# Apply base styling
 	UIThemeManager.apply_enhanced_panel_style(self, "elevated")
@@ -96,7 +96,7 @@ func _setup_layout() -> void:
 	# Content will be added to scroll container
 
 func _create_ui_fragments() -> void:
-	"""Create UI fragments using component registry"""
+	## Create UI fragments using component registry
 	
 	# Create header fragment
 	header_fragment = ComponentRegistry.create_component("header", {
@@ -132,7 +132,7 @@ func _create_ui_fragments() -> void:
 		main_container.add_child(actions_fragment)
 
 func _setup_responsive_behavior() -> void:
-	"""Setup responsive behavior for different screen sizes"""
+	## Setup responsive behavior for different screen sizes
 	viewport_size = get_viewport().get_visible_rect().size
 	_update_responsive_layout()
 	
@@ -140,7 +140,7 @@ func _setup_responsive_behavior() -> void:
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
 func _setup_interactions() -> void:
-	"""Setup component interactions and signal connections"""
+	## Setup component interactions and signal connections
 	
 	# Connect header signals
 	if header_fragment and header_fragment.has_signal("action_triggered"):
@@ -165,7 +165,7 @@ func _setup_interactions() -> void:
 	set_process_unhandled_input(true)
 
 func _setup_advanced_interactions() -> void:
-	"""Setup advanced interaction features"""
+	## Setup advanced interaction features
 	# Enable drag and drop for panel repositioning
 	set_meta("draggable", true)
 	set_meta("drag_type", "panel")
@@ -184,7 +184,7 @@ func _setup_advanced_interactions() -> void:
 		_setup_touch_gestures()
 
 func _setup_touch_gestures() -> void:
-	"""Setup touch gesture support"""
+	## Setup touch gesture support
 	# Enable touch gesture recognition
 	set_meta("gesture_enabled", true)
 	
@@ -202,7 +202,7 @@ func _setup_touch_gestures() -> void:
 
 # === PUBLIC API ===
 func configure(config: Dictionary) -> void:
-	"""Configure the component with new settings"""
+	## Configure the component with new settings
 	component_config = config.duplicate()
 	component_id = config.get("component_id", "info_panel_default")
 	
@@ -235,7 +235,7 @@ func configure(config: Dictionary) -> void:
 		_restore_component_state()
 
 func display_structure_info(structure_info: Dictionary) -> void:
-	"""Display information for a brain structure"""
+	## Display information for a brain structure
 	current_state = PanelState.DISPLAYING
 	structure_data = structure_info.duplicate()
 	
@@ -267,7 +267,7 @@ func display_structure_info(structure_info: Dictionary) -> void:
 		print("[InfoPanelComponent] Displayed info for: %s" % structure_name)
 
 func show_panel() -> void:
-	"""Show the panel with animation"""
+	## Show the panel with animation
 	if current_state == PanelState.DISPLAYING:
 		visible = true
 		
@@ -276,7 +276,7 @@ func show_panel() -> void:
 			UIThemeManager.animate_enhanced_entrance(self)
 
 func hide_panel() -> void:
-	"""Hide the panel with animation"""
+	## Hide the panel with animation
 	current_state = PanelState.CLOSING
 	
 	# Save state before hiding
@@ -291,7 +291,7 @@ func hide_panel() -> void:
 		panel_closed.emit()
 
 func get_state() -> Dictionary:
-	"""Get current component state for persistence"""
+	## Get current component state for persistence
 	return {
 		"structure_data": structure_data,
 		"section_states": section_states,
@@ -304,7 +304,7 @@ func get_state() -> Dictionary:
 	}
 
 func restore_state(state: Dictionary) -> void:
-	"""Restore component state from persistence"""
+	## Restore component state from persistence
 	if state.has("section_states"):
 		section_states = state.section_states
 		
@@ -330,7 +330,7 @@ func restore_state(state: Dictionary) -> void:
 
 # === PRIVATE METHODS ===
 func _update_responsive_layout() -> void:
-	"""Update layout based on viewport size"""
+	## Update layout based on viewport size
 	viewport_size = get_viewport().get_visible_rect().size
 	is_mobile_layout = viewport_size.x <= 768
 	
@@ -353,7 +353,7 @@ func _update_responsive_layout() -> void:
 		actions_fragment.update_responsive_config(responsive_config)
 
 func _apply_theme() -> void:
-	"""Apply current theme to component using StyleEngine"""
+	## Apply current theme to component using StyleEngine
 	# Use new StyleEngine for unified theming
 	if FeatureFlags.is_enabled(FeatureFlags.UI_STYLE_ENGINE):
 		_apply_style_engine_theme()
@@ -372,7 +372,7 @@ func _apply_theme() -> void:
 		actions_fragment.apply_theme(panel_theme)
 
 func _apply_style_engine_theme() -> void:
-	"""Apply theme using StyleEngine"""
+	## Apply theme using StyleEngine
 	var style_config = {
 		"type": "panel",
 		"variant": "primary" if panel_theme == "enhanced" else "minimal",
@@ -396,7 +396,7 @@ func _apply_style_engine_theme() -> void:
 		add_theme_color_override("border_color", border_color)
 
 func _apply_positioning(position_hint: String) -> void:
-	"""Apply positioning based on hint"""
+	## Apply positioning based on hint
 	match position_hint:
 		"right":
 			anchor_left = 1.0
@@ -415,7 +415,7 @@ func _apply_positioning(position_hint: String) -> void:
 			offset_right = custom_minimum_size.x / 2
 
 func _save_component_state() -> void:
-	"""Save component state for persistence"""
+	## Save component state for persistence
 	if component_id.is_empty():
 		return
 	
@@ -424,7 +424,7 @@ func _save_component_state() -> void:
 	state_changed.emit(state)
 
 func _restore_component_state() -> void:
-	"""Restore component state from persistence"""
+	## Restore component state from persistence
 	if component_id.is_empty():
 		return
 	
@@ -433,13 +433,13 @@ func _restore_component_state() -> void:
 		restore_state(state)
 
 func _restore_scroll_position(scroll_pos: float) -> void:
-	"""Restore scroll position after content is loaded"""
+	## Restore scroll position after content is loaded
 	if scroll_container:
 		scroll_container.scroll_vertical = int(scroll_pos)
 
 # === EVENT HANDLERS ===
 func _on_header_action(action: String, data: Dictionary = {}) -> void:
-	"""Handle header actions"""
+	## Handle header actions
 	match action:
 		"close":
 			hide_panel()
@@ -454,7 +454,7 @@ func _on_header_action(action: String, data: Dictionary = {}) -> void:
 			action_triggered.emit(action, data)
 
 func _on_content_section_toggled(section_name: String, expanded: bool) -> void:
-	"""Handle section toggle in content"""
+	## Handle section toggle in content
 	section_states[section_name] = expanded
 	section_toggled.emit(section_name, expanded)
 	
@@ -463,7 +463,7 @@ func _on_content_section_toggled(section_name: String, expanded: bool) -> void:
 		_save_component_state()
 
 func _on_content_changed(_change_data: Dictionary) -> void:
-	"""Handle content changes"""
+	## Handle content changes
 	# Save scroll position
 	if scroll_container:
 		scroll_position = scroll_container.scroll_vertical
@@ -472,7 +472,7 @@ func _on_content_changed(_change_data: Dictionary) -> void:
 		_save_component_state()
 
 func _on_actions_triggered(action: String, data: Dictionary = {}) -> void:
-	"""Handle action button presses"""
+	## Handle action button presses
 	match action:
 		"notes":
 			action_triggered.emit("show_notes", {"structure_id": structure_data.get("id", "")})
@@ -484,11 +484,11 @@ func _on_actions_triggered(action: String, data: Dictionary = {}) -> void:
 			action_triggered.emit(action, data)
 
 func _on_viewport_size_changed() -> void:
-	"""Handle viewport size changes"""
+	## Handle viewport size changes
 	_update_responsive_layout()
 
 func _unhandled_input(event: InputEvent) -> void:
-	"""Handle keyboard shortcuts"""
+	## Handle keyboard shortcuts
 	if not visible or current_state != PanelState.DISPLAYING:
 		return
 	
@@ -504,7 +504,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # === ADVANCED INTERACTION HANDLERS ===
 func _on_mouse_entered() -> void:
-	"""Handle mouse entering the panel"""
+	## Handle mouse entering the panel
 	if FeatureFlags.is_enabled(FeatureFlags.UI_ADVANCED_INTERACTIONS):
 		# Add hover effect using StyleEngine
 		var hover_tween = StyleEngine.create_scale_animation(
@@ -516,7 +516,7 @@ func _on_mouse_entered() -> void:
 		hover_tween.play()
 
 func _on_mouse_exited() -> void:
-	"""Handle mouse exiting the panel"""
+	## Handle mouse exiting the panel
 	if FeatureFlags.is_enabled(FeatureFlags.UI_ADVANCED_INTERACTIONS):
 		# Remove hover effect
 		var exit_tween = StyleEngine.create_scale_animation(
@@ -528,7 +528,7 @@ func _on_mouse_exited() -> void:
 		exit_tween.play()
 
 func _handle_gesture_action(gesture_name: String) -> void:
-	"""Handle gesture-based actions"""
+	## Handle gesture-based actions
 	var gesture_mappings = get_meta("gesture_mappings", {})
 	var action = gesture_mappings.get(gesture_name, "")
 	
@@ -550,7 +550,7 @@ func _handle_gesture_action(gesture_name: String) -> void:
 			action_triggered.emit("show_context_menu", {"source": "gesture"})
 
 func _expand_all_sections() -> void:
-	"""Expand all collapsible sections"""
+	## Expand all collapsible sections
 	for section_name in section_states.keys():
 		section_states[section_name] = true
 	
@@ -569,7 +569,7 @@ func _expand_all_sections() -> void:
 		expand_tween.play()
 
 func _collapse_all_sections() -> void:
-	"""Collapse all sections except description"""
+	## Collapse all sections except description
 	for section_name in section_states.keys():
 		if section_name != "description":  # Keep description always visible
 			section_states[section_name] = false
@@ -579,7 +579,7 @@ func _collapse_all_sections() -> void:
 		content_fragment.collapse_all_sections()
 
 func _toggle_zoom_mode() -> void:
-	"""Toggle content zoom mode"""
+	## Toggle content zoom mode
 	var is_zoomed = get_meta("is_zoomed", false)
 	var target_scale = Vector2(1.2, 1.2) if not is_zoomed else Vector2.ONE
 	
@@ -595,7 +595,7 @@ func _toggle_zoom_mode() -> void:
 
 # === COMPONENT LIFECYCLE ===
 func _exit_tree() -> void:
-	"""Clean up component resources"""
+	## Clean up component resources
 	# Save final state
 	if FeatureFlags.is_enabled(FeatureFlags.UI_STATE_PERSISTENCE) and component_id != "":
 		_save_component_state()
@@ -606,7 +606,7 @@ func _exit_tree() -> void:
 
 # === STATIC FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> InfoPanelComponent:
-	"""Static factory method for creating configured panels"""
+	## Static factory method for creating configured panels
 	var panel = InfoPanelComponent.new()
 	panel.configure(config)
 	return panel

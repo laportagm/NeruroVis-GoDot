@@ -25,7 +25,7 @@ func _ready() -> void:
 	_run_initial_validation()
 
 func _setup_demo_ui() -> void:
-	"""Setup demo interface"""
+	## Setup demo interface
 	
 	# Main layout
 	var main_vbox = VBoxContainer.new()
@@ -74,7 +74,7 @@ func _setup_demo_ui() -> void:
 	main_vbox.add_child(component_demos)
 
 func _setup_feature_controls() -> void:
-	"""Setup feature flag controls"""
+	## Setup feature flag controls
 	
 	var important_flags = [
 		FeatureFlags.UI_MODULAR_COMPONENTS,
@@ -89,7 +89,7 @@ func _setup_feature_controls() -> void:
 		feature_controls.add_child(flag_control)
 
 func _create_flag_control(flag_name: String) -> Control:
-	"""Create control for a feature flag"""
+	## Create control for a feature flag
 	var hbox = HBoxContainer.new()
 	
 	# Flag toggle
@@ -114,7 +114,7 @@ func _create_flag_control(flag_name: String) -> Control:
 	return hbox
 
 func _setup_component_demos() -> void:
-	"""Setup component demonstration buttons"""
+	## Setup component demonstration buttons
 	
 	var demos = [
 		{"name": "Create Info Panel", "action": "_demo_create_info_panel"},
@@ -131,7 +131,7 @@ func _setup_component_demos() -> void:
 		component_demos.add_child(button)
 
 func _run_initial_validation() -> void:
-	"""Run initial validation of foundation layer"""
+	## Run initial validation of foundation layer
 	status_label.text = "✅ Foundation layer loaded successfully"
 	
 	_log_to_results("[b]Foundation Layer Status[/b]")
@@ -150,7 +150,7 @@ func _run_initial_validation() -> void:
 
 # === EVENT HANDLERS ===
 func _on_flag_toggled(flag_name: String, enabled: bool) -> void:
-	"""Handle feature flag toggle"""
+	## Handle feature flag toggle
 	if enabled:
 		FeatureFlags.enable_feature(flag_name)
 	else:
@@ -159,7 +159,7 @@ func _on_flag_toggled(flag_name: String, enabled: bool) -> void:
 	_log_to_results("🎛️ %s: %s" % [flag_name, "enabled" if enabled else "disabled"])
 
 func _run_foundation_tests() -> void:
-	"""Run comprehensive foundation tests"""
+	## Run comprehensive foundation tests
 	_log_to_results("[b]🧪 Running Foundation Tests...[/b]")
 	test_button.disabled = true
 	
@@ -187,7 +187,7 @@ func _run_foundation_tests() -> void:
 
 # === COMPONENT DEMOS ===
 func _demo_create_info_panel() -> void:
-	"""Demo: Create info panel through new system"""
+	## Demo: Create info panel through new system
 	_log_to_results("[b]📋 Creating Info Panel Demo[/b]")
 	
 	# Enable new systems for demo
@@ -212,7 +212,7 @@ func _demo_create_info_panel() -> void:
 		_log_to_results("❌ Failed to create info panel")
 
 func _demo_component_caching() -> void:
-	"""Demo: Component caching system"""
+	## Demo: Component caching system
 	_log_to_results("[b]🔄 Component Caching Demo[/b]")
 	
 	FeatureFlags.enable_feature(FeatureFlags.UI_COMPONENT_POOLING)
@@ -242,7 +242,7 @@ func _demo_component_caching() -> void:
 	ComponentRegistry.release_component(component_id)
 
 func _demo_state_persistence() -> void:
-	"""Demo: State persistence system"""
+	## Demo: State persistence system
 	_log_to_results("[b]💾 State Persistence Demo[/b]")
 	
 	FeatureFlags.enable_feature(FeatureFlags.UI_STATE_PERSISTENCE)
@@ -282,7 +282,7 @@ func _demo_state_persistence() -> void:
 	_log_to_results("📊 Saves performed: %d" % stats.saves_performed)
 
 func _demo_registry_stats() -> void:
-	"""Demo: Show component registry statistics"""
+	## Demo: Show component registry statistics
 	_log_to_results("[b]📊 Component Registry Statistics[/b]")
 	
 	var stats = ComponentRegistry.get_registry_stats()
@@ -296,7 +296,7 @@ func _demo_registry_stats() -> void:
 	_log_to_results("Registered factories: %d" % stats.registered_factories)
 
 func _demo_legacy_comparison() -> void:
-	"""Demo: Compare legacy vs new system"""
+	## Demo: Compare legacy vs new system
 	_log_to_results("[b]🔄 Legacy vs New System Comparison[/b]")
 	
 	# Test legacy mode
@@ -327,13 +327,13 @@ func _demo_legacy_comparison() -> void:
 
 # === UTILITY METHODS ===
 func _log_to_results(message: String) -> void:
-	"""Log message to results display"""
+	## Log message to results display
 	results_display.append_text(message + "\n")
 	results_display.scroll_to_line(results_display.get_line_count())
 
 # === STANDALONE DEMO RUNNER ===
 static func create_demo_window() -> Window:
-	"""Create standalone demo window"""
+	## Create standalone demo window
 	var window = Window.new()
 	window.title = "NeuroVis Foundation Demo"
 	window.size = Vector2i(800, 600)

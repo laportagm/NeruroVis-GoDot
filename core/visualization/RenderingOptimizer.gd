@@ -105,7 +105,7 @@ var _batching_groups: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the rendering optimizer"""
+	## Initialize the rendering optimizer
 	_setup_timers()
 	
 	# Find camera and LOD manager if available
@@ -121,7 +121,7 @@ func _ready() -> void:
 	print("[RenderingOptimizer] Initialized with " + str(_scene_objects.size()) + " objects")
 
 func _process(delta: float) -> void:
-	"""Update optimization in real-time"""
+	## Update optimization in real-time
 	if not _initialized:
 		return
 	
@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 ## @param model_name: String name of the model
 ## @returns: bool indicating success
 func optimize_model(model: Node3D, model_name: String) -> bool:
-	"""Apply optimization techniques to a specific model"""
+	## Apply optimization techniques to a specific model
 	if not _initialized or not model or not model.is_inside_tree():
 		return false
 	
@@ -174,7 +174,7 @@ func optimize_model(model: Node3D, model_name: String) -> bool:
 ## Force immediate optimization update
 ## @returns: bool indicating success
 func force_optimization_update() -> bool:
-	"""Force an immediate optimization update"""
+	## Force an immediate optimization update
 	if not _initialized:
 		return false
 	
@@ -185,7 +185,7 @@ func force_optimization_update() -> bool:
 ## @param settings: Dictionary of settings to update
 ## @returns: bool indicating success
 func update_settings(settings: Dictionary) -> bool:
-	"""Update multiple optimization settings at once"""
+	## Update multiple optimization settings at once
 	var needs_culling_update = false
 	var needs_material_update = false
 	var needs_lod_update = false
@@ -238,7 +238,7 @@ func update_settings(settings: Dictionary) -> bool:
 ## Get detailed performance statistics
 ## @returns: Dictionary with detailed performance data
 func get_detailed_stats() -> Dictionary:
-	"""Get detailed performance statistics"""
+	## Get detailed performance statistics
 	var stats = performance_stats.duplicate(true)
 	
 	# Add additional detailed information
@@ -254,7 +254,7 @@ func get_detailed_stats() -> Dictionary:
 ## Reset all optimizations to default state
 ## @returns: bool indicating success
 func reset_optimizations() -> bool:
-	"""Reset all optimizations to default state"""
+	## Reset all optimizations to default state
 	if not _initialized:
 		return false
 	
@@ -294,7 +294,7 @@ func reset_optimizations() -> bool:
 
 # === PRIVATE METHODS ===
 func _setup_timers() -> void:
-	"""Set up optimization timer"""
+	## Set up optimization timer
 	_optimization_timer = Timer.new()
 	_optimization_timer.wait_time = optimization_interval
 	_optimization_timer.autostart = true
@@ -302,7 +302,7 @@ func _setup_timers() -> void:
 	add_child(_optimization_timer)
 
 func _find_dependencies() -> void:
-	"""Find camera and LOD manager in the scene"""
+	## Find camera and LOD manager in the scene
 	# Find camera
 	var cameras = get_tree().get_nodes_in_group("Cameras")
 	if not cameras.is_empty():
@@ -339,7 +339,7 @@ func _find_dependencies() -> void:
 		push_warning("[RenderingOptimizer] No LOD manager found. LOD optimizations will be disabled.")
 
 func _collect_scene_objects() -> void:
-	"""Collect all relevant objects in the scene for optimization"""
+	## Collect all relevant objects in the scene for optimization
 	_scene_objects.clear()
 	
 	# Find all mesh instances in the scene
@@ -352,7 +352,7 @@ func _collect_scene_objects() -> void:
 	print("[RenderingOptimizer] Collected " + str(_scene_objects.size()) + " scene objects")
 
 func _collect_mesh_instances(node: Node, result: Array) -> void:
-	"""Recursively collect all mesh instances in the scene"""
+	## Recursively collect all mesh instances in the scene
 	if node is MeshInstance3D and node.visible:
 		if node.mesh:
 			result.append(node)
@@ -361,7 +361,7 @@ func _collect_mesh_instances(node: Node, result: Array) -> void:
 		_collect_mesh_instances(child, result)
 
 func _update_culling_settings() -> void:
-	"""Update culling settings for all objects"""
+	## Update culling settings for all objects
 	if not _initialized:
 		return
 	
@@ -381,7 +381,7 @@ func _update_culling_settings() -> void:
 		_organize_occlusion_objects()
 
 func _update_material_settings() -> void:
-	"""Update material batching settings"""
+	## Update material batching settings
 	if not _initialized:
 		return
 	
@@ -404,7 +404,7 @@ func _update_material_settings() -> void:
 	_batch_scene_materials()
 
 func _update_lod_settings() -> void:
-	"""Update LOD settings"""
+	## Update LOD settings
 	if not _initialized or not _lod_manager:
 		return
 	
@@ -425,11 +425,11 @@ func _update_lod_settings() -> void:
 		_adjust_lod_level(0)
 
 func _on_optimization_timer_timeout() -> void:
-	"""Regular optimization update"""
+	## Regular optimization update
 	_optimization_update()
 
 func _optimization_update() -> void:
-	"""Perform optimization update"""
+	## Perform optimization update
 	if not _initialized:
 		return
 	
@@ -444,7 +444,7 @@ func _optimization_update() -> void:
 	_update_performance_stats()
 
 func _perform_frustum_culling() -> void:
-	"""Perform frustum culling to hide objects outside camera view"""
+	## Perform frustum culling to hide objects outside camera view
 	if not _camera:
 		return
 	
@@ -496,7 +496,7 @@ func _perform_frustum_culling() -> void:
 	performance_stats.culled_objects = culled_count
 
 func _perform_occlusion_culling() -> void:
-	"""Perform occlusion culling to hide objects behind other objects"""
+	## Perform occlusion culling to hide objects behind other objects
 	if not _camera or not _occlusion_objects:
 		return
 	
@@ -554,7 +554,7 @@ func _perform_occlusion_culling() -> void:
 		current_group += 1
 
 func _organize_occlusion_objects() -> void:
-	"""Organize objects into groups for occlusion culling"""
+	## Organize objects into groups for occlusion culling
 	_occlusion_objects.clear()
 	
 	# Group objects by parent model
@@ -604,7 +604,7 @@ func _organize_occlusion_objects() -> void:
 		group.center = center
 
 func _batch_scene_materials() -> void:
-	"""Apply material batching to the scene"""
+	## Apply material batching to the scene
 	# Group materials by properties
 	var material_groups = {}
 	
@@ -682,7 +682,7 @@ func _batch_scene_materials() -> void:
 		}
 
 func _batch_model_materials(mesh_instances: Array, model_name: String) -> void:
-	"""Apply material batching to a specific model"""
+	## Apply material batching to a specific model
 	# Group materials by properties
 	var material_groups = {}
 	
@@ -760,7 +760,7 @@ func _batch_model_materials(mesh_instances: Array, model_name: String) -> void:
 		}
 
 func _setup_culling_for_model(model: Node3D, mesh_instances: Array, model_name: String) -> void:
-	"""Set up culling for a specific model"""
+	## Set up culling for a specific model
 	if mesh_instances.is_empty():
 		return
 	
@@ -788,7 +788,7 @@ func _setup_culling_for_model(model: Node3D, mesh_instances: Array, model_name: 
 		}
 
 func _generate_material_signature(material: Material) -> Dictionary:
-	"""Generate a signature to compare material properties"""
+	## Generate a signature to compare material properties
 	var signature = {}
 	
 	if material is StandardMaterial3D:
@@ -822,7 +822,7 @@ func _generate_material_signature(material: Material) -> Dictionary:
 	return signature
 
 func _compare_material_signatures(sig1: Dictionary, sig2: Dictionary) -> float:
-	"""Compare material signatures and return similarity (0.0-1.0)"""
+	## Compare material signatures and return similarity (0.0-1.0)
 	# For different material types, no similarity
 	if sig1.has("shader") != sig2.has("shader"):
 		return 0.0
@@ -885,12 +885,12 @@ func _compare_material_signatures(sig1: Dictionary, sig2: Dictionary) -> float:
 	return float(matches) / total
 
 func _colors_similar(color1: Color, color2: Color) -> bool:
-	"""Check if two colors are similar within a threshold"""
+	## Check if two colors are similar within a threshold
 	var distance = color1.distance_to(color2)
 	return distance < 0.2
 
 func _create_batched_material(materials: Array) -> Material:
-	"""Create a batched material from a group of similar materials"""
+	## Create a batched material from a group of similar materials
 	# In a complete implementation, this would create an optimized material
 	# For now, we'll use the first material as representative
 	var base_material = materials[0]
@@ -926,7 +926,7 @@ func _create_batched_material(materials: Array) -> Material:
 	return base_material
 
 func _update_performance_stats() -> void:
-	"""Update performance statistics"""
+	## Update performance statistics
 	# Calculate FPS
 	if not _frame_times.is_empty():
 		var avg_frame_time = _calculate_average_frametime()
@@ -962,7 +962,7 @@ func _update_performance_stats() -> void:
 	optimization_stats_updated.emit(performance_stats)
 
 func _calculate_average_frametime() -> float:
-	"""Calculate average frametime from recent frames"""
+	## Calculate average frametime from recent frames
 	if _frame_times.is_empty():
 		return 0.0
 	
@@ -973,7 +973,7 @@ func _calculate_average_frametime() -> float:
 	return sum / _frame_times.size()
 
 func _adjust_lod_based_on_performance() -> void:
-	"""Automatically adjust LOD level based on performance"""
+	## Automatically adjust LOD level based on performance
 	if not _lod_manager or not auto_lod_enabled:
 		return
 	
@@ -993,7 +993,7 @@ func _adjust_lod_based_on_performance() -> void:
 		_adjust_lod_level(performance_stats.lod_level - 1)
 
 func _adjust_lod_level(level: int) -> void:
-	"""Adjust LOD level if different from current"""
+	## Adjust LOD level if different from current
 	if not _lod_manager:
 		return
 	
@@ -1015,7 +1015,7 @@ func _adjust_lod_level(level: int) -> void:
 		performance_stats.lod_level = level
 
 func _format_memory_size(bytes: int) -> String:
-	"""Format memory size for display"""
+	## Format memory size for display
 	if bytes < 1024:
 		return str(bytes) + " B"
 	elif bytes < 1024 * 1024:

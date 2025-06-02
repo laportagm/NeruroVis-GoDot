@@ -59,7 +59,7 @@ const LOADING_MESSAGES = {
 
 # === PUBLIC API ===
 func show_loading(loading_type: LoadingType, context: Dictionary = {}) -> String:
-    """Show loading indicator"""
+    ## Show loading indicator
     var loading_id = _generate_loading_id()
     
     var loading_data = {
@@ -82,7 +82,7 @@ func show_loading(loading_type: LoadingType, context: Dictionary = {}) -> String
     return loading_id
 
 func update_progress(loading_id: String, progress: float, message: String = "") -> void:
-    """Update loading progress"""
+    ## Update loading progress
     if loading_id in active_loadings:
         var loading_data = active_loadings[loading_id]
         loading_data.progress = clamp(progress, 0.0, 1.0)
@@ -93,7 +93,7 @@ func update_progress(loading_id: String, progress: float, message: String = "") 
         loading_progress.emit(loading_id, progress)
 
 func complete_loading(loading_id: String, success: bool = true) -> void:
-    """Complete loading process"""
+    ## Complete loading process
     if loading_id in active_loadings:
         var loading_data = active_loadings[loading_id]
         loading_data.state = LoadingState.SUCCESS if success else LoadingState.ERROR
@@ -109,14 +109,14 @@ func complete_loading(loading_id: String, success: bool = true) -> void:
         loading_completed.emit(loading_id, success)
 
 func cancel_loading(loading_id: String) -> void:
-    """Cancel loading process"""
+    ## Cancel loading process
     if loading_id in active_loadings:
         _remove_loading(loading_id)
         loading_cancelled.emit(loading_id)
 
 # === UI CREATION ===
 func _create_loading_ui(loading_type: LoadingType, context: Dictionary) -> Control:
-    """Create loading UI based on type"""
+    ## Create loading UI based on type
     match loading_type:
         LoadingType.FULL_SCREEN:
             return _create_fullscreen_loading(context)
@@ -132,7 +132,7 @@ func _create_loading_ui(loading_type: LoadingType, context: Dictionary) -> Contr
             return _create_inline_loading(context)
 
 func _create_fullscreen_loading(context: Dictionary) -> Control:
-    """Create fullscreen loading overlay"""
+    ## Create fullscreen loading overlay
     var overlay = ColorRect.new()
     overlay.color = Color(0, 0, 0, 0.8)
     overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -184,7 +184,7 @@ func _create_fullscreen_loading(context: Dictionary) -> Control:
     return overlay
 
 func _create_inline_loading(context: Dictionary) -> Control:
-    """Create inline loading indicator"""
+    ## Create inline loading indicator
     var container = HBoxContainer.new()
     container.add_theme_constant_override("separation", 8)
     
@@ -205,7 +205,7 @@ func _create_inline_loading(context: Dictionary) -> Control:
     return container
 
 func _create_skeleton_loading(context: Dictionary) -> Control:
-    """Create skeleton loading placeholder"""
+    ## Create skeleton loading placeholder
     var skeleton = VBoxContainer.new()
     skeleton.add_theme_constant_override("separation", 12)
     
@@ -238,7 +238,7 @@ func _create_skeleton_loading(context: Dictionary) -> Control:
     return skeleton
 
 func _create_progress_loading(context: Dictionary) -> Control:
-    """Create progress bar loading"""
+    ## Create progress bar loading
     var container = VBoxContainer.new()
     container.add_theme_constant_override("separation", 8)
     
@@ -279,7 +279,7 @@ func _create_progress_loading(context: Dictionary) -> Control:
     return container
 
 func _create_shimmer_loading(context: Dictionary) -> Control:
-    """Create shimmer effect loading"""
+    ## Create shimmer effect loading
     var shimmer_container = Panel.new()
     shimmer_container.custom_minimum_size = context.get("size", Vector2(200, 100))
     
@@ -301,7 +301,7 @@ func _create_shimmer_loading(context: Dictionary) -> Control:
 
 # === SPINNER CREATION ===
 func _create_spinner(size: int = 32) -> Control:
-    """Create animated loading spinner"""
+    ## Create animated loading spinner
     var spinner = Control.new()
     spinner.custom_minimum_size = Vector2(size, size)
     
@@ -324,7 +324,7 @@ func _create_spinner(size: int = 32) -> Control:
     return spinner
 
 func _draw_spinner(control: Control, size: int) -> void:
-    """Draw custom spinner"""
+    ## Draw custom spinner
     var center = Vector2(size / 2, size / 2)
     var radius = size / 2 - 2
     
@@ -337,7 +337,7 @@ func _draw_spinner(control: Control, size: int) -> void:
 
 # === ANIMATIONS ===
 func _add_shimmer_animation(control: Control) -> void:
-    """Add shimmer animation to control"""
+    ## Add shimmer animation to control
     var gradient = Gradient.new()
     gradient.set_color(0, Color(1, 1, 1, 0))
     gradient.set_color(0.5, Color(1, 1, 1, 0.1))
@@ -353,7 +353,7 @@ func _add_shimmer_animation(control: Control) -> void:
     )
 
 func _update_loading_ui(ui_element: Control, progress: float, message: String) -> void:
-    """Update loading UI with progress"""
+    ## Update loading UI with progress
     # Find progress bar
     var progress_bars = ui_element.find_children("", "ProgressBar", true, false)
     for bar in progress_bars:
@@ -365,7 +365,7 @@ func _update_loading_ui(ui_element: Control, progress: float, message: String) -
         labels[0].text = message
 
 func _animate_completion(ui_element: Control, success: bool) -> void:
-    """Animate loading completion"""
+    ## Animate loading completion
     var tween = create_tween()
     
     if success:
@@ -382,7 +382,7 @@ func _animate_completion(ui_element: Control, success: bool) -> void:
             tween.tween_property(ui_element, "position:x", ui_element.position.x - 5, 0.05)
 
 func _remove_loading(loading_id: String) -> void:
-    """Remove loading indicator"""
+    ## Remove loading indicator
     if loading_id in active_loadings:
         var loading_data = active_loadings[loading_id]
         
@@ -395,7 +395,7 @@ func _remove_loading(loading_id: String) -> void:
         active_loadings.erase(loading_id)
 
 func _generate_loading_id() -> String:
-    """Generate unique loading ID"""
+    ## Generate unique loading ID
     return "load_" + str(Time.get_ticks_msec()) + "_" + str(randi() % 1000)
 
 # === SINGLETON SETUP ===

@@ -72,7 +72,7 @@ func _ready() -> void:
 	call_deferred("_initialize_enhanced_panel")
 
 func _initialize_enhanced_panel() -> void:
-	"""Initialize the enhanced educational model control panel"""
+	## Initialize the enhanced educational model control panel
 	_create_enhanced_ui_structure()
 	_apply_enhanced_styling()
 	_connect_enhanced_signals()
@@ -82,7 +82,7 @@ func _initialize_enhanced_panel() -> void:
 	print("[ENHANCED_MODEL_PANEL] Advanced model control panel initialized")
 
 func _create_enhanced_ui_structure() -> void:
-	"""Create sophisticated UI structure for model management"""
+	## Create sophisticated UI structure for model management
 	print("[ENHANCED_MODEL_PANEL] Creating enhanced UI structure")
 	
 	# Main container with enhanced margins
@@ -117,7 +117,7 @@ func _create_enhanced_ui_structure() -> void:
 	_create_enhanced_footer(main_vbox)
 
 func _create_enhanced_header(parent: Control) -> void:
-	"""Create sophisticated header with title and view controls"""
+	## Create sophisticated header with title and view controls
 	header_container = VBoxContainer.new()
 	header_container.name = "HeaderContainer"
 	header_container.add_theme_constant_override("separation", UIThemeManager.MARGIN_SMALL)
@@ -161,7 +161,7 @@ func _create_enhanced_header(parent: Control) -> void:
 	view_controls.add_child(view_mode_button)
 
 func _create_search_and_filter_section(parent: Control) -> void:
-	"""Create search and filtering interface"""
+	## Create search and filtering interface
 	search_container = HBoxContainer.new()
 	search_container.name = "SearchContainer"
 	search_container.add_theme_constant_override("separation", UIThemeManager.MARGIN_SMALL)
@@ -183,7 +183,7 @@ func _create_search_and_filter_section(parent: Control) -> void:
 	search_container.add_child(filter_button)
 
 func _create_category_navigation(parent: Control) -> void:
-	"""Create category navigation chips"""
+	## Create category navigation chips
 	# Category scroll container
 	var category_scroll = ScrollContainer.new()
 	category_scroll.name = "CategoryScroll"
@@ -197,7 +197,7 @@ func _create_category_navigation(parent: Control) -> void:
 	category_scroll.add_child(category_container)
 
 func _create_models_display_area(parent: Control) -> void:
-	"""Create models display area with scroll"""
+	## Create models display area with scroll
 	models_scroll = ScrollContainer.new()
 	models_scroll.name = "ModelsScroll"
 	models_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -211,7 +211,7 @@ func _create_models_display_area(parent: Control) -> void:
 	models_scroll.add_child(models_container)
 
 func _create_enhanced_footer(parent: Control) -> void:
-	"""Create footer with statistics and controls"""
+	## Create footer with statistics and controls
 	# Separator
 	var separator = HSeparator.new()
 	parent.add_child(separator)
@@ -236,7 +236,7 @@ func _create_enhanced_footer(parent: Control) -> void:
 	footer_container.add_child(reset_button)
 
 func _apply_enhanced_styling() -> void:
-	"""Apply sophisticated educational styling"""
+	## Apply sophisticated educational styling
 	# Main panel styling
 	UIThemeManager.apply_glass_panel(self, 0.95, "control")
 	
@@ -261,7 +261,7 @@ func _apply_enhanced_styling() -> void:
 	UIThemeManager.apply_modern_label(visibility_counter, UIThemeManager.FONT_SIZE_SMALL, UIThemeManager.TEXT_SECONDARY)
 
 func _connect_enhanced_signals() -> void:
-	"""Connect all interactive signals"""
+	## Connect all interactive signals
 	if search_field and not search_field.text_submitted.is_connected(_on_search_submitted):
 		search_field.text_submitted.connect(_on_search_submitted)
 		search_field.text_changed.connect(_on_search_text_changed)
@@ -276,19 +276,19 @@ func _connect_enhanced_signals() -> void:
 		reset_button.pressed.connect(_on_reset_pressed)
 
 func _setup_search_functionality() -> void:
-	"""Setup intelligent search with autocomplete"""
+	## Setup intelligent search with autocomplete
 	# TODO: Implement search suggestions and autocomplete
 	pass
 
 func _initialize_categories() -> void:
-	"""Create category navigation chips"""
+	## Create category navigation chips
 	for category_id in model_categories:
 		var category_data = model_categories[category_id]
 		var chip = _create_category_chip(category_id, category_data)
 		category_container.add_child(chip)
 
 func _create_category_chip(category_id: String, category_data: Dictionary) -> Button:
-	"""Create interactive category chip"""
+	## Create interactive category chip
 	var chip = Button.new()
 	chip.name = "CategoryChip_" + category_id
 	chip.text = category_data["icon"] + " " + category_data["name"]
@@ -305,8 +305,29 @@ func _create_category_chip(category_id: String, category_data: Dictionary) -> Bu
 	return chip
 
 func setup_with_models(model_names: Array) -> void:
-	"""Setup panel with enhanced model management"""
+	## Setup panel with enhanced model management
 	print("[ENHANCED_MODEL_PANEL] Setting up with " + str(model_names.size()) + " models")
+	
+	# Ensure UI is fully initialized
+	if not is_inside_tree() or not models_container:
+		push_error("[ENHANCED_MODEL_PANEL] UI not initialized. Call _initialize_enhanced_panel() first.")
+		# Initialize and try again
+		if not is_inside_tree():
+			print("[ENHANCED_MODEL_PANEL] Node not in tree yet, deferring initialization")
+			call_deferred("setup_with_models", model_names)
+			return
+		
+		# Try to initialize and retry
+		print("[ENHANCED_MODEL_PANEL] Attempting to initialize the UI...")
+		_initialize_enhanced_panel()
+		
+		# Safety check if initialization failed
+		if not models_container:
+			push_error("[ENHANCED_MODEL_PANEL] Critical error: UI initialization failed!")
+			return
+			
+		# At this point initialization succeeded
+		print("[ENHANCED_MODEL_PANEL] UI initialization successful, continuing setup")
 	
 	total_models = model_names.size()
 	visible_models = model_names.size()
@@ -331,7 +352,7 @@ func setup_with_models(model_names: Array) -> void:
 	_apply_current_filter()
 
 func _create_enhanced_model_card(model_name: String, index: int) -> Control:
-	"""Create sophisticated model card with educational features"""
+	## Create sophisticated model card with educational features
 	var card = PanelContainer.new()
 	card.name = "ModelCard_" + model_name
 	
@@ -364,7 +385,7 @@ func _create_enhanced_model_card(model_name: String, index: int) -> Control:
 	return card
 
 func _create_card_view_content(card: PanelContainer, model_name: String, metadata: Dictionary) -> void:
-	"""Create card view layout"""
+	## Create card view layout
 	var main_container = VBoxContainer.new()
 	main_container.add_theme_constant_override("separation", UIThemeManager.MARGIN_MEDIUM)
 	card.add_child(main_container)
@@ -417,7 +438,7 @@ func _create_card_view_content(card: PanelContainer, model_name: String, metadat
 	var difficulty = metadata.get("difficulty", "beginner")
 	var difficulty_label = Label.new()
 	difficulty_label.text = _get_difficulty_icon(difficulty) + " " + difficulty.capitalize()
-	UIThemeManager.apply_modern_label(difficulty_label, UIThemeManager.FONT_SIZE_TINY, _get_difficulty_color(difficulty), "badge", true)
+	UIThemeManager.apply_modern_label(difficulty_label, UIThemeManager.FONT_SIZE_TINY, _get_difficulty_color(difficulty), "badge")
 	status_container.add_child(difficulty_label)
 	
 	# Toggle switch
@@ -463,7 +484,7 @@ func _create_card_view_content(card: PanelContainer, model_name: String, metadat
 	focus_button.pressed.connect(_on_focus_pressed.bind(model_name))
 
 func _create_list_view_content(card: PanelContainer, model_name: String, metadata: Dictionary) -> void:
-	"""Create compact list view layout"""
+	## Create compact list view layout
 	var container = HBoxContainer.new()
 	container.add_theme_constant_override("separation", UIThemeManager.MARGIN_MEDIUM)
 	card.add_child(container)
@@ -506,20 +527,20 @@ func _create_list_view_content(card: PanelContainer, model_name: String, metadat
 	toggle.toggled.connect(_on_model_toggled.bind(model_name, status_label))
 
 func _add_enhanced_card_interactions(card: PanelContainer) -> void:
-	"""Add sophisticated hover and interaction effects"""
+	## Add sophisticated hover and interaction effects
 	card.mouse_entered.connect(func(): _on_card_hover_enter(card))
 	card.mouse_exited.connect(func(): _on_card_hover_exit(card))
 
 func _on_card_hover_enter(card: PanelContainer) -> void:
-	"""Enhanced hover effect with glow"""
+	## Enhanced hover effect with glow
 	UIThemeManager.animate_hover_glow(card, UIThemeManager.ACCENT_CYAN, 0.15)
 
 func _on_card_hover_exit(card: PanelContainer) -> void:
-	"""Remove hover effect"""
+	## Remove hover effect
 	UIThemeManager.animate_hover_glow_off(card)
 
 func _get_difficulty_icon(difficulty: String) -> String:
-	"""Get icon for difficulty level"""
+	## Get icon for difficulty level
 	match difficulty:
 		"beginner": return "🟢"
 		"intermediate": return "🟡"
@@ -527,7 +548,7 @@ func _get_difficulty_icon(difficulty: String) -> String:
 		_: return "⚪"
 
 func _get_difficulty_color(difficulty: String) -> Color:
-	"""Get color for difficulty level"""
+	## Get color for difficulty level
 	match difficulty:
 		"beginner": return UIThemeManager.ACCENT_GREEN
 		"intermediate": return UIThemeManager.ACCENT_ORANGE
@@ -535,7 +556,7 @@ func _get_difficulty_color(difficulty: String) -> Color:
 		_: return UIThemeManager.TEXT_SECONDARY
 
 func _apply_current_filter() -> void:
-	"""Apply current filter and search to models"""
+	## Apply current filter and search to models
 	for model_name in model_cards:
 		var card = model_cards[model_name]
 		var metadata = card.get_meta("metadata", {})
@@ -549,7 +570,7 @@ func _apply_current_filter() -> void:
 				UIThemeManager.animate_exit(card, UIThemeManager.ANIM_DURATION_FAST, "fade_scale")
 
 func _should_show_model(model_name: String, metadata: Dictionary) -> bool:
-	"""Determine if model should be shown based on filters"""
+	## Determine if model should be shown based on filters
 	# Category filter
 	if current_filter != "all":
 		var model_category = metadata.get("category", "all")
@@ -581,12 +602,19 @@ func _should_show_model(model_name: String, metadata: Dictionary) -> bool:
 	return true
 
 func _update_visibility_counter() -> void:
-	"""Update the visibility counter in footer"""
-	if visibility_counter:
-		visibility_counter.text = "%d/%d models visible" % [visible_models, total_models]
+	## Update the visibility counter in footer
+	if not visibility_counter:
+		push_warning("[ENHANCED_MODEL_PANEL] visibility_counter is null in _update_visibility_counter()")
+		return
+		
+	visibility_counter.text = "%d/%d models visible" % [visible_models, total_models]
 
 func _clear_models() -> void:
-	"""Clear all model cards safely"""
+	## Clear all model cards safely
+	if not models_container:
+		push_warning("[ENHANCED_MODEL_PANEL] models_container is null in _clear_models()")
+		return
+		
 	for child in models_container.get_children():
 		models_container.remove_child(child)
 		child.queue_free()
@@ -594,7 +622,7 @@ func _clear_models() -> void:
 
 # Enhanced signal handlers
 func _on_model_toggled(pressed: bool, model_name: String, status_label: Label) -> void:
-	"""Handle model visibility toggle with enhanced feedback"""
+	## Handle model visibility toggle with enhanced feedback
 	print("[ENHANCED_MODEL_PANEL] Model '%s' toggled to: %s" % [model_name, str(pressed)])
 	
 	# Update status with smooth animation
@@ -614,17 +642,17 @@ func _on_model_toggled(pressed: bool, model_name: String, status_label: Label) -
 	emit_signal("model_visibility_changed", model_name, pressed)
 
 func _on_learn_pressed(model_name: String) -> void:
-	"""Handle learn button press"""
+	## Handle learn button press
 	print("[ENHANCED_MODEL_PANEL] Learn mode requested for: " + model_name)
 	emit_signal("learning_mode_requested", model_name)
 
 func _on_focus_pressed(model_name: String) -> void:
-	"""Handle focus button press"""
+	## Handle focus button press
 	print("[ENHANCED_MODEL_PANEL] Focus requested for: " + model_name)
 	emit_signal("model_selected", model_name)
 
 func _on_category_selected(category_id: String, pressed: bool) -> void:
-	"""Handle category selection"""
+	## Handle category selection
 	if not pressed:
 		return
 	
@@ -641,24 +669,24 @@ func _on_category_selected(category_id: String, pressed: bool) -> void:
 	emit_signal("category_selected", category_id)
 
 func _on_search_submitted(text: String) -> void:
-	"""Handle search submission"""
+	## Handle search submission
 	search_query = text
 	print("[ENHANCED_MODEL_PANEL] Search performed: " + text)
 	_apply_current_filter()
 	emit_signal("search_performed", text)
 
 func _on_search_text_changed(text: String) -> void:
-	"""Handle real-time search"""
+	## Handle real-time search
 	search_query = text
 	_apply_current_filter()
 
 func _on_filter_pressed() -> void:
-	"""Handle advanced filter button"""
+	## Handle advanced filter button
 	print("[ENHANCED_MODEL_PANEL] Advanced filters requested")
 	# TODO: Implement advanced filter dialog
 
 func _on_view_mode_pressed() -> void:
-	"""Toggle between card and list view modes"""
+	## Toggle between card and list view modes
 	current_view_mode = "list" if current_view_mode == "cards" else "cards"
 	
 	# Update button icon
@@ -697,7 +725,7 @@ func _on_view_mode_pressed() -> void:
 		UIThemeManager.animate_entrance(card, i * 0.05, UIThemeManager.ANIM_DURATION_FAST, "fade_scale")
 
 func _on_reset_pressed() -> void:
-	"""Reset all model visibility"""
+	## Reset all model visibility
 	print("[ENHANCED_MODEL_PANEL] Resetting all model visibility")
 	
 	for model_name in model_cards:
@@ -722,7 +750,7 @@ func _on_reset_pressed() -> void:
 
 # Public interface enhancements
 func update_model_state(model_name: String, visibility: bool) -> void:
-	"""Update model state from external source"""
+	## Update model state from external source
 	if not model_cards.has(model_name):
 		return
 	
@@ -742,13 +770,13 @@ func update_model_state(model_name: String, visibility: bool) -> void:
 		UIThemeManager.apply_modern_label(status_label, UIThemeManager.FONT_SIZE_SMALL, status_color)
 
 func set_search_query(query: String) -> void:
-	"""Set search query programmatically"""
+	## Set search query programmatically
 	search_field.text = query
 	search_query = query
 	_apply_current_filter()
 
 func set_category_filter(category: String) -> void:
-	"""Set category filter programmatically"""
+	## Set category filter programmatically
 	current_filter = category
 	
 	# Update chip states
@@ -759,7 +787,7 @@ func set_category_filter(category: String) -> void:
 	_apply_current_filter()
 
 func get_visible_models() -> Array:
-	"""Get list of currently visible models"""
+	## Get list of currently visible models
 	var visible = []
 	for model_name in model_cards:
 		var card = model_cards[model_name]
@@ -769,7 +797,7 @@ func get_visible_models() -> Array:
 	return visible
 
 func get_learning_recommendations() -> Array:
-	"""Get recommended learning sequence based on difficulty"""
+	## Get recommended learning sequence based on difficulty
 	var recommendations = []
 	var sorted_models = []
 	
@@ -795,9 +823,9 @@ func get_learning_recommendations() -> Array:
 
 # Cleanup
 func dispose() -> void:
-	"""Enhanced cleanup"""
+	## Enhanced cleanup
 	_clear_models()
 
 func _exit_tree() -> void:
-	"""Cleanup on removal"""
+	## Cleanup on removal
 	dispose()

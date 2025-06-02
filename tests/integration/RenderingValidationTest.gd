@@ -66,7 +66,7 @@ var _baseline_screenshot: Image
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the testing framework"""
+	## Initialize the testing framework
 	_setup_timer()
 	_find_tools()
 	
@@ -84,7 +84,7 @@ func _ready() -> void:
 	print("[RenderingValidationTest] Initialized")
 
 func _process(delta: float) -> void:
-	"""Track frame times during testing"""
+	## Track frame times during testing
 	if is_testing:
 		_frame_times.append(delta)
 
@@ -92,7 +92,7 @@ func _process(delta: float) -> void:
 ## Run all rendering tests
 ## @returns: bool indicating test started successfully
 func run_all_tests() -> bool:
-	"""Run all rendering tests"""
+	## Run all rendering tests
 	if not _initialized or is_testing:
 		return false
 	
@@ -130,7 +130,7 @@ func run_all_tests() -> bool:
 ## @param test_name: String name of the test to run
 ## @returns: bool indicating test started successfully
 func run_specific_test(test_name: String) -> bool:
-	"""Run a specific rendering test"""
+	## Run a specific rendering test
 	if not _initialized or is_testing:
 		return false
 	
@@ -173,7 +173,7 @@ func run_specific_test(test_name: String) -> bool:
 ## @param custom_path: String optional custom save path
 ## @returns: String path to the generated report
 func generate_test_report(custom_path: String = "") -> String:
-	"""Generate a test report from the results"""
+	## Generate a test report from the results
 	if results.is_empty():
 		push_warning("[RenderingValidationTest] No test results to report")
 		return ""
@@ -195,14 +195,14 @@ func generate_test_report(custom_path: String = "") -> String:
 
 # === PRIVATE METHODS ===
 func _setup_timer() -> void:
-	"""Set up test timer"""
+	## Set up test timer
 	_test_timer = Timer.new()
 	_test_timer.one_shot = true
 	_test_timer.timeout.connect(_on_test_timer_timeout)
 	add_child(_test_timer)
 
 func _find_tools() -> void:
-	"""Find required tools and components for testing"""
+	## Find required tools and components for testing
 	# Try to find by autoload
 	_benchmark_tool = _find_node_by_class("RenderingBenchmark")
 	_optimization_tool = _find_node_by_class("RenderingOptimizer")
@@ -233,7 +233,7 @@ func _find_tools() -> void:
 		push_warning("[RenderingValidationTest] Some components missing: " + ", ".join(missing_tools))
 
 func _find_node_by_class(class_name: String) -> Node:
-	"""Find a node by its class name"""
+	## Find a node by its class name
 	# Check autoloads first
 	for node in get_tree().get_nodes_in_group("autoload"):
 		if node.get_class() == class_name or node.is_class(class_name):
@@ -255,7 +255,7 @@ func _find_node_by_class(class_name: String) -> Node:
 	return null
 
 func _setup_test_ui() -> void:
-	"""Set up UI for test visualization"""
+	## Set up UI for test visualization
 	# Create UI if needed
 	_test_ui = Control.new()
 	_test_ui.name = "TestProgressUI"
@@ -287,7 +287,7 @@ func _setup_test_ui() -> void:
 	_test_ui.visible = false
 
 func _start_next_test() -> void:
-	"""Start the next test in the queue"""
+	## Start the next test in the queue
 	if _test_queue.is_empty():
 		_complete_tests()
 		return
@@ -336,7 +336,7 @@ func _start_next_test() -> void:
 	test_progress.emit(_current_test, float(_test_counter - 1) / _total_tests)
 
 func _on_test_timer_timeout() -> void:
-	"""Handle test completion"""
+	## Handle test completion
 	var test_results = _calculate_test_results()
 	results.tests[_current_test] = test_results
 	
@@ -347,7 +347,7 @@ func _on_test_timer_timeout() -> void:
 	_start_next_test()
 
 func _complete_tests() -> void:
-	"""Complete all tests and calculate summary"""
+	## Complete all tests and calculate summary
 	is_testing = false
 	
 	# Calculate summary
@@ -367,7 +367,7 @@ func _complete_tests() -> void:
 	print("[RenderingValidationTest] All tests completed")
 
 func _calculate_test_results() -> Dictionary:
-	"""Calculate test results based on current test"""
+	## Calculate test results based on current test
 	var test_results = {}
 	
 	# Common metrics for all tests
@@ -486,7 +486,7 @@ func _calculate_test_results() -> Dictionary:
 	return test_results
 
 func _calculate_frame_stability() -> float:
-	"""Calculate frame time stability (lower is better)"""
+	## Calculate frame time stability (lower is better)
 	if _frame_times.size() < 2:
 		return 0.0
 	
@@ -503,7 +503,7 @@ func _calculate_frame_stability() -> float:
 	return sqrt(variance) / avg_time
 
 func _calculate_summary() -> void:
-	"""Calculate overall test summary"""
+	## Calculate overall test summary
 	var summary = {}
 	
 	# Overall performance metrics
@@ -551,7 +551,7 @@ func _calculate_summary() -> void:
 	results["summary"] = summary
 
 func _start_baseline_performance_test() -> void:
-	"""Set up and start baseline performance test"""
+	## Set up and start baseline performance test
 	# Use benchmark tool if available
 	if _benchmark_tool:
 		if _benchmark_tool.has_method("start_full_benchmark"):
@@ -566,7 +566,7 @@ func _start_baseline_performance_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_material_quality_test() -> void:
-	"""Set up and start material quality test"""
+	## Set up and start material quality test
 	# Enable material library if available
 	if _material_library:
 		# Apply educational preset
@@ -577,7 +577,7 @@ func _start_material_quality_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_lighting_setup_test() -> void:
-	"""Set up and start lighting setup test"""
+	## Set up and start lighting setup test
 	# Configure lighting if available
 	if _medical_lighting:
 		if _medical_lighting.has_method("apply_preset"):
@@ -587,7 +587,7 @@ func _start_lighting_setup_test() -> void:
 	_test_timer.start(TEST_DURATION * 2)  # Longer test for lighting
 
 func _start_lod_system_test() -> void:
-	"""Set up and start LOD system test"""
+	## Set up and start LOD system test
 	# Configure LOD if available
 	if _lod_manager:
 		if _lod_manager.has_method("force_update"):
@@ -598,7 +598,7 @@ func _start_lod_system_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_selection_visualization_test() -> void:
-	"""Set up and start selection visualization test"""
+	## Set up and start selection visualization test
 	# Configure selection visualizer if available
 	if _selection_visualizer:
 		# Find mesh instances to test with
@@ -615,7 +615,7 @@ func _start_selection_visualization_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_camera_presets_test() -> void:
-	"""Set up and start camera presets test"""
+	## Set up and start camera presets test
 	# Configure camera if available
 	if _medical_camera:
 		if _medical_camera.has_method("apply_anatomical_view"):
@@ -638,7 +638,7 @@ func _start_camera_presets_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_optimization_techniques_test() -> void:
-	"""Set up and start optimization techniques test"""
+	## Set up and start optimization techniques test
 	# Configure optimizer if available
 	if _optimization_tool:
 		if _optimization_tool.has_method("force_optimization_update"):
@@ -656,7 +656,7 @@ func _start_optimization_techniques_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_combined_systems_test() -> void:
-	"""Set up and start combined systems test"""
+	## Set up and start combined systems test
 	# Enable all systems
 	if _material_library and _material_library.has_method("apply_preset"):
 		_material_library.apply_preset("educational")
@@ -680,7 +680,7 @@ func _start_combined_systems_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _start_cross_scene_stability_test() -> void:
-	"""Set up and start cross-scene stability test"""
+	## Set up and start cross-scene stability test
 	# This would ideally test scene transitions, but for this test we'll simulate it
 	# by enabling/disabling major components
 	
@@ -755,7 +755,7 @@ func _start_cross_scene_stability_test() -> void:
 	_test_timer.start(TEST_DURATION)
 
 func _find_test_meshes() -> Array:
-	"""Find suitable mesh instances for testing"""
+	## Find suitable mesh instances for testing
 	var mesh_instances = []
 	
 	# Find mesh instances in scene
@@ -764,7 +764,7 @@ func _find_test_meshes() -> Array:
 	return mesh_instances
 
 func _find_mesh_instances(node: Node, result: Array) -> void:
-	"""Recursively find mesh instances in scene"""
+	## Recursively find mesh instances in scene
 	if node is MeshInstance3D and node.visible and node.mesh != null:
 		result.append(node)
 	
@@ -772,18 +772,18 @@ func _find_mesh_instances(node: Node, result: Array) -> void:
 		_find_mesh_instances(child, result)
 
 func _take_baseline_screenshot() -> void:
-	"""Take a baseline screenshot for visual comparison"""
+	## Take a baseline screenshot for visual comparison
 	var image = get_viewport().get_texture().get_image()
 	_baseline_screenshot = image
 
 func _assess_visual_quality() -> float:
-	"""Assess visual quality compared to baseline (0.0-1.0)"""
+	## Assess visual quality compared to baseline (0.0-1.0)
 	# In a real implementation, this would do image comparison
 	# For this example, return a placeholder value
 	return 0.9
 
 func _assess_material_quality() -> Dictionary:
-	"""Assess material quality and return detailed metrics"""
+	## Assess material quality and return detailed metrics
 	var assessment = {}
 	
 	# Check if material library is available
@@ -798,19 +798,19 @@ func _assess_material_quality() -> Dictionary:
 	return assessment
 
 func _assess_lighting_quality() -> float:
-	"""Assess lighting quality (0.0-1.0)"""
+	## Assess lighting quality (0.0-1.0)
 	# In a real implementation, this would analyze lighting parameters
 	# For this example, return a placeholder value
 	return 0.85
 
 func _assess_lod_transition() -> float:
-	"""Assess LOD transition smoothness (0.0-1.0)"""
+	## Assess LOD transition smoothness (0.0-1.0)
 	# In a real implementation, this would analyze frame time variance during transitions
 	# For this example, return a placeholder value
 	return 0.8
 
 func _assess_lod_performance_scaling() -> Dictionary:
-	"""Assess LOD performance scaling across levels"""
+	## Assess LOD performance scaling across levels
 	var assessment = {}
 	
 	if _lod_manager:
@@ -824,13 +824,13 @@ func _assess_lod_performance_scaling() -> Dictionary:
 	return assessment
 
 func _assess_selection_quality() -> float:
-	"""Assess selection visualization quality (0.0-1.0)"""
+	## Assess selection visualization quality (0.0-1.0)
 	# In a real implementation, this would analyze selection parameters
 	# For this example, return a placeholder value
 	return 0.9
 
 func _assess_selection_performance() -> Dictionary:
-	"""Assess selection visualization performance impact"""
+	## Assess selection visualization performance impact
 	var assessment = {}
 	
 	if _selection_visualizer:
@@ -844,13 +844,13 @@ func _assess_selection_performance() -> Dictionary:
 	return assessment
 
 func _assess_camera_transitions() -> float:
-	"""Assess camera transition smoothness (0.0-1.0)"""
+	## Assess camera transition smoothness (0.0-1.0)
 	# In a real implementation, this would analyze frame time variance during transitions
 	# For this example, return a placeholder value
 	return 0.9
 
 func _assess_frustum_culling() -> Dictionary:
-	"""Assess frustum culling effectiveness"""
+	## Assess frustum culling effectiveness
 	var assessment = {}
 	
 	if _optimization_tool:
@@ -863,7 +863,7 @@ func _assess_frustum_culling() -> Dictionary:
 	return assessment
 
 func _assess_occlusion_culling() -> Dictionary:
-	"""Assess occlusion culling effectiveness"""
+	## Assess occlusion culling effectiveness
 	var assessment = {}
 	
 	if _optimization_tool:
@@ -876,7 +876,7 @@ func _assess_occlusion_culling() -> Dictionary:
 	return assessment
 
 func _assess_material_batching() -> Dictionary:
-	"""Assess material batching effectiveness"""
+	## Assess material batching effectiveness
 	var assessment = {}
 	
 	if _optimization_tool:
@@ -889,25 +889,25 @@ func _assess_material_batching() -> Dictionary:
 	return assessment
 
 func _assess_system_synergy() -> float:
-	"""Assess how well systems work together (0.0-1.0)"""
+	## Assess how well systems work together (0.0-1.0)
 	# In a real implementation, this would analyze combined performance metrics
 	# For this example, return a placeholder value
 	return 0.85
 
 func _assess_quality_impact() -> float:
-	"""Assess quality impact of optimizations (0.0-1.0)"""
+	## Assess quality impact of optimizations (0.0-1.0)
 	# In a real implementation, this would compare visual quality with optimizations
 	# For this example, return a placeholder value
 	return 0.9
 
 func _assess_scene_transition_stability() -> float:
-	"""Assess stability during scene transitions (0.0-1.0)"""
+	## Assess stability during scene transitions (0.0-1.0)
 	# In a real implementation, this would analyze frame time variance during transitions
 	# For this example, return a placeholder value
 	return 0.8
 
 func _assess_memory_leak() -> Dictionary:
-	"""Assess memory usage for potential leaks"""
+	## Assess memory usage for potential leaks
 	var assessment = {}
 	
 	var final_memory = Performance.get_monitor(Performance.MEMORY_STATIC) + Performance.get_monitor(Performance.MEMORY_DYNAMIC)

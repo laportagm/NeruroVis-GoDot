@@ -231,7 +231,7 @@ func _ready() -> void:
     print("UI Transformation Demo loaded! Check the running window.")
 
 func _setup_navigation_sidebar(parent_node: Node) -> void:
-    """Setup the navigation sidebar with sections and items"""
+    ## Setup the navigation sidebar with sections and items
     print("[UI Transformation] Setting up navigation sidebar...")
     
     # Create navigation sidebar
@@ -318,7 +318,7 @@ func _create_tools_section(parent: Container, title: String, items: Array):
 
 # === NEW NAVIGATION SIGNAL HANDLERS ===
 func _on_navigation_item_selected(section_id: String, item_id: String) -> void:
-    """Handle navigation item selection"""
+    ## Handle navigation item selection
     print("[Navigation] Selected: %s > %s" % [section_id, item_id])
     
     # Handle navigation logic based on selection
@@ -335,7 +335,7 @@ func _on_navigation_item_selected(section_id: String, item_id: String) -> void:
             _handle_export_selection(item_id)
 
 func _on_navigation_section_toggled(section_id: String, expanded: bool) -> void:
-    """Handle navigation section toggle"""
+    ## Handle navigation section toggle
     print("[Navigation] Section %s %s" % [section_id, "expanded" if expanded else "collapsed"])
 
 # === LEGACY HANDLERS (for backward compatibility) ===
@@ -347,7 +347,7 @@ func _on_project_selected(project_name: String):
 
 # === NAVIGATION HANDLERS ===
 func _handle_navigation_selection(item_id: String) -> void:
-    """Handle navigation section selection"""
+    ## Handle navigation section selection
     match item_id:
         "brain_regions":
             print("[Navigation] Switching to Brain Regions view")
@@ -359,7 +359,7 @@ func _handle_navigation_selection(item_id: String) -> void:
             print("[Navigation] Switching to Time Series view")
 
 func _handle_projects_selection(item_id: String) -> void:
-    """Handle projects section selection"""
+    ## Handle projects section selection
     match item_id:
         "recent":
             print("[Navigation] Showing Recent Projects")
@@ -369,7 +369,7 @@ func _handle_projects_selection(item_id: String) -> void:
             print("[Navigation] Showing Favorite Projects")
 
 func _handle_workspace_selection(item_id: String) -> void:
-    """Handle workspace section selection"""
+    ## Handle workspace section selection
     match item_id:
         "selection":
             print("[Navigation] Opening Selection Tools")
@@ -379,7 +379,7 @@ func _handle_workspace_selection(item_id: String) -> void:
             print("[Navigation] Opening Layer Management")
 
 func _handle_analysis_selection(item_id: String) -> void:
-    """Handle analysis section selection"""
+    ## Handle analysis section selection
     match item_id:
         "measurements":
             print("[Navigation] Opening Measurements panel")
@@ -389,7 +389,7 @@ func _handle_analysis_selection(item_id: String) -> void:
             print("[Navigation] Opening Comparisons panel")
 
 func _handle_export_selection(item_id: String) -> void:
-    """Handle export section selection"""
+    ## Handle export section selection
     match item_id:
         "screenshots":
             print("[Navigation] Opening Screenshots panel")

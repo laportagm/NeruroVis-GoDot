@@ -47,17 +47,17 @@ var _settings: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the singleton on startup"""
+	## Initialize the singleton on startup
 	name = SINGLETON_NAME
 	_initialize_singleton()
 
 func _exit_tree() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 	_cleanup_singleton()
 
 # === INITIALIZATION ===
 func _initialize_singleton() -> void:
-	"""Initialize the singleton with default configuration"""
+	## Initialize the singleton with default configuration
 
 	_log_debug("Initializing " + SINGLETON_NAME + " singleton...")
 	var start_time = Time.get_ticks_msec()
@@ -78,7 +78,7 @@ func _initialize_singleton() -> void:
 	_log_debug(SINGLETON_NAME + " initialized in " + str(_initialization_time) + "s")
 
 func _load_configuration() -> void:
-	"""Load singleton configuration from settings"""
+	## Load singleton configuration from settings
 
 	# Default settings for knowledge service
 	_settings = {
@@ -92,7 +92,7 @@ func _load_configuration() -> void:
 	debug_mode = _settings.get("debug_mode", false)
 
 func _load_project_settings() -> void:
-	"""Load settings from project configuration"""
+	## Load settings from project configuration
 
 	var setting_prefix = "knowledge_service"
 
@@ -102,7 +102,7 @@ func _load_project_settings() -> void:
 			_settings[key] = ProjectSettings.get_setting(setting_path)
 
 func _initialize_subsystems() -> void:
-	"""Initialize knowledge management subsystems"""
+	## Initialize knowledge management subsystems
 
 	# Load anatomical data
 	_load_anatomical_data()
@@ -114,7 +114,7 @@ func _initialize_subsystems() -> void:
 	_search_cache.clear()
 
 func _load_anatomical_data() -> void:
-	"""Load anatomical data from JSON file"""
+	## Load anatomical data from JSON file
 
 	if not FileAccess.file_exists(DATA_FILE_PATH):
 		_handle_error("Anatomical data file not found: " + DATA_FILE_PATH)
@@ -148,7 +148,7 @@ func _load_anatomical_data() -> void:
 	_log_debug("Loaded " + str(_anatomical_data.size()) + " anatomical structures")
 
 func _build_structure_index() -> void:
-	"""Build searchable index of anatomical structures"""
+	## Build searchable index of anatomical structures
 
 	_structure_index.clear()
 
@@ -162,7 +162,7 @@ func _build_structure_index() -> void:
 # === PUBLIC API ===
 ## Get structure data by ID or name
 func get_structure(identifier: String) -> Dictionary:
-	"""Get anatomical structure data by ID or display name"""
+	## Get anatomical structure data by ID or display name
 
 	# Input validation
 	if identifier == null or identifier.is_empty():
@@ -196,7 +196,7 @@ func get_structure(identifier: String) -> Dictionary:
 
 ## Search structures by keyword
 func search_structures(query: String, limit: int = 10) -> Array:
-	"""Search anatomical structures by keyword"""
+	## Search anatomical structures by keyword
 
 	# Input validation
 	if query == null or query.is_empty():
@@ -231,17 +231,17 @@ func search_structures(query: String, limit: int = 10) -> Array:
 
 ## Get all structure IDs
 func get_all_structure_ids() -> Array:
-	"""Get array of all available structure IDs"""
+	## Get array of all available structure IDs
 	return _anatomical_data.keys()
 
 ## Get total structure count
 func get_structure_count() -> int:
-	"""Get total number of anatomical structures"""
+	## Get total number of anatomical structures
 	return _anatomical_data.size()
 
 # === PRIVATE METHODS ===
 func _matches_search(structure: Dictionary, query: String) -> bool:
-	"""Check if structure matches search query"""
+	## Check if structure matches search query
 
 	# Check display name
 	if structure.has("displayName"):
@@ -262,7 +262,7 @@ func _matches_search(structure: Dictionary, query: String) -> bool:
 	return false
 
 func _normalize_structure_name(structure_name: String) -> String:
-	"""Normalize structure name by removing common suffixes and parenthetical additions"""
+	## Normalize structure name by removing common suffixes and parenthetical additions
 
 	var normalized = structure_name.to_lower()
 
@@ -318,23 +318,23 @@ func _normalize_structure_name(structure_name: String) -> String:
 # === UTILITY METHODS ===
 ## Check if singleton is initialized
 func is_initialized() -> bool:
-	"""Check if the knowledge service is fully initialized"""
+	## Check if the knowledge service is fully initialized
 	return _is_initialized
 
 ## Get singleton version
 func get_version() -> String:
-	"""Get the knowledge service version"""
+	## Get the knowledge service version
 	return VERSION
 
 ## Clear search cache
 func clear_search_cache() -> void:
-	"""Clear the search results cache"""
+	## Clear the search results cache
 	_search_cache.clear()
 	_log_debug("Search cache cleared")
 
 # === ERROR HANDLING ===
 func _handle_error(message: String) -> void:
-	"""Handle error with logging and signal emission"""
+	## Handle error with logging and signal emission
 
 	_error_count += 1
 	var full_message = "[" + SINGLETON_NAME + "] " + message
@@ -344,13 +344,13 @@ func _handle_error(message: String) -> void:
 
 # === LOGGING ===
 func _log_debug(message: String) -> void:
-	"""Log debug message if debug mode is enabled"""
+	## Log debug message if debug mode is enabled
 	if debug_mode:
 		print("[" + SINGLETON_NAME + "] " + message)
 
 # === CLEANUP ===
 func _cleanup_singleton() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 
 	# Clear all data
 	_anatomical_data.clear()

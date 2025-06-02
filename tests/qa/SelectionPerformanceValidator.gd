@@ -47,7 +47,7 @@ signal test_completed(results: Dictionary)
 # === PUBLIC METHODS ===
 ## Initialize the performance validator
 func initialize(main_scene: Node3D, selection_manager: Node) -> bool:
-    """Initialize performance validation system"""
+    ## Initialize performance validation system
     if not main_scene or not selection_manager:
         push_error("[PerfValidator] Missing required components")
         return false
@@ -62,7 +62,7 @@ func initialize(main_scene: Node3D, selection_manager: Node) -> bool:
 
 ## Start performance validation test
 func start_validation_test() -> void:
-    """Begin performance validation testing"""
+    ## Begin performance validation testing
     if _is_testing:
         push_warning("[PerfValidator] Test already in progress")
         return
@@ -88,7 +88,7 @@ func start_validation_test() -> void:
 
 ## Stop the validation test
 func stop_test() -> void:
-    """Stop the current test"""
+    ## Stop the current test
     if not _is_testing:
         return
     
@@ -96,7 +96,7 @@ func stop_test() -> void:
 
 ## Get current test progress
 func get_test_progress() -> float:
-    """Get test progress as percentage"""
+    ## Get test progress as percentage
     if not _is_testing:
         return 0.0
     
@@ -105,7 +105,7 @@ func get_test_progress() -> float:
 
 # === PRIVATE METHODS ===
 func _process(delta: float) -> void:
-    """Process frame timing during test"""
+    ## Process frame timing during test
     if not _is_testing:
         return
     
@@ -133,12 +133,12 @@ func _process(delta: float) -> void:
         _complete_test()
 
 func _run_test_sequence() -> void:
-    """Run automated selection test sequence"""
+    ## Run automated selection test sequence
     # Simulate rapid selections across screen
     _simulate_rapid_selections()
 
 func _simulate_rapid_selections() -> void:
-    """Simulate rapid selection clicks to test performance"""
+    ## Simulate rapid selection clicks to test performance
     var viewport_size = _main_scene.get_viewport().get_visible_rect().size
     var test_positions = [
         viewport_size * 0.5,  # Center
@@ -158,7 +158,7 @@ func _simulate_rapid_selections() -> void:
         await _main_scene.get_tree().create_timer(0.5).timeout
 
 func _test_selection_at_position(position: Vector2) -> void:
-    """Test selection performance at a specific position"""
+    ## Test selection performance at a specific position
     var start_time = Time.get_ticks_usec()
     
     # Perform selection
@@ -186,7 +186,7 @@ func _test_selection_at_position(position: Vector2) -> void:
             await _main_scene.get_tree().create_timer(0.05).timeout
 
 func _complete_test() -> void:
-    """Complete the test and calculate results"""
+    ## Complete the test and calculate results
     _is_testing = false
     set_process(false)
     
@@ -211,7 +211,7 @@ func _complete_test() -> void:
     emit_signal("test_completed", _results)
 
 func _calculate_average(values: Array) -> float:
-    """Calculate average of an array"""
+    ## Calculate average of an array
     if values.is_empty():
         return 0.0
     
@@ -222,8 +222,8 @@ func _calculate_average(values: Array) -> float:
     return sum / values.size()
 
 func _generate_performance_report() -> void:
-    """Generate performance validation report"""
-    var report = """# Selection System Performance Validation Report
+    ## Generate performance validation report
+    var report = ## # Selection System Performance Validation Report
 Generated: %s
 
 ## Test Summary
@@ -250,7 +250,7 @@ Generated: %s
 - **Memory Delta**: %.2f MB
 
 ## Validation Results
-""" % [
+ % [
         Time.get_datetime_string_from_system(),
         _results["test_duration"],
         _results["avg_fps"],
@@ -300,7 +300,7 @@ Generated: %s
     _save_report(report)
 
 func _save_report(report_content: String) -> void:
-    """Save performance report to file"""
+    ## Save performance report to file
     var timestamp = Time.get_datetime_string_from_system().replace(" ", "_").replace(":", "-")
     var file_path = "user://selection_performance_%s.md" % timestamp
     

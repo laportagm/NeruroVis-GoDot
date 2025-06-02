@@ -26,7 +26,7 @@ static func _ensure_initialized() -> void:
 		_initialized = true
 
 static func _register_core_factories() -> void:
-	"""Register built-in component factories"""
+	## Register built-in component factories
 
 	# UI Panel factories
 	register_factory("info_panel", _create_info_panel)
@@ -48,12 +48,12 @@ static func _register_core_factories() -> void:
 
 # === PUBLIC API ===
 static func register_factory(component_type: String, factory_function: Callable) -> void:
-	"""Register a component factory function"""
+	## Register a component factory function
 	_factories[component_type] = factory_function
 	print("[ComponentRegistry] Registered factory: %s" % component_type)
 
 static func create_component(component_type: String, config: Dictionary = {}) -> Control:
-	"""Create a new component instance"""
+	## Create a new component instance
 	_ensure_initialized()
 
 	if not _factories.has(component_type):
@@ -73,7 +73,7 @@ static func create_component(component_type: String, config: Dictionary = {}) ->
 	return component
 
 static func get_or_create(component_id: String, component_type: String, config: Dictionary = {}) -> Control:
-	"""Get existing component or create new one with caching"""
+	## Get existing component or create new one with caching
 	_ensure_initialized()
 
 	# Check if component exists and is valid
@@ -110,7 +110,7 @@ static func get_or_create(component_id: String, component_type: String, config: 
 	return component
 
 static func release_component(component_id: String) -> void:
-	"""Release a component from cache (but don't destroy it)"""
+	## Release a component from cache (but don't destroy it)
 	if _component_cache.has(component_id):
 		var component = _component_cache[component_id]
 
@@ -125,7 +125,7 @@ static func release_component(component_id: String) -> void:
 			print("[ComponentRegistry] Released: %s" % component_id)
 
 static func destroy_component(component_id: String) -> void:
-	"""Completely destroy a component"""
+	## Completely destroy a component
 	if _component_cache.has(component_id):
 		var component = _component_cache[component_id]
 		if is_instance_valid(component):
@@ -140,7 +140,7 @@ static func destroy_component(component_id: String) -> void:
 
 # === COMPONENT FACTORIES ===
 static func _create_info_panel(config: Dictionary) -> Control:
-	"""Create information panel component"""
+	## Create information panel component
 
 	# Use new modular system if enabled
 	if FeatureFlags.is_enabled(FeatureFlags.UI_MODULAR_COMPONENTS):
@@ -149,7 +149,7 @@ static func _create_info_panel(config: Dictionary) -> Control:
 		return _create_legacy_info_panel(config)
 
 static func _create_modular_info_panel(config: Dictionary) -> Control:
-	"""Create new modular info panel"""
+	## Create new modular info panel
 
 	# Try to load the new InfoPanelComponent
 	var component_script = _safe_load_script("res://ui/components/InfoPanelComponent.gd")
@@ -167,7 +167,7 @@ static func _create_modular_info_panel(config: Dictionary) -> Control:
 	return _create_fallback_panel(config)
 
 static func _create_legacy_info_panel(config: Dictionary) -> Control:
-	"""Create legacy info panel using existing factory"""
+	## Create legacy info panel using existing factory
 
 	var factory_script = _safe_load_script("res://ui/panels/InfoPanelFactory.gd")
 	if factory_script and factory_script.has_method("create_info_panel"):
@@ -176,7 +176,7 @@ static func _create_legacy_info_panel(config: Dictionary) -> Control:
 	return _create_fallback_panel(config)
 
 static func _create_settings_panel(_config: Dictionary) -> Control:
-	"""Create settings panel component"""
+	## Create settings panel component
 	var panel = PanelContainer.new()
 	panel.name = "SettingsPanel"
 
@@ -187,7 +187,7 @@ static func _create_settings_panel(_config: Dictionary) -> Control:
 	return panel
 
 static func _create_ai_assistant_panel(config: Dictionary) -> Control:
-	"""Create AI assistant panel component"""
+	## Create AI assistant panel component
 
 	# Try to load AI assistant component
 	var ai_script = _safe_load_script("res://ui/components/panels/AIAssistantPanel.gd")
@@ -209,7 +209,7 @@ static func _create_ai_assistant_panel(config: Dictionary) -> Control:
 
 # === FRAGMENT FACTORIES ===
 static func _create_header_component(config: Dictionary) -> Control:
-	"""Create header component"""
+	## Create header component
 	# Try to load the new HeaderComponent
 	var component_script = _safe_load_script("res://ui/components/fragments/HeaderComponent.gd")
 	if component_script:
@@ -239,7 +239,7 @@ static func _create_header_component(config: Dictionary) -> Control:
 	return header
 
 static func _create_content_component(config: Dictionary) -> Control:
-	"""Create content component"""
+	## Create content component
 	# Try to load the new ContentComponent
 	var component_script = _safe_load_script("res://ui/components/fragments/ContentComponent.gd")
 	if component_script:
@@ -260,7 +260,7 @@ static func _create_content_component(config: Dictionary) -> Control:
 	return content_container
 
 static func _create_actions_component(config: Dictionary) -> Control:
-	"""Create actions component"""
+	## Create actions component
 	# Try to load the new ActionsComponent
 	var component_script = _safe_load_script("res://ui/components/fragments/ActionsComponent.gd")
 	if component_script:
@@ -283,7 +283,7 @@ static func _create_actions_component(config: Dictionary) -> Control:
 	return actions_container
 
 static func _create_section_component(config: Dictionary) -> Control:
-	"""Create section component"""
+	## Create section component
 	# Try to load the new SectionComponent
 	var component_script = _safe_load_script("res://ui/components/fragments/SectionComponent.gd")
 	if component_script:
@@ -311,7 +311,7 @@ static func _create_section_component(config: Dictionary) -> Control:
 
 # === CONTROL FACTORIES ===
 static func _create_button_component(config: Dictionary) -> Control:
-	"""Create button component"""
+	## Create button component
 	var button = Button.new()
 
 	button.text = config.get("text", "Button")
@@ -328,7 +328,7 @@ static func _create_button_component(config: Dictionary) -> Control:
 	return button
 
 static func _create_label_component(config: Dictionary) -> Control:
-	"""Create label component"""
+	## Create label component
 	var label = Label.new()
 
 	label.text = config.get("text", "Label")
@@ -339,7 +339,7 @@ static func _create_label_component(config: Dictionary) -> Control:
 	return label
 
 static func _create_container_component(config: Dictionary) -> Control:
-	"""Create container component"""
+	## Create container component
 	var container_type = config.get("type", "vbox")
 
 	match container_type:
@@ -356,39 +356,39 @@ static func _create_container_component(config: Dictionary) -> Control:
 
 # === UTILITY METHODS ===
 static func _setup_component_metadata(component: Control, component_type: String, config: Dictionary) -> void:
-	"""Setup component metadata"""
+	## Setup component metadata
 	component.set_meta("component_type", component_type)
 	component.set_meta("creation_time", Time.get_unix_time_from_system())
 	component.set_meta("config", config.duplicate())
 
 static func _register_active_component(component: Control) -> void:
-	"""Register component as active"""
+	## Register component as active
 	var component_id = component.get_meta("component_id", "")
 	if component_id != "":
 		_active_components[component_id] = component
 
 static func _update_component_config(component: Control, new_config: Dictionary) -> void:
-	"""Update component configuration"""
+	## Update component configuration
 	if component.has_method("update_config"):
 		component.update_config(new_config)
 	elif component.has_method("configure"):
 		component.configure(new_config)
 
 static func _save_component_state(component_id: String, component: Control) -> void:
-	"""Save component state for persistence"""
+	## Save component state for persistence
 	if component.has_method("get_state"):
 		var _state = component.get_state()
 		# Store state in ComponentStateManager when available
 		print("[ComponentRegistry] Saved state for: %s" % component_id)
 
 static func _safe_load_script(script_path: String) -> Script:
-	"""Safely load a script, returning null if not found"""
+	## Safely load a script, returning null if not found
 	if ResourceLoader.exists(script_path):
 		return load(script_path)
 	return null
 
 static func _create_fallback_component(component_type: String, _config: Dictionary) -> Control:
-	"""Create fallback component when factory not found"""
+	## Create fallback component when factory not found
 	var fallback = PanelContainer.new()
 	fallback.name = "Fallback_" + component_type
 
@@ -400,7 +400,7 @@ static func _create_fallback_component(component_type: String, _config: Dictiona
 	return fallback
 
 static func _create_fallback_panel(_config: Dictionary) -> Control:
-	"""Create basic fallback panel"""
+	## Create basic fallback panel
 	var panel = PanelContainer.new()
 	panel.name = "FallbackInfoPanel"
 	panel.custom_minimum_size = Vector2(300, 200)
@@ -420,7 +420,7 @@ static func _create_fallback_panel(_config: Dictionary) -> Control:
 	return panel
 
 static func _get_action_icon(action: String) -> String:
-	"""Get icon for action button"""
+	## Get icon for action button
 	var icons = {
 		"close": "×",
 		"bookmark": "⭐",
@@ -434,7 +434,7 @@ static func _get_action_icon(action: String) -> String:
 
 # === PERFORMANCE AND DEBUGGING ===
 static func get_registry_stats() -> Dictionary:
-	"""Get registry performance statistics"""
+	## Get registry performance statistics
 	return {
 		"total_created": _creation_count,
 		"cache_hits": _cache_hits,
@@ -446,7 +446,7 @@ static func get_registry_stats() -> Dictionary:
 	}
 
 static func print_registry_stats() -> void:
-	"""Print registry statistics"""
+	## Print registry statistics
 	var stats = get_registry_stats()
 	print("\n=== COMPONENT REGISTRY STATS ===")
 	print("Components created: %d" % stats.total_created)
@@ -459,7 +459,7 @@ static func print_registry_stats() -> void:
 	print("===============================\n")
 
 static func cleanup_registry() -> void:
-	"""Clean up invalid references and optimize memory"""
+	## Clean up invalid references and optimize memory
 	var cleaned_count = 0
 
 	# Clean up invalid cache entries
@@ -474,7 +474,7 @@ static func cleanup_registry() -> void:
 		print("[ComponentRegistry] Cleaned up %d invalid references" % cleaned_count)
 
 static func reset_registry() -> void:
-	"""Reset registry (for testing)"""
+	## Reset registry (for testing)
 	_component_cache.clear()
 	_active_components.clear()
 	_component_configs.clear()
@@ -485,7 +485,7 @@ static func reset_registry() -> void:
 
 # === MIGRATION HELPERS ===
 static func set_legacy_mode(enabled: bool) -> void:
-	"""Toggle legacy mode for gradual migration"""
+	## Toggle legacy mode for gradual migration
 	if enabled:
 		FeatureFlags.enable_feature(FeatureFlags.UI_LEGACY_PANELS)
 		FeatureFlags.disable_feature(FeatureFlags.UI_MODULAR_COMPONENTS)

@@ -38,9 +38,9 @@ func _ready() -> void:
 
 ## Initialize the input router with system references
 func initialize(p_main_scene: Node3D, p_camera_controller, p_selection_manager) -> void:
-	"""
+	## 
 	Initialize the input router with references to systems that handle input
-	"""
+	
 	main_scene = p_main_scene
 	camera_controller = p_camera_controller
 	selection_manager = p_selection_manager
@@ -58,9 +58,9 @@ func initialize(p_main_scene: Node3D, p_camera_controller, p_selection_manager) 
 
 ## Main input handler - processes all input events
 func _input(event: InputEvent) -> void:
-	"""
+	## 
 	Main input event handler - routes input to appropriate systems
-	"""
+	
 	if not input_enabled:
 		return
 	
@@ -90,9 +90,9 @@ func _input(event: InputEvent) -> void:
 
 ## Keyboard input handling
 func _handle_keyboard_input(event: InputEventKey) -> bool:
-	"""
+	## 
 	Handle keyboard input events - primarily camera shortcuts
-	"""
+	
 	if not event.pressed:
 		return false
 	
@@ -108,9 +108,9 @@ func _handle_keyboard_input(event: InputEventKey) -> bool:
 	return false
 
 func _handle_camera_shortcuts(event: InputEventKey) -> bool:
-	"""
+	## 
 	Handle camera-related keyboard shortcuts
-	"""
+	
 	var shortcut_triggered = ""
 	
 	match event.keycode:
@@ -155,9 +155,9 @@ func _handle_camera_shortcuts(event: InputEventKey) -> bool:
 	return false
 
 func _handle_debug_shortcuts(event: InputEventKey) -> bool:
-	"""
+	## 
 	Handle debug-related keyboard shortcuts
-	"""
+	
 	# Debug shortcuts can be added here
 	match event.keycode:
 		KEY_F12:
@@ -169,9 +169,9 @@ func _handle_debug_shortcuts(event: InputEventKey) -> bool:
 
 ## Mouse input handling
 func _handle_mouse_button_input(event: InputEventMouseButton) -> bool:
-	"""
+	## 
 	Handle mouse button input events - primarily selection
-	"""
+	
 	if not event.pressed:
 		return false
 	
@@ -190,9 +190,9 @@ func _handle_mouse_button_input(event: InputEventMouseButton) -> bool:
 	return false
 
 func _handle_selection_input(position: Vector2, button: int, is_double_click: bool) -> bool:
-	"""
+	## 
 	Handle selection input at the given screen position
-	"""
+	
 	if not selection_manager:
 		push_warning("[INPUT_ROUTER] Selection attempted but no selection manager available")
 		return false
@@ -209,9 +209,9 @@ func _handle_selection_input(position: Vector2, button: int, is_double_click: bo
 		return false
 
 func _handle_mouse_motion_input(event: InputEventMouseMotion) -> bool:
-	"""
+	## 
 	Handle mouse motion input events - primarily hover effects
-	"""
+	
 	mouse_hover_position = event.position
 	
 	# Throttle hover updates to improve performance
@@ -231,56 +231,56 @@ func _handle_mouse_motion_input(event: InputEventMouseMotion) -> bool:
 
 ## Input control functions
 func enable_input() -> void:
-	"""Enable input processing"""
+	## Enable input processing
 	input_enabled = true
 	print("[INPUT_ROUTER] Input enabled")
 
 func disable_input() -> void:
-	"""Disable input processing"""
+	## Disable input processing
 	input_enabled = false
 	print("[INPUT_ROUTER] Input disabled")
 
 func set_input_enabled(enabled: bool) -> void:
-	"""Set input enabled state"""
+	## Set input enabled state
 	input_enabled = enabled
 	print("[INPUT_ROUTER] Input ", "enabled" if enabled else "disabled")
 
 func is_input_enabled() -> bool:
-	"""Check if input is currently enabled"""
+	## Check if input is currently enabled
 	return input_enabled
 
 ## System enable/disable functions
 func enable_camera_input(enabled: bool = true) -> void:
-	"""Enable or disable camera input handling"""
+	## Enable or disable camera input handling
 	enable_camera_shortcuts = enabled
 	print("[INPUT_ROUTER] Camera input ", "enabled" if enabled else "disabled")
 
 func enable_selection_input_handling(enabled: bool = true) -> void:
-	"""Enable or disable selection input handling"""
+	## Enable or disable selection input handling
 	enable_selection_input = enabled
 	print("[INPUT_ROUTER] Selection input ", "enabled" if enabled else "disabled")
 
 func enable_debug_input_handling(enabled: bool = true) -> void:
-	"""Enable or disable debug input handling"""
+	## Enable or disable debug input handling
 	enable_debug_input = enabled
 	print("[INPUT_ROUTER] Debug input ", "enabled" if enabled else "disabled")
 
 ## System reference updates
 func update_camera_controller(new_camera_controller) -> void:
-	"""Update the camera controller reference"""
+	## Update the camera controller reference
 	camera_controller = new_camera_controller
 	enable_camera_shortcuts = camera_controller != null
 	print("[INPUT_ROUTER] Camera controller reference updated")
 
 func update_selection_manager(new_selection_manager) -> void:
-	"""Update the selection manager reference"""
+	## Update the selection manager reference
 	selection_manager = new_selection_manager
 	enable_selection_input = selection_manager != null
 	print("[INPUT_ROUTER] Selection manager reference updated")
 
 ## Debug and status functions
 func get_input_status() -> Dictionary:
-	"""Get current input router status for debugging"""
+	## Get current input router status for debugging
 	return {
 		"input_enabled": input_enabled,
 		"camera_shortcuts_enabled": enable_camera_shortcuts,
@@ -293,7 +293,7 @@ func get_input_status() -> Dictionary:
 	}
 
 func print_input_status() -> void:
-	"""Print current input status for debugging"""
+	## Print current input status for debugging
 	var status = get_input_status()
 	print("=== INPUT ROUTER STATUS ===")
 	for key in status.keys():
@@ -301,7 +301,7 @@ func print_input_status() -> void:
 
 ## Input simulation for testing
 func simulate_camera_shortcut(shortcut_key: int) -> void:
-	"""Simulate a camera shortcut for testing purposes"""
+	## Simulate a camera shortcut for testing purposes
 	if not enable_camera_shortcuts:
 		print("[INPUT_ROUTER] Camera shortcuts disabled, simulation ignored")
 		return
@@ -314,7 +314,7 @@ func simulate_camera_shortcut(shortcut_key: int) -> void:
 	_handle_camera_shortcuts(fake_event)
 
 func simulate_selection_at_position(position: Vector2) -> void:
-	"""Simulate a selection input for testing purposes"""
+	## Simulate a selection input for testing purposes
 	if not enable_selection_input:
 		print("[INPUT_ROUTER] Selection input disabled, simulation ignored")
 		return
@@ -324,7 +324,7 @@ func simulate_selection_at_position(position: Vector2) -> void:
 
 ## Cleanup
 func _exit_tree():
-	"""Clean up references when node is removed from tree"""
+	## Clean up references when node is removed from tree
 	camera_controller = null
 	selection_manager = null
 	main_scene = null

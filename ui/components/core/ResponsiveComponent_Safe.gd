@@ -38,7 +38,7 @@ var is_portrait_orientation: bool = false
 var last_viewport_size: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
-	"""Initialize responsive component"""
+	## Initialize responsive component
 	if component_id.is_empty():
 		component_id = "responsive_" + str(get_instance_id())
 	
@@ -47,18 +47,18 @@ func _ready() -> void:
 		call_deferred("_adapt_to_viewport")
 
 func _connect_viewport_signals() -> void:
-	"""Connect to viewport size changes"""
+	## Connect to viewport size changes
 	var viewport = get_viewport()
 	if viewport:
 		viewport.size_changed.connect(_on_viewport_size_changed)
 
 func _on_viewport_size_changed() -> void:
-	"""Handle viewport size change"""
+	## Handle viewport size change
 	if responsive_enabled:
 		_adapt_to_viewport()
 
 func _adapt_to_viewport() -> void:
-	"""Adapt component to current viewport size"""
+	## Adapt component to current viewport size
 	var viewport = get_viewport()
 	if not viewport:
 		return
@@ -90,7 +90,7 @@ func _adapt_to_viewport() -> void:
 	_apply_responsive_layout()
 
 func _update_breakpoint(viewport_size: Vector2) -> void:
-	"""Update current breakpoint based on viewport width"""
+	## Update current breakpoint based on viewport width
 	var width = viewport_size.x
 	
 	if width < BREAKPOINT_WIDTHS[Breakpoint.MOBILE]:
@@ -107,39 +107,39 @@ func _update_breakpoint(viewport_size: Vector2) -> void:
 		current_breakpoint = Breakpoint.WIDE_DESKTOP
 
 func _apply_responsive_layout() -> void:
-	"""Apply responsive layout - override in derived classes"""
+	## Apply responsive layout - override in derived classes
 	layout_adapted.emit(BREAKPOINT_NAMES[current_breakpoint])
 
 # === PUBLIC API ===
 func get_current_breakpoint() -> String:
-	"""Get current breakpoint name"""
+	## Get current breakpoint name
 	return BREAKPOINT_NAMES[current_breakpoint]
 
 func get_current_breakpoint_enum() -> Breakpoint:
-	"""Get current breakpoint enum"""
+	## Get current breakpoint enum
 	return current_breakpoint
 
 func is_mobile_size() -> bool:
-	"""Check if current size is mobile"""
+	## Check if current size is mobile
 	return current_breakpoint == Breakpoint.MOBILE
 
 func is_tablet_size() -> bool:
-	"""Check if current size is tablet"""
+	## Check if current size is tablet
 	return current_breakpoint in [Breakpoint.TABLET_PORTRAIT, Breakpoint.TABLET_LANDSCAPE]
 
 func is_desktop_size() -> bool:
-	"""Check if current size is desktop"""
+	## Check if current size is desktop
 	return current_breakpoint in [Breakpoint.DESKTOP, Breakpoint.WIDE_DESKTOP]
 
 func set_responsive_enabled(enabled: bool) -> void:
-	"""Enable/disable responsive behavior"""
+	## Enable/disable responsive behavior
 	responsive_enabled = enabled
 	if enabled:
 		_adapt_to_viewport()
 
 # === UTILITY METHODS ===
 func _log(message: String, level: String = "info") -> void:
-	"""Component logging"""
+	## Component logging
 	if not enable_logging:
 		return
 	

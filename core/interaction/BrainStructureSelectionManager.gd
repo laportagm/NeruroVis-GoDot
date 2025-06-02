@@ -279,7 +279,7 @@ func set_emission_energy(energy: float) -> void:
 
 ## Multi-ray selection with adaptive tolerance
 func _cast_multi_ray_selection(screen_position: Vector2, use_tolerance: bool) -> Dictionary:
-    """Cast multiple rays for improved selection accuracy"""
+    ## Cast multiple rays for improved selection accuracy
     var camera = get_viewport().get_camera_3d()
     if not camera:
         return {}
@@ -339,7 +339,7 @@ func _cast_multi_ray_selection(screen_position: Vector2, use_tolerance: bool) ->
 
 ## Process selection candidates with intelligent prioritization
 func _process_selection_candidates(candidates: Array, click_position: Vector2, tolerance: float) -> Dictionary:
-    """Process multi-ray candidates to determine best selection"""
+    ## Process multi-ray candidates to determine best selection
     if candidates.is_empty():
         return {}
     
@@ -367,7 +367,7 @@ func _process_selection_candidates(candidates: Array, click_position: Vector2, t
 
 ## Compare function for sorting selection candidates
 func _compare_selection_candidates(a: Dictionary, b: Dictionary) -> bool:
-    """Sort candidates by hit count, then by average distance"""
+    ## Sort candidates by hit count, then by average distance
     # Priority 1: More hits is better
     if a["hit_count"] != b["hit_count"]:
         return a["hit_count"] > b["hit_count"]
@@ -384,7 +384,7 @@ func _compare_selection_candidates(a: Dictionary, b: Dictionary) -> bool:
 
 ## Get adaptive selection tolerance for a given position
 func get_adaptive_tolerance(screen_position: Vector2) -> float:
-    """Calculate adaptive tolerance based on nearby structure sizes"""
+    ## Calculate adaptive tolerance based on nearby structure sizes
     var camera = get_viewport().get_camera_3d()
     if not camera:
         return MIN_SELECTION_TOLERANCE
@@ -432,7 +432,7 @@ func get_adaptive_tolerance(screen_position: Vector2) -> float:
 
 ## Cast a single selection ray
 func _cast_single_ray(screen_position: Vector2) -> Dictionary:
-    """Cast a single ray and return hit information"""
+    ## Cast a single ray and return hit information
     var camera = get_viewport().get_camera_3d()
     if not camera:
         return {}
@@ -500,7 +500,7 @@ func _cast_selection_ray(screen_position: Vector2) -> MeshInstance3D:
 
 # Enhanced mesh extraction with better StaticBody3D handling for overlapping geometry
 func _extract_mesh_from_collision(collision_result: Dictionary) -> MeshInstance3D:
-    """Enhanced mesh extraction with better collision handling"""
+    ## Enhanced mesh extraction with better collision handling
     if collision_result.is_empty() or not collision_result.has("collider"):
         return null
     
@@ -594,7 +594,7 @@ func get_hovered_structure_name() -> String:
 
 ## Find structures near a screen position
 func _find_nearby_structures(screen_position: Vector2, radius: float) -> Array:
-    """Find all structures within a screen radius of the given position"""
+    ## Find all structures within a screen radius of the given position
     var nearby: Array = []
     var camera = get_viewport().get_camera_3d()
     if not camera:
@@ -622,7 +622,7 @@ func _find_nearby_structures(screen_position: Vector2, radius: float) -> Array:
 
 ## Get all meshes recursively
 func _get_all_meshes_recursive(node: Node3D) -> Array[MeshInstance3D]:
-    """Recursively collect all mesh instances"""
+    ## Recursively collect all mesh instances
     var meshes: Array[MeshInstance3D] = []
     
     if node is MeshInstance3D:
@@ -636,7 +636,7 @@ func _get_all_meshes_recursive(node: Node3D) -> Array[MeshInstance3D]:
 
 ## Calculate mesh screen position
 func _get_mesh_screen_position(mesh: MeshInstance3D) -> Vector2:
-    """Get the screen position of a mesh's center"""
+    ## Get the screen position of a mesh's center
     var camera = get_viewport().get_camera_3d()
     if not camera or not mesh.mesh:
         return Vector2.ZERO
@@ -651,7 +651,7 @@ func _get_mesh_screen_position(mesh: MeshInstance3D) -> Vector2:
 
 ## Calculate structure screen size percentage
 func _get_structure_screen_size(mesh: MeshInstance3D) -> float:
-    """Calculate the screen size of a structure as a percentage"""
+    ## Calculate the screen size of a structure as a percentage
     if structure_sizes.has(mesh):
         return structure_sizes[mesh]
     
@@ -683,7 +683,7 @@ func _get_structure_screen_size(mesh: MeshInstance3D) -> float:
 
 ## Update structure size cache
 func _update_structure_sizes() -> void:
-    """Update cached structure sizes when camera changes"""
+    ## Update cached structure sizes when camera changes
     var camera = get_viewport().get_camera_3d()
     if not camera:
         return
@@ -696,7 +696,7 @@ func _update_structure_sizes() -> void:
 
 ## Calculate average of an array
 func _calculate_average(values: Array) -> float:
-    """Calculate the average of an array of floats"""
+    ## Calculate the average of an array of floats
     if values.is_empty():
         return 0.0
     
@@ -722,7 +722,7 @@ func _exit_tree() -> void:
 
 # Initialize modern UI colors
 func _initialize_modern_colors() -> void:
-    """Initialize colors from UIThemeManager if available"""
+    ## Initialize colors from UIThemeManager if available
     # Use modern UI colors (these match UIThemeManager.COLORS)
     highlight_color = Color("#00D9FF")      # Primary cyan
     hover_color = Color("#FF006E")          # Secondary magenta  
@@ -731,7 +731,7 @@ func _initialize_modern_colors() -> void:
 
 # Initialize visual feedback system
 func _initialize_visual_feedback() -> void:
-    """Initialize the educational visual feedback system"""
+    ## Initialize the educational visual feedback system
     # Create visual feedback instance
     var VisualFeedbackClass = load("res://core/visualization/EducationalVisualFeedback.gd")
     if VisualFeedbackClass:
@@ -758,7 +758,7 @@ func _initialize_visual_feedback() -> void:
 
 # Modern animation functions
 func _animate_hover_pulse(mesh: MeshInstance3D) -> void:
-    """Add a subtle pulsing glow effect to hovered meshes"""
+    ## Add a subtle pulsing glow effect to hovered meshes
     if not mesh or not mesh.mesh:
         return
     
@@ -781,7 +781,7 @@ func _animate_hover_pulse(mesh: MeshInstance3D) -> void:
     mesh.set_meta("hover_tween", tween)
 
 func _animate_selection_pulse(mesh: MeshInstance3D) -> void:
-    """Add a selection confirmation pulse with modern easing"""
+    ## Add a selection confirmation pulse with modern easing
     if not mesh or not mesh.mesh:
         return
     
@@ -808,13 +808,13 @@ func _animate_selection_pulse(mesh: MeshInstance3D) -> void:
 # Modern Godot 4 approach using lambda (see above)
 # Legacy approach with corrected parameter order:
 func _update_emission_energy(energy: float, material: Material) -> void:
-    """Helper function to update emission energy during animation (legacy approach)"""
+    ## Helper function to update emission energy during animation (legacy approach)
     if material and material.has_method("set"):
         material.emission_energy_multiplier = energy
 
 # Clean helper function for material emission updates
 func _set_material_emission(material: Material, energy: float) -> void:
-    """Safe helper to set material emission energy"""
+    ## Safe helper to set material emission energy
     if not material:
         return
     
@@ -824,7 +824,7 @@ func _set_material_emission(material: Material, energy: float) -> void:
         push_warning("Material does not support emission_energy_multiplier property")
 
 func _cleanup_mesh_animations(mesh: MeshInstance3D) -> void:
-    """Clean up any running animations on a mesh"""
+    ## Clean up any running animations on a mesh
     if not mesh:
         return
     
@@ -840,7 +840,7 @@ func _cleanup_mesh_animations(mesh: MeshInstance3D) -> void:
 
 ## Enhanced collision detection with inflation for small structures
 func _check_inflated_collision(mesh: MeshInstance3D, world_position: Vector3) -> bool:
-    """Check if position is within inflated bounds of a structure"""
+    ## Check if position is within inflated bounds of a structure
     if not mesh or not mesh.mesh:
         return false
     
@@ -859,7 +859,7 @@ func _check_inflated_collision(mesh: MeshInstance3D, world_position: Vector3) ->
 
 ## Precalculate collision bounds for all structures
 func _precalculate_collision_bounds() -> void:
-    """Cache collision bounds for performance optimization"""
+    ## Cache collision bounds for performance optimization
     var brain_model = get_node_or_null("/root/Node3D/BrainModel")
     if not brain_model:
         return
@@ -886,7 +886,7 @@ func set_debug_visualization(enabled: bool) -> void:
 
 ## Get selection statistics for analysis
 func get_selection_statistics() -> Dictionary:
-    """Return current selection system statistics"""
+    ## Return current selection system statistics
     return {
         "last_confidence": last_selection_confidence,
         "structure_cache_size": structure_sizes.size(),

@@ -69,7 +69,7 @@ var _repetitions: int = 0
 # === PUBLIC METHODS ===
 ## Initialize the test system with required components
 func initialize(main_scene: Node3D, selection_manager: Node, camera_controller: Node, camera: Camera3D) -> bool:
-    """Initialize the selection reliability test system"""
+    ## Initialize the selection reliability test system
     if not main_scene or not selection_manager or not camera_controller or not camera:
         push_error("[SelectionTest] Missing required components for initialization")
         return false
@@ -89,7 +89,7 @@ func initialize(main_scene: Node3D, selection_manager: Node, camera_controller: 
 
 ## Start the comprehensive selection reliability test
 func start_test() -> void:
-    """Begin automated testing of all structures"""
+    ## Begin automated testing of all structures
     if _is_testing:
         push_warning("[SelectionTest] Test already in progress")
         return
@@ -115,7 +115,7 @@ func start_test() -> void:
 
 ## Stop the current test
 func stop_test() -> void:
-    """Stop the current test run"""
+    ## Stop the current test run
     if not _is_testing:
         return
     
@@ -125,7 +125,7 @@ func stop_test() -> void:
 
 ## Configure test for different modes
 func set_test_configuration(mode: String, structures: Array = []) -> void:
-    """Configure test based on mode (quick, single, or full)"""
+    ## Configure test based on mode (quick, single, or full)
     _test_mode = mode
     
     match mode:
@@ -156,7 +156,7 @@ func set_test_configuration(mode: String, structures: Array = []) -> void:
 
 ## Get current test progress
 func get_test_progress() -> Dictionary:
-    """Get detailed progress information"""
+    ## Get detailed progress information
     var structures = _structures_to_test if not _structures_to_test.is_empty() else STRUCTURES_TO_TEST
     var cameras = _camera_positions if not _camera_positions.is_empty() else CAMERA_POSITIONS
     var zooms = _zoom_levels if not _zoom_levels.is_empty() else ZOOM_LEVELS
@@ -177,7 +177,7 @@ func get_test_progress() -> Dictionary:
 
 # === PRIVATE METHODS ===
 func _test_next_configuration() -> void:
-    """Test the next configuration in the sequence"""
+    ## Test the next configuration in the sequence
     if not _is_testing:
         return
     
@@ -226,7 +226,7 @@ func _test_next_configuration() -> void:
     _perform_selection_test(structure_name, structure_bounds, camera_config["name"], zoom_level)
 
 func _position_camera(camera_config: Dictionary, zoom_level: float) -> void:
-    """Position camera for testing"""
+    ## Position camera for testing
     if _camera_controller.has_method("set_rotation"):
         _camera_controller.set_rotation(camera_config["rotation"])
     
@@ -241,7 +241,7 @@ func _position_camera(camera_config: Dictionary, zoom_level: float) -> void:
         _camera.rotation = camera_config["rotation"]
 
 func _find_structure_bounds(structure_name: String) -> Rect2:
-    """Find screen bounds of a structure"""
+    ## Find screen bounds of a structure
     var brain_model_parent = _main_scene.get_node_or_null("BrainModel")
     if not brain_model_parent:
         return Rect2()
@@ -264,7 +264,7 @@ func _find_structure_bounds(structure_name: String) -> Rect2:
     return bounds
 
 func _find_meshes_recursive(node: Node3D, structure_name: String) -> Array[MeshInstance3D]:
-    """Recursively find all meshes matching structure name"""
+    ## Recursively find all meshes matching structure name
     var meshes: Array[MeshInstance3D] = []
     
     if node is MeshInstance3D:
@@ -281,7 +281,7 @@ func _find_meshes_recursive(node: Node3D, structure_name: String) -> Array[MeshI
     return meshes
 
 func _calculate_screen_bounds(mesh: MeshInstance3D) -> Rect2:
-    """Calculate screen space bounds for a mesh"""
+    ## Calculate screen space bounds for a mesh
     if not mesh.mesh:
         return Rect2()
     
@@ -324,7 +324,7 @@ func _calculate_screen_bounds(mesh: MeshInstance3D) -> Rect2:
     return Rect2(min_pos, max_pos - min_pos)
 
 func _perform_selection_test(structure_name: String, bounds: Rect2, camera_name: String, zoom: float) -> void:
-    """Perform a single selection test"""
+    ## Perform a single selection test
     _current_test_data = {
         "structure": structure_name,
         "camera": camera_name,
@@ -355,7 +355,7 @@ func _perform_selection_test(structure_name: String, bounds: Rect2, camera_name:
     _process_selection_result()
 
 func _calculate_test_click_position(bounds: Rect2, repetition: int) -> Vector2:
-    """Calculate click position for testing"""
+    ## Calculate click position for testing
     # Test different areas of the structure
     var positions = [
         bounds.get_center(),  # Center
@@ -373,7 +373,7 @@ func _calculate_test_click_position(bounds: Rect2, repetition: int) -> Vector2:
     return positions[repetition % positions.size()]
 
 func _process_selection_result() -> void:
-    """Process the result of a selection attempt"""
+    ## Process the result of a selection attempt
     var structure_name = _current_test_data["structure"]
     var success = _selection_success and _last_selected_structure == structure_name
     
@@ -425,7 +425,7 @@ func _process_selection_result() -> void:
     _advance_to_next_test()
 
 func _is_edge_click(position: Vector2, bounds: Rect2) -> bool:
-    """Check if click position is near edge of bounds"""
+    ## Check if click position is near edge of bounds
     var edge_threshold = 5.0  # pixels
     
     var dist_to_left = abs(position.x - bounds.position.x)
@@ -437,7 +437,7 @@ func _is_edge_click(position: Vector2, bounds: Rect2) -> bool:
             dist_to_top < edge_threshold or dist_to_bottom < edge_threshold)
 
 func _advance_to_next_test() -> void:
-    """Advance to the next test configuration"""
+    ## Advance to the next test configuration
     _current_repetition += 1
     
     var reps = _repetitions if _repetitions > 0 else REPETITIONS_PER_STRUCTURE
@@ -471,7 +471,7 @@ func _advance_to_next_test() -> void:
     _test_next_configuration()
 
 func _calculate_structure_metrics(structure_name: String) -> void:
-    """Calculate final metrics for a structure"""
+    ## Calculate final metrics for a structure
     var results = _test_results[structure_name]
     
     # Calculate success rate
@@ -502,7 +502,7 @@ func _calculate_structure_metrics(structure_name: String) -> void:
         results["difficulty_category"] = "VERY_EASY"
 
 func _calculate_completed_tests() -> int:
-    """Calculate number of completed tests"""
+    ## Calculate number of completed tests
     var structures_done = _current_structure_index
     var cameras_done = _current_camera_index
     var zooms_done = _current_zoom_index
@@ -514,7 +514,7 @@ func _calculate_completed_tests() -> int:
             reps_done)
 
 func _complete_testing() -> void:
-    """Complete the testing process"""
+    ## Complete the testing process
     _is_testing = false
     var total_time = Time.get_ticks_msec() - _test_start_time
     
@@ -524,7 +524,7 @@ func _complete_testing() -> void:
     emit_signal("test_completed", _test_results)
 
 func _generate_report() -> void:
-    """Generate comprehensive testing report"""
+    ## Generate comprehensive testing report
     var report = """# NeuroVis Selection Reliability Test Report
 Generated: %s
 Test Duration: %.1f seconds
@@ -601,6 +601,7 @@ Overall Success Rate: %.1f%%
     report += """## Priority Recommendations
 
 ### Critical Issues (Difficulty Score > 70):
+
 """
     
     var critical_count = 0
@@ -641,7 +642,7 @@ Overall Success Rate: %.1f%%
     _save_report(report)
 
 func _analyze_failure_patterns(failures: Array) -> Array[String]:
-    """Analyze failure coordinates to identify patterns"""
+    ## Analyze failure coordinates to identify patterns
     var patterns: Array[String] = []
     
     if failures.is_empty():
@@ -687,14 +688,14 @@ func _analyze_failure_patterns(failures: Array) -> Array[String]:
     return patterns
 
 func _calculate_total_attempts() -> int:
-    """Calculate total number of selection attempts"""
+    ## Calculate total number of selection attempts
     var total = 0
     for structure_name in _test_results:
         total += _test_results[structure_name]["total_attempts"]
     return total
 
 func _calculate_overall_success_rate() -> float:
-    """Calculate overall success rate across all structures"""
+    ## Calculate overall success rate across all structures
     var total_attempts = 0
     var total_successes = 0
     
@@ -708,7 +709,7 @@ func _calculate_overall_success_rate() -> float:
     return float(total_successes) / float(total_attempts) * 100.0
 
 func _generate_statistical_summary() -> String:
-    """Generate statistical summary of results"""
+    ## Generate statistical summary of results
     var summary = ""
     
     # Calculate statistics
@@ -780,7 +781,7 @@ func _generate_statistical_summary() -> String:
     return summary
 
 func _count_difficulty_category(category: String) -> int:
-    """Count structures in a difficulty category"""
+    ## Count structures in a difficulty category
     var count = 0
     for structure_name in _test_results:
         if _test_results[structure_name].get("difficulty_category", "") == category:
@@ -788,7 +789,7 @@ func _count_difficulty_category(category: String) -> int:
     return count
 
 func _save_report(report_content: String) -> void:
-    """Save the report to file"""
+    ## Save the report to file
     var timestamp = Time.get_datetime_string_from_system().replace(" ", "_").replace(":", "-")
     var file_path = "user://selection_reliability_report_%s.md" % timestamp
     
@@ -810,6 +811,6 @@ func _save_report(report_content: String) -> void:
 
 # === SIGNAL HANDLERS ===
 func _on_structure_selected(structure_name: String, _mesh: MeshInstance3D) -> void:
-    """Handle structure selection during testing"""
+    ## Handle structure selection during testing
     _selection_success = true
     _last_selected_structure = structure_name

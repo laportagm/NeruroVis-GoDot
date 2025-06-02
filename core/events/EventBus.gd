@@ -64,7 +64,7 @@ func _ready() -> void:
 ## @param event_name: Name of the event to listen for
 ## @param callback: Callable to invoke when event occurs
 func register(event_name: String, callback: Callable) -> void:
-	"""Register a listener for educational events"""
+	## Register a listener for educational events
 	if not _listeners.has(event_name):
 		_listeners[event_name] = []
 	
@@ -76,7 +76,7 @@ func register(event_name: String, callback: Callable) -> void:
 ## @param event_name: Name of the event
 ## @param callback: Callable to remove
 func unregister(event_name: String, callback: Callable) -> void:
-	"""Unregister a listener for educational events"""
+	## Unregister a listener for educational events
 	if _listeners.has(event_name):
 		var removed = _listeners[event_name].erase(callback)
 		if removed:
@@ -86,7 +86,7 @@ func unregister(event_name: String, callback: Callable) -> void:
 ## @param event_name: Name of the event to emit
 ## @param event_data: Optional data to pass to listeners
 func emit(event_name: String, event_data = null) -> void:
-	"""Emit an educational event with optional data"""
+	## Emit an educational event with optional data
 	if _event_trace_enabled:
 		_trace_event(event_name, event_data)
 	
@@ -100,14 +100,14 @@ func emit(event_name: String, event_data = null) -> void:
 ## @param event_name: Name of the event to check
 ## @returns: true if there are listeners, false otherwise
 func has_listeners(event_name: String) -> bool:
-	"""Check if an educational event has any listeners"""
+	## Check if an educational event has any listeners
 	return _listeners.has(event_name) and not _listeners[event_name].is_empty()
 
 ## Get number of listeners for an event
 ## @param event_name: Name of the event to check
 ## @returns: Number of registered listeners
 func get_listener_count(event_name: String) -> int:
-	"""Get count of listeners for educational event debugging"""
+	## Get count of listeners for educational event debugging
 	if _listeners.has(event_name):
 		return _listeners[event_name].size()
 	return 0
@@ -115,7 +115,7 @@ func get_listener_count(event_name: String) -> int:
 ## Clear all listeners for an event
 ## @param event_name: Name of the event to clear
 func clear_listeners(event_name: String) -> void:
-	"""Clear all listeners for an educational event"""
+	## Clear all listeners for an educational event
 	if _listeners.has(event_name):
 		_listeners[event_name].clear()
 		print("[EventBus] Cleared all listeners for: %s" % event_name)
@@ -123,32 +123,32 @@ func clear_listeners(event_name: String) -> void:
 ## Get all registered event names
 ## @returns: Array of event names that have listeners
 func get_registered_events() -> Array:
-	"""Get all registered educational events for debugging"""
+	## Get all registered educational events for debugging
 	return _listeners.keys()
 
 # === DEBUGGING UTILITIES ===
 ## Enable or disable event tracing
 ## @param enabled: Whether tracing should be enabled
 func set_event_tracing(enabled: bool) -> void:
-	"""Enable/disable detailed educational event tracing"""
+	## Enable/disable detailed educational event tracing
 	_event_trace_enabled = enabled
 	print("[EventBus] Event tracing: %s" % ("ENABLED" if enabled else "DISABLED"))
 
 ## Get recent event trace (if tracing enabled)
 ## @returns: Array of recent events with timestamps
 func get_event_trace() -> Array:
-	"""Get recent educational events for debugging"""
+	## Get recent educational events for debugging
 	return _recent_events.duplicate()
 
 ## Clear the event trace history
 func clear_event_trace() -> void:
-	"""Clear event trace history"""
+	## Clear event trace history
 	_recent_events.clear()
 	print("[EventBus] Event trace cleared")
 
 ## Print current event listener statistics
 func print_event_statistics() -> void:
-	"""Print educational event statistics for debugging"""
+	## Print educational event statistics for debugging
 	print("\n=== EVENT BUS STATISTICS ===")
 	print("Total registered event types: %d" % _listeners.size())
 	
@@ -163,7 +163,7 @@ func print_event_statistics() -> void:
 
 # === PRIVATE METHODS ===
 func _trace_event(event_name: String, event_data) -> void:
-	"""Record event for debugging purposes"""
+	## Record event for debugging purposes
 	var trace_entry = {
 		"timestamp": Time.get_unix_time_from_system(),
 		"event": event_name,

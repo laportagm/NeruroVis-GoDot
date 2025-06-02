@@ -1,0 +1,34 @@
+{
+    "folders": [
+        {
+            "path": ".",
+            "name": "NeuroVis Project"
+        }
+    ],
+    "settings": {
+        "godot_tools.editor_path": "/Applications/Godot.app/Contents/MacOS/Godot",
+        "godot_tools.gdscript_lsp_server_port": 6005,
+        "godot_tools.scene_file_config": "res://scenes/core/main.tscn",
+        "terminal.integrated.cwd": "${workspaceFolder}"
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Launch Project",
+                "type": "godot",
+                "request": "launch",
+                "project": "${workspaceFolder}",
+                "port": 6007,
+                "scene": "res://scenes/core/main.tscn"
+            }
+        ]
+    },
+    "extensions": {
+        "recommendations": [
+            "geequlim.godot-tools",
+            "alfish.godot-files",
+            "ms-vscode.cpptools"
+        ]
+    }
+}

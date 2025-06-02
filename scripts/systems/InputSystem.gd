@@ -20,13 +20,13 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 func set_initialization_complete(complete: bool) -> void:
-	"""Set initialization state"""
+	## Set initialization state
 	initialization_complete = complete
 	print("[INPUT_SYSTEM] Initialization state set to: ", complete)
 
 ## Main input handler
 func _input(event: InputEvent) -> void:
-	"""Handle input events and emit appropriate signals"""
+	## Handle input events and emit appropriate signals
 	if not initialization_complete:
 		return
 	
@@ -43,7 +43,7 @@ func _input(event: InputEvent) -> void:
 			return
 
 func _handle_keyboard_input(event: InputEventKey) -> bool:
-	"""Handle keyboard shortcuts"""
+	## Handle keyboard shortcuts
 	match event.keycode:
 		KEY_F:
 			# Focus on bounds
@@ -79,7 +79,7 @@ func _handle_keyboard_input(event: InputEventKey) -> bool:
 			return false
 
 func _handle_mouse_input(event: InputEventMouseButton) -> bool:
-	"""Handle mouse button input"""
+	## Handle mouse button input
 	# Handle right mouse click for selection (left is used by camera controller for orbiting)
 	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		print("[INPUT_SYSTEM] Structure selection requested at: ", event.position)
@@ -90,7 +90,7 @@ func _handle_mouse_input(event: InputEventMouseButton) -> bool:
 
 ## Unhandled input (for mouse motion and other events)
 func _unhandled_input(event: InputEvent) -> void:
-	"""Handle unhandled input events"""
+	## Handle unhandled input events
 	if not initialization_complete:
 		return
 	

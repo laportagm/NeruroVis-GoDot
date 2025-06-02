@@ -36,11 +36,11 @@ var _is_initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the BrainAnalysisPanel component"""
+	## Initialize the BrainAnalysisPanel component
 	_initialize()
 
 func _process(delta: float) -> void:
-	"""Called every frame"""
+	## Called every frame
 	if not _is_initialized:
 		return
 	
@@ -52,7 +52,7 @@ func _process(delta: float) -> void:
 ## @param structure_data: Dictionary containing structure information
 ## @return: true if update was successful
 func update_structure_info(structure_data: Dictionary) -> bool:
-	"""Updates the analysis panel with new brain structure information"""
+	## Updates the analysis panel with new brain structure information
 	
 	# Validation
 	if structure_data.is_empty() or not structure_data.has("id"):
@@ -73,7 +73,7 @@ func update_structure_info(structure_data: Dictionary) -> bool:
 
 # === PRIVATE METHODS ===
 func _initialize() -> void:
-	"""Initialize the component with default settings"""
+	## Initialize the component with default settings
 	
 	# Setup validation
 	if not _validate_setup():
@@ -89,13 +89,13 @@ func _initialize() -> void:
 	print("[BrainAnalysisPanel] Initialized successfully")
 
 func _validate_setup() -> bool:
-	"""Validate that all required dependencies are available"""
+	## Validate that all required dependencies are available
 	
 	# Add validation logic
 	return true
 
 func _setup_ui_components() -> void:
-	"""Setup UI components and layout"""
+	## Setup UI components and layout
 	_info_label = RichTextLabel.new()
 	_detail_button = Button.new()
 	
@@ -106,26 +106,26 @@ func _setup_ui_components() -> void:
 	add_child(_detail_button)
 
 func _setup_connections() -> void:
-	"""Setup signal connections and dependencies"""
+	## Setup signal connections and dependencies
 	if _detail_button:
 		_detail_button.pressed.connect(_on_detail_button_pressed)
 
 func _apply_initial_state() -> void:
-	"""Apply initial state and configuration"""
+	## Apply initial state and configuration
 	if not default_structure_id.is_empty():
 		# Load default structure info from knowledge base
 		var default_structure = {"id": default_structure_id, "displayName": "Default Structure"}
 		update_structure_info(default_structure)
 
 func _cleanup() -> void:
-	"""Clean up resources and connections"""
+	## Clean up resources and connections
 	
 	# Cleanup logic here
 	_is_initialized = false
 
 # === EVENT HANDLERS ===
 func _on_detail_button_pressed() -> void:
-	"""Handle detail button press to request more information"""
+	## Handle detail button press to request more information
 	
 	if not _is_initialized or current_structure.is_empty():
 		return
@@ -134,7 +134,7 @@ func _on_detail_button_pressed() -> void:
 
 # === UTILITY METHODS ===
 func _update_display() -> void:
-	"""Update the display with current structure information"""
+	## Update the display with current structure information
 	if not _info_label or current_structure.is_empty():
 		return
 	
@@ -145,15 +145,15 @@ func _update_display() -> void:
 	_info_label.text = display_text
 
 func _log_debug(message: String) -> void:
-	"""Log debug message with class context"""
+	## Log debug message with class context
 	if OS.is_debug_build():
 		print("[BrainAnalysisPanel] " + message)
 
 func _log_error(message: String) -> void:
-	"""Log error message with class context"""
+	## Log error message with class context
 	push_error("[BrainAnalysisPanel] " + message)
 
 # === CLEANUP ===
 func _exit_tree() -> void:
-	"""Clean up when node is removed from tree"""
+	## Clean up when node is removed from tree
 	_cleanup()

@@ -35,24 +35,24 @@ func _ready() -> void:
 	emit_signal("camera_ready")
 
 func initialize_camera_controller(controller) -> void:
-	"""Initialize the camera controller with our camera reference"""
+	## Initialize the camera controller with our camera reference
 	camera_controller = controller
 	if camera_controller and camera:
 		camera_controller.initialize(camera)
 		print("[CAMERA_SYSTEM] Camera controller initialized with camera reference")
 
 func set_initialization_complete(complete: bool) -> void:
-	"""Set initialization state"""
+	## Set initialization state
 	initialization_complete = complete
 	print("[CAMERA_SYSTEM] Initialization state set to: ", complete)
 
 ## Public camera methods
 func get_camera() -> Camera3D:
-	"""Get the camera node reference"""
+	## Get the camera node reference
 	return camera
 
 func focus_on_bounds(bounds: AABB) -> void:
-	"""Focus camera on given bounds"""
+	## Focus camera on given bounds
 	if not initialization_complete:
 		print("[CAMERA_SYSTEM] Cannot focus - system not initialized")
 		return
@@ -66,7 +66,7 @@ func focus_on_bounds(bounds: AABB) -> void:
 		_manual_focus_on_bounds(bounds)
 
 func focus_on_center(center: Vector3, distance: float = 5.0) -> void:
-	"""Focus camera on a specific point"""
+	## Focus camera on a specific point
 	if not camera:
 		print("[CAMERA_SYSTEM] Cannot focus - camera not found")
 		return
@@ -75,7 +75,7 @@ func focus_on_center(center: Vector3, distance: float = 5.0) -> void:
 	_manual_focus_on_center(center, distance)
 
 func reset_view() -> void:
-	"""Reset camera to default position"""
+	## Reset camera to default position
 	if not camera:
 		print("[CAMERA_SYSTEM] Cannot reset - camera not found")
 		return
@@ -84,7 +84,7 @@ func reset_view() -> void:
 	_manual_reset_view()
 
 func set_view_preset(preset: String) -> void:
-	"""Set camera to a view preset (front, right, top, etc.)"""
+	## Set camera to a view preset (front, right, top, etc.)
 	if not camera:
 		print("[CAMERA_SYSTEM] Cannot set preset - camera not found")
 		return
@@ -94,7 +94,7 @@ func set_view_preset(preset: String) -> void:
 
 ## Camera validation
 func validate_camera() -> bool:
-	"""Validate that camera node exists and is properly configured"""
+	## Validate that camera node exists and is properly configured
 	if camera == null:
 		print("[CAMERA_SYSTEM] ERROR: Camera not found")
 		return false
@@ -108,7 +108,7 @@ func validate_camera() -> bool:
 
 ## Manual camera operations (fallback when no controller available)
 func _manual_focus_on_bounds(bounds: AABB) -> void:
-	"""Manual focus implementation"""
+	## Manual focus implementation
 	if not camera:
 		return
 	
@@ -125,7 +125,7 @@ func _manual_focus_on_bounds(bounds: AABB) -> void:
 	emit_signal("focus_completed")
 
 func _manual_focus_on_center(center: Vector3, distance: float) -> void:
-	"""Manual focus on center implementation"""
+	## Manual focus on center implementation
 	if not camera:
 		return
 	
@@ -138,7 +138,7 @@ func _manual_focus_on_center(center: Vector3, distance: float) -> void:
 	emit_signal("focus_completed")
 
 func _manual_reset_view() -> void:
-	"""Manual camera reset implementation"""
+	## Manual camera reset implementation
 	if not camera:
 		return
 	
@@ -152,7 +152,7 @@ func _manual_reset_view() -> void:
 	emit_signal("reset_completed")
 
 func _create_simple_controller() -> void:
-	"""Create a simple internal camera controller"""
+	## Create a simple internal camera controller
 	camera_controller = {
 		"initialized": true,
 		"camera": camera
@@ -161,7 +161,7 @@ func _create_simple_controller() -> void:
 	print("[CAMERA_SYSTEM] Simple internal camera controller created")
 
 func _manual_set_view_preset(preset: String) -> void:
-	"""Manual view preset implementation"""
+	## Manual view preset implementation
 	if not camera:
 		return
 	
@@ -192,24 +192,24 @@ func _manual_set_view_preset(preset: String) -> void:
 
 ## Camera information methods
 func get_camera_position() -> Vector3:
-	"""Get current camera position"""
+	## Get current camera position
 	return camera.global_position if camera else Vector3.ZERO
 
 func get_camera_rotation() -> Vector3:
-	"""Get current camera rotation"""
+	## Get current camera rotation
 	return camera.global_rotation_degrees if camera else Vector3.ZERO
 
 func get_camera_distance() -> float:
-	"""Get current camera distance from pivot"""
+	## Get current camera distance from pivot
 	return camera_distance
 
 func is_camera_available() -> bool:
-	"""Check if camera is available and valid"""
+	## Check if camera is available and valid
 	return camera != null and camera is Camera3D
 
 ## Debug methods
 func print_camera_info() -> void:
-	"""Print camera information for debugging"""
+	## Print camera information for debugging
 	if not camera:
 		print("[CAMERA_SYSTEM] No camera available")
 		return

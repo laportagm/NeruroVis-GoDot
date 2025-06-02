@@ -45,7 +45,7 @@ static func _static_init() -> void:
 	_apply_debug_overrides_if_allowed()
 
 static func _load_default_flags() -> void:
-	"""Load default feature flag configuration"""
+	## Load default feature flag configuration
 
 	# Production defaults (conservative approach)
 	_flags = {
@@ -83,7 +83,7 @@ static func _load_default_flags() -> void:
 	# Debug overrides moved to separate function
 
 static func _load_user_config() -> void:
-	"""Load user-specific feature overrides"""
+	## Load user-specific feature overrides
 	var config = ConfigFile.new()
 
 	if config.load("user://feature_flags.cfg") == OK:
@@ -96,7 +96,7 @@ static func _load_user_config() -> void:
 	_config_loaded = true
 
 static func _apply_debug_overrides_if_allowed() -> void:
-	"""Apply debug overrides only if not explicitly disabled"""
+	## Apply debug overrides only if not explicitly disabled
 	if not OS.is_debug_build():
 		return
 
@@ -123,14 +123,14 @@ static func _apply_debug_overrides_if_allowed() -> void:
 
 # === PUBLIC API ===
 static func is_enabled(flag_name: String) -> bool:
-	"""Check if a feature flag is enabled"""
+	## Check if a feature flag is enabled
 	if not _config_loaded:
 		_static_init()
 
 	return _flags.get(flag_name, false)
 
 static func enable_feature(flag_name: String, persist: bool = false) -> void:
-	"""Enable a feature flag"""
+	## Enable a feature flag
 	var old_value = _flags.get(flag_name, false)
 	_flags[flag_name] = true
 
@@ -142,7 +142,7 @@ static func enable_feature(flag_name: String, persist: bool = false) -> void:
 	print("[FeatureFlags] Enabled: %s" % flag_name)
 
 static func disable_feature(flag_name: String, persist: bool = false) -> void:
-	"""Disable a feature flag"""
+	## Disable a feature flag
 	var old_value = _flags.get(flag_name, true)
 	_flags[flag_name] = false
 
@@ -154,7 +154,7 @@ static func disable_feature(flag_name: String, persist: bool = false) -> void:
 	print("[FeatureFlags] Disabled: %s" % flag_name)
 
 static func toggle_feature(flag_name: String, persist: bool = false) -> bool:
-	"""Toggle a feature flag and return new state"""
+	## Toggle a feature flag and return new state
 	var current_state = is_enabled(flag_name)
 	var new_state = not current_state
 
@@ -166,14 +166,14 @@ static func toggle_feature(flag_name: String, persist: bool = false) -> bool:
 	return new_state
 
 static func get_all_flags() -> Dictionary:
-	"""Get all feature flags (for debugging/admin interfaces)"""
+	## Get all feature flags (for debugging/admin interfaces)
 	if not _config_loaded:
 		_static_init()
 
 	return _flags.duplicate()
 
 static func get_flag_status(flag_name: String) -> Dictionary:
-	"""Get detailed flag status"""
+	## Get detailed flag status
 	return {
 		"name": flag_name,
 		"enabled": is_enabled(flag_name),
@@ -183,19 +183,19 @@ static func get_flag_status(flag_name: String) -> Dictionary:
 
 # === LISTENER SYSTEM ===
 static func add_listener(flag_name: String, callback: Callable) -> void:
-	"""Add listener for feature flag changes"""
+	## Add listener for feature flag changes
 	if not _listeners.has(flag_name):
 		_listeners[flag_name] = []
 
 	_listeners[flag_name].append(callback)
 
 static func remove_listener(flag_name: String, callback: Callable) -> void:
-	"""Remove listener for feature flag changes"""
+	## Remove listener for feature flag changes
 	if _listeners.has(flag_name):
 		_listeners[flag_name].erase(callback)
 
 static func _notify_listeners(flag_name: String, old_value: bool, new_value: bool) -> void:
-	"""Notify all listeners of flag change"""
+	## Notify all listeners of flag change
 	if _listeners.has(flag_name):
 		for callback in _listeners[flag_name]:
 			if callback.is_valid():
@@ -203,7 +203,7 @@ static func _notify_listeners(flag_name: String, old_value: bool, new_value: boo
 
 # === UTILITY METHODS ===
 static func _save_user_override(flag_name: String, value: bool) -> void:
-	"""Save user override to config file"""
+	## Save user override to config file
 	var config = ConfigFile.new()
 	config.load("user://feature_flags.cfg") # Load existing or create new
 
@@ -211,7 +211,7 @@ static func _save_user_override(flag_name: String, value: bool) -> void:
 	config.save("user://feature_flags.cfg")
 
 static func _get_flag_source(flag_name: String) -> String:
-	"""Determine source of flag value (default, user, etc.)"""
+	## Determine source of flag value (default, user, etc.)
 	var config = ConfigFile.new()
 	if config.load("user://feature_flags.cfg") == OK:
 		if config.has_section_key("features", flag_name):
@@ -223,7 +223,7 @@ static func _get_flag_source(flag_name: String) -> String:
 	return "production_default"
 
 static func _get_flag_description(flag_name: String) -> String:
-	"""Get human-readable description of flag"""
+	## Get human-readable description of flag
 	var descriptions = {
 		UI_MODULAR_COMPONENTS: "New component-based UI system",
 		UI_LEGACY_PANELS: "Legacy panel system (for compatibility)",
@@ -244,7 +244,7 @@ static func _get_flag_description(flag_name: String) -> String:
 
 # === MIGRATION HELPERS ===
 static func begin_migration(from_flag: String, to_flag: String, rollback_capable: bool = true) -> void:
-	"""Begin migration from one system to another"""
+	## Begin migration from one system to another
 	print("[FeatureFlags] Beginning migration: %s → %s" % [from_flag, to_flag])
 
 	# Enable new system
@@ -257,19 +257,19 @@ static func begin_migration(from_flag: String, to_flag: String, rollback_capable
 		disable_feature(from_flag)
 
 static func complete_migration(from_flag: String, _to_flag: String) -> void:
-	"""Complete migration by disabling old system"""
+	## Complete migration by disabling old system
 	print("[FeatureFlags] Completing migration: disabling %s" % from_flag)
 	disable_feature(from_flag)
 
 static func rollback_migration(from_flag: String, to_flag: String) -> void:
-	"""Rollback to previous system"""
+	## Rollback to previous system
 	print("[FeatureFlags] Rolling back migration: %s ← %s" % [from_flag, to_flag])
 	enable_feature(from_flag)
 	disable_feature(to_flag)
 
 # === CORE DEVELOPMENT MODE ===
 static func is_core_development_mode() -> bool:
-	"""Check if core development mode is enabled"""
+	## Check if core development mode is enabled
 	# Check environment variable first
 	if OS.has_environment("NEUROVIS_CORE_DEV"):
 		return OS.get_environment("NEUROVIS_CORE_DEV") == "1"
@@ -284,7 +284,7 @@ static func is_core_development_mode() -> bool:
 	return false
 
 static func enable_core_development_mode() -> void:
-	"""Enable core development mode - simplifies systems for architecture work"""
+	## Enable core development mode - simplifies systems for architecture work
 	print("[FeatureFlags] Enabling Core Development Mode...")
 
 	# Save to config
@@ -299,7 +299,7 @@ static func enable_core_development_mode() -> void:
 	print("[FeatureFlags] Core Development Mode ENABLED")
 
 static func disable_core_development_mode() -> void:
-	"""Disable core development mode - restores full functionality"""
+	## Disable core development mode - restores full functionality
 	print("[FeatureFlags] Disabling Core Development Mode...")
 
 	# Save to config
@@ -315,7 +315,7 @@ static func disable_core_development_mode() -> void:
 
 # === DEBUG UTILITIES ===
 static func print_flag_status() -> void:
-	"""Print all flag statuses (for debugging)"""
+	## Print all flag statuses (for debugging)
 	print("\n=== FEATURE FLAGS STATUS ===")
 
 	if is_core_development_mode():
@@ -329,13 +329,13 @@ static func print_flag_status() -> void:
 	print("============================\n")
 
 static func reset_to_defaults() -> void:
-	"""Reset all flags to default values (for testing)"""
+	## Reset all flags to default values (for testing)
 	_load_default_flags()
 	print("[FeatureFlags] Reset to default values")
 
 # === PRESETS ===
 static func apply_preset(preset_name: String) -> void:
-	"""Apply predefined flag presets"""
+	## Apply predefined flag presets
 	match preset_name:
 		"development":
 			_apply_development_preset()
@@ -351,7 +351,7 @@ static func apply_preset(preset_name: String) -> void:
 			push_warning("[FeatureFlags] Unknown preset: " + preset_name)
 
 static func _apply_development_preset() -> void:
-	"""Enable all development features"""
+	## Enable all development features
 	enable_feature(UI_MODULAR_COMPONENTS)
 	enable_feature(UI_COMPONENT_POOLING)
 	enable_feature(UI_STATE_PERSISTENCE)
@@ -360,28 +360,28 @@ static func _apply_development_preset() -> void:
 	enable_feature(PERFORMANCE_MONITORING)
 
 static func _apply_production_preset() -> void:
-	"""Conservative production settings"""
+	## Conservative production settings
 	disable_feature(UI_MODULAR_COMPONENTS)
 	enable_feature(UI_LEGACY_PANELS)
 	disable_feature(DEBUG_COMPONENT_INSPECTOR)
 	disable_feature(DEBUG_PERFORMANCE_OVERLAY)
 
 static func _apply_migration_test_preset() -> void:
-	"""Settings for testing migration"""
+	## Settings for testing migration
 	enable_feature(UI_MODULAR_COMPONENTS)
 	enable_feature(UI_LEGACY_PANELS) # Keep both for comparison
 	enable_feature(UI_STATE_PERSISTENCE)
 	enable_feature(PERFORMANCE_MONITORING)
 
 static func _apply_performance_test_preset() -> void:
-	"""Settings for performance testing"""
+	## Settings for performance testing
 	enable_feature(UI_COMPONENT_POOLING)
 	enable_feature(MEMORY_OPTIMIZATION)
 	enable_feature(LAZY_LOADING)
 	enable_feature(PERFORMANCE_MONITORING)
 
 static func _apply_core_development_preset() -> void:
-	"""Core development mode - minimal features for architecture work"""
+	## Core development mode - minimal features for architecture work
 	# Disable all complex UI features
 	disable_feature(UI_MODULAR_COMPONENTS)
 	disable_feature(UI_COMPONENT_POOLING)

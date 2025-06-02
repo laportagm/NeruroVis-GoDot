@@ -11,6 +11,12 @@
     "godot_tools.connection_retry_count": 5,
     "godot_tools.connection_retry_delay": 1000,
     "godot_tools.show_connection_status": true,
+    "godot_tools.generate_debug_console_logs": true,
+    "godot_tools.reconnect_on_focus": true,
+    "godot_tools.show_hover_documentation": true,
+    "godot_tools.highlight_deprecated_code": true,
+    "godot_tools.show_references_code_lens": true,
+    "godot_tools.show_inheritance_chain": true,
 
     "// === EDITOR BEHAVIOR ===": "",
     "editor.formatOnSave": true,
@@ -142,7 +148,8 @@
 
     "// === TERMINAL ===": "",
     "terminal.integrated.env.osx": {
-        "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot"
+        "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot",
+        "GODOT_PROJECT": "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/3/(4.2)NeuroVis copy 2"
     },
 
     "// === ERROR HIGHLIGHTING ===": "",
@@ -150,7 +157,7 @@
     "errorLens.enabledDiagnosticLevels": ["error", "warning"],
 
     "// === NEUROVIS PROJECT SPECIFIC ===": "",
-    "neurovis.project.path": "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/(4)NeuroVis copy",
+    "neurovis.project.path": "/Users/gagelaporta/1NeuroPro/NeuroVisProject/1/3/(4.2)NeuroVis copy 2",
     "neurovis.debug.enabled": true,
     "neurovis.autoload.validate": true,
     "neurovis.standards.enforce": true,
@@ -165,6 +172,25 @@
     "neurovis.codeQuality.lintingStandards": "strict",
     "neurovis.codeQuality.rejectNonCompliantCode": true,
     "cSpell.words": [
-        "elif"
-    ]
+        "elif",
+        "godot",
+        "gdscript",
+        "tscn",
+        "tres",
+        "neurovis",
+        "hippocampus",
+        "autoload"
+    ],
+
+    "// === GODOT DEBUGGING ===" : "",
+    "godot_tools.debug.use_external_debugger": false,
+    "godot_tools.debug.breakpoint_enabled": true,
+    "godot_tools.debug.stack_trace_enabled": true,
+    "godot_tools.debug.variable_inspection": true,
+
+    "// === PROBLEM MATCHERS ===" : "",
+    "problems.showCurrentInStatus": true,
+    "problems.decorations.enabled": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.decorations.badges": true
 }

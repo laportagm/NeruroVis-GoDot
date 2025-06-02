@@ -37,7 +37,7 @@ var _last_hit_normal: Vector3
 # === PUBLIC METHODS ===
 ## Initialize the debug visualizer
 func initialize(main_scene: Node3D) -> void:
-    """Initialize the selection debug visualizer"""
+    ## Initialize the selection debug visualizer
     _main_scene = main_scene
     name = "SelectionDebugVisualizer"
     
@@ -45,7 +45,7 @@ func initialize(main_scene: Node3D) -> void:
 
 ## Toggle debug visualization
 func toggle_debug_draw() -> void:
-    """Toggle all debug visualizations"""
+    ## Toggle all debug visualizations
     _debug_draw_enabled = not _debug_draw_enabled
     
     if _debug_draw_enabled:
@@ -56,7 +56,7 @@ func toggle_debug_draw() -> void:
 
 ## Show bounds for a specific structure
 func show_structure_bounds(structure_name: String) -> void:
-    """Visualize bounds for a specific structure"""
+    ## Visualize bounds for a specific structure
     if not _debug_draw_enabled:
         _debug_draw_enabled = true
     
@@ -82,7 +82,7 @@ func show_structure_bounds(structure_name: String) -> void:
 
 ## Show ray visualization for selection
 func show_selection_ray(from: Vector3, to: Vector3, hit: bool, hit_point: Vector3 = Vector3.ZERO) -> void:
-    """Visualize a selection ray"""
+    ## Visualize a selection ray
     if not _debug_draw_enabled or not _show_rays:
         return
     
@@ -108,7 +108,7 @@ func show_selection_ray(from: Vector3, to: Vector3, hit: bool, hit_point: Vector
 
 ## Show collision shapes
 func show_collision_shapes(structure_name: String = "") -> void:
-    """Visualize collision shapes for structures"""
+    ## Visualize collision shapes for structures
     if not _debug_draw_enabled:
         _debug_draw_enabled = true
     
@@ -128,7 +128,7 @@ func show_collision_shapes(structure_name: String = "") -> void:
 
 ## Record click position for visualization
 func record_click_position(screen_pos: Vector2, world_pos: Vector3, success: bool) -> void:
-    """Record and visualize a click attempt"""
+    ## Record and visualize a click attempt
     if not _debug_draw_enabled or not _show_click_positions:
         return
     
@@ -166,7 +166,7 @@ func set_show_clicks(enabled: bool) -> void:
 
 ## Get visualization status
 func get_status() -> Dictionary:
-    """Get current visualization status"""
+    ## Get current visualization status
     return {
         "enabled": _debug_draw_enabled,
         "bounds": _show_bounds,
@@ -180,7 +180,7 @@ func get_status() -> Dictionary:
 
 # === PRIVATE METHODS ===
 func _find_structure_meshes(node: Node3D, structure_name: String) -> Array[MeshInstance3D]:
-    """Find all meshes for a structure"""
+    ## Find all meshes for a structure
     var meshes: Array[MeshInstance3D] = []
     var search_name = structure_name.to_lower().replace("_", " ")
     
@@ -196,7 +196,7 @@ func _find_structure_meshes(node: Node3D, structure_name: String) -> Array[MeshI
     return meshes
 
 func _create_bounds_visualization(mesh_instance: MeshInstance3D, structure_name: String) -> void:
-    """Create AABB visualization for a mesh"""
+    ## Create AABB visualization for a mesh
     var aabb = mesh_instance.get_aabb()
     var global_transform = mesh_instance.global_transform
     
@@ -227,7 +227,7 @@ func _create_bounds_visualization(mesh_instance: MeshInstance3D, structure_name:
     add_child(mesh_instance_3d)
 
 func _create_line_mesh(from: Vector3, to: Vector3, color: Color) -> MeshInstance3D:
-    """Create a line mesh between two points"""
+    ## Create a line mesh between two points
     var mesh_instance = MeshInstance3D.new()
     var immediate_mesh = ImmediateMesh.new()
     var material = StandardMaterial3D.new()
@@ -257,7 +257,7 @@ func _create_line_mesh(from: Vector3, to: Vector3, color: Color) -> MeshInstance
     return mesh_instance
 
 func _create_sphere_mesh(position: Vector3, radius: float, color: Color) -> MeshInstance3D:
-    """Create a sphere mesh at position"""
+    ## Create a sphere mesh at position
     var sphere_mesh = SphereMesh.new()
     sphere_mesh.radial_segments = 8
     sphere_mesh.rings = 4
@@ -277,7 +277,7 @@ func _create_sphere_mesh(position: Vector3, radius: float, color: Color) -> Mesh
     return mesh_instance
 
 func _visualize_all_collisions(node: Node3D) -> void:
-    """Visualize all collision shapes recursively"""
+    ## Visualize all collision shapes recursively
     if node is CollisionShape3D:
         _create_collision_visualization(node)
     
@@ -286,7 +286,7 @@ func _visualize_all_collisions(node: Node3D) -> void:
             _visualize_all_collisions(child)
 
 func _visualize_structure_collisions(parent: Node3D, structure_name: String) -> void:
-    """Visualize collision shapes for specific structure"""
+    ## Visualize collision shapes for specific structure
     var meshes = _find_structure_meshes(parent, structure_name)
     
     for mesh in meshes:
@@ -302,7 +302,7 @@ func _visualize_structure_collisions(parent: Node3D, structure_name: String) -> 
             current = current.get_parent()
 
 func _create_collision_visualization(collision_shape: CollisionShape3D) -> void:
-    """Create visualization for a collision shape"""
+    ## Create visualization for a collision shape
     if not collision_shape.shape:
         return
     
@@ -350,33 +350,33 @@ func _create_collision_visualization(collision_shape: CollisionShape3D) -> void:
     add_child(mesh_instance)
 
 func _clear_all_visualizations() -> void:
-    """Clear all debug visualizations"""
+    ## Clear all debug visualizations
     _clear_bounds_visualization()
     _clear_ray_visualization()
     _clear_collision_visualization()
     _clear_click_markers()
 
 func _clear_bounds_visualization() -> void:
-    """Clear bounds visualizations"""
+    ## Clear bounds visualizations
     for structure_name in _bounds_meshes:
         for mesh in _bounds_meshes[structure_name]:
             mesh.queue_free()
     _bounds_meshes.clear()
 
 func _clear_ray_visualization() -> void:
-    """Clear ray visualizations"""
+    ## Clear ray visualizations
     for ray in _ray_lines:
         ray.queue_free()
     _ray_lines.clear()
 
 func _clear_collision_visualization() -> void:
-    """Clear collision visualizations"""
+    ## Clear collision visualizations
     for mesh in _collision_meshes:
         mesh.queue_free()
     _collision_meshes.clear()
 
 func _clear_click_markers() -> void:
-    """Clear click position markers"""
+    ## Clear click position markers
     for marker in _click_markers:
         marker.queue_free()
     _click_markers.clear()

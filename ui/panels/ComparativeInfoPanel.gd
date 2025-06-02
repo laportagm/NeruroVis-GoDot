@@ -35,7 +35,7 @@ var _comparison_mode: bool = false
 
 # === INITIALIZATION ===
 func _ready() -> void:
-    """Initialize comparative panel"""
+    ## Initialize comparative panel
     # Get autoloaded services
     if has_node("/root/KnowledgeService"):
         _knowledge_service = get_node("/root/KnowledgeService")
@@ -52,7 +52,7 @@ func _ready() -> void:
 
 # === PRIVATE METHODS ===
 func _setup_ui() -> void:
-    """Setup UI structure"""
+    ## Setup UI structure
     # Configure header
     if title_label:
         title_label.text = "Structure Comparison"
@@ -77,7 +77,7 @@ func _setup_ui() -> void:
     relationship_container.add_child(relationship_label)
 
 func _create_structure_card(index: int) -> Control:
-    """Create a structure information card"""
+    ## Create a structure information card
     var card = PanelContainer.new()
     card.custom_minimum_size = Vector2(0, STRUCTURE_CARD_HEIGHT)
     
@@ -134,7 +134,7 @@ func _create_structure_card(index: int) -> Control:
     return card
 
 func _apply_theme() -> void:
-    """Apply current theme settings"""
+    ## Apply current theme settings
     if not _theme_manager:
         return
     
@@ -161,7 +161,7 @@ func _apply_theme() -> void:
 # === PUBLIC METHODS ===
 ## Update display with new structure selections
 func update_selections(selections: Array[Dictionary]) -> void:
-    """Update panel with current multi-selection data"""
+    ## Update panel with current multi-selection data
     _current_structures = selections
     _comparison_mode = selections.size() > 1
     
@@ -196,7 +196,7 @@ func update_selections(selections: Array[Dictionary]) -> void:
 
 ## Clear all selections
 func clear_all() -> void:
-    """Clear all displayed information"""
+    ## Clear all displayed information
     _current_structures.clear()
     _comparison_mode = false
     
@@ -209,7 +209,7 @@ func clear_all() -> void:
 
 # === PRIVATE UPDATE METHODS ===
 func _update_structure_card(index: int, selection_data: Dictionary) -> void:
-    """Update a specific structure card with data"""
+    ## Update a specific structure card with data
     var card = _structure_cards[index]
     if not card:
         return
@@ -261,17 +261,17 @@ func _update_structure_card(index: int, selection_data: Dictionary) -> void:
             clinical_label.text = ""
 
 func _normalize_structure_name(name: String) -> String:
-    """Normalize structure name for knowledge lookup"""
+    ## Normalize structure name for knowledge lookup
     return name.replace(" (good)", "").replace("(good)", "").strip_edges()
 
 func _abbreviate_text(text: String, max_length: int) -> String:
-    """Abbreviate text to fit in limited space"""
+    ## Abbreviate text to fit in limited space
     if text.length() <= max_length:
         return text
     return text.substr(0, max_length - 3) + "..."
 
 func _abbreviate_list(items: Array, max_items: int) -> String:
-    """Convert array to abbreviated string"""
+    ## Convert array to abbreviated string
     if items.size() <= max_items:
         return ", ".join(items)
     
@@ -282,7 +282,7 @@ func _abbreviate_list(items: Array, max_items: int) -> String:
     return ", ".join(abbreviated) + " (+" + str(items.size() - max_items) + " more)"
 
 func _show_card(index: int) -> void:
-    """Show a structure card with animation"""
+    ## Show a structure card with animation
     var card = _structure_cards[index]
     if not card.visible:
         card.modulate.a = 0.0
@@ -292,7 +292,7 @@ func _show_card(index: int) -> void:
         tween.tween_property(card, "modulate:a", 1.0, PANEL_ANIMATION_TIME)
 
 func _hide_card(index: int) -> void:
-    """Hide a structure card"""
+    ## Hide a structure card
     var card = _structure_cards[index]
     if card.visible:
         var tween = create_tween()
@@ -300,7 +300,7 @@ func _hide_card(index: int) -> void:
         tween.tween_callback(card.hide)
 
 func _update_relationships() -> void:
-    """Update relationship information between selected structures"""
+    ## Update relationship information between selected structures
     _clear_relationships()
     
     if _current_structures.size() < 2:
@@ -322,7 +322,7 @@ func _update_relationships() -> void:
         relationship_container.add_child(no_rel_label)
 
 func _find_relationships() -> Array[String]:
-    """Find anatomical relationships between selected structures"""
+    ## Find anatomical relationships between selected structures
     var relationships = []
     
     # Example relationship detection (extend with actual data)
@@ -354,7 +354,7 @@ func _find_relationships() -> Array[String]:
     return relationships
 
 func _clear_relationships() -> void:
-    """Clear relationship display"""
+    ## Clear relationship display
     # Keep the title label
     for child in relationship_container.get_children():
         if child.text != "Anatomical Relationships:":
@@ -362,10 +362,10 @@ func _clear_relationships() -> void:
 
 # === SIGNAL HANDLERS ===
 func _on_clear_pressed() -> void:
-    """Handle clear button press"""
+    ## Handle clear button press
     clear_all()
 
 func _on_focus_pressed(structure_name: String) -> void:
-    """Handle focus button press for a structure"""
+    ## Handle focus button press for a structure
     structure_focused.emit(structure_name)
     print("[ComparativePanel] Focus requested for: " + structure_name)

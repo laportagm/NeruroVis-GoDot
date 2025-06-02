@@ -11,9 +11,9 @@ enum GeminiModel {
 }
 
 const MODEL_NAMES = {
-    GeminiModel.GEMINI_PRO: "gemini-pro",
-    GeminiModel.GEMINI_PRO_VISION: "gemini-pro-vision",
-    GeminiModel.GEMINI_FLASH: "gemini-flash"
+    GeminiModel.GEMINI_PRO: "gemini-1.5-pro",
+    GeminiModel.GEMINI_PRO_VISION: "gemini-1.5-pro-vision",
+    GeminiModel.GEMINI_FLASH: "gemini-1.5-flash"
 }
 
 # Signals
@@ -27,7 +27,7 @@ signal config_changed(model_name: String, settings: Dictionary)
 
 # Configuration
 const SETTINGS_PATH = "user://gemini_settings.dat"
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 const RATE_LIMIT_PER_MINUTE = 60
 
 # State
@@ -53,6 +53,8 @@ func _ready():
     add_child(http_request)
     http_request.request_completed.connect(_on_request_completed)
     http_request.timeout = 30.0
+    # Ensure SSL certificates are properly validated
+    http_request.set_tls_options(TLSOptions.client())
 
     # Load saved settings
     _load_settings()
@@ -60,7 +62,7 @@ func _ready():
     # Start rate limit timer
     set_process(true)
 
-    print("[GeminiAI] Service initialized")
+    print("[GeminiAI] Service initialized with TLS enabled")
 
 func _process(_delta):
     # Reset rate limit every minute
@@ -71,7 +73,7 @@ func _process(_delta):
 
 # === PUBLIC API ===
 func setup_api_key(key: String) -> bool:
-    """Set up and validate API key"""
+    ## Set up and validate API key
     api_key = key.strip_edges()
 
     # Basic validation
@@ -92,7 +94,7 @@ func setup_api_key(key: String) -> bool:
         return false
 
 func ask_question(question: String, context: Dictionary = {}) -> String:
-    """Send question to Gemini API"""
+    ## Send question to Gemini API
     if not is_setup_complete:
         error_occurred.emit("Gemini AI not set up. Please configure your API key.")
         return ""
@@ -137,11 +139,11 @@ func ask_question(question: String, context: Dictionary = {}) -> String:
     return _parse_response(result)
 
 func check_setup_status() -> bool:
-    """Check if Gemini is set up"""
+    ## Check if Gemini is set up
     return is_setup_complete
 
 func needs_setup() -> bool:
-    """Check if setup is needed"""
+    ## Check if setup is needed
     # Check if file exists
     var setup_needed = not is_setup_complete
     print("[GeminiAI] Setup needed: ", setup_needed)
@@ -152,34 +154,38 @@ func needs_setup() -> bool:
     return setup_needed
 
 func is_api_key_valid() -> bool:
-    """Check if API key is valid"""
+    ## Check if API key is valid
     return is_setup_complete and api_key.length() >= 30
 
 func get_api_key() -> String:
-    """Get the API key (masked)"""
+    ## Get the API key (masked)
     if api_key.length() > 0:
         return "configured" # Return a placeholder instead of actual key for security
     return ""
 
 func validate_api_key(key: String) -> void:
-    """Validate API key and emit result signal"""
+    ## Validate API key and emit result signal
+    print("[GeminiAI] Validating API key: ", key.substr(0, 10), "...")
     api_key = key.strip_edges()
 
     # Basic validation
     if api_key.length() < 30:
+        print("[GeminiAI] API key too short: ", api_key.length(), " characters")
         api_key_validated.emit(false, "Invalid API key format")
         return
 
+    print("[GeminiAI] API key format looks valid, testing with API...")
     # Do the validation test
     var test_successful = await _test_api_key()
+    print("[GeminiAI] API test result: ", test_successful)
     api_key_validated.emit(test_successful, "API key validation " + ("succeeded" if test_successful else "failed"))
 
 func get_model_name() -> String:
-    """Get current model name"""
+    ## Get current model name
     return MODEL_NAMES[current_model]
 
 func get_model_list() -> Array:
-    """Get available models"""
+    ## Get available models
     if available_models.is_empty():
         # Return default models if none available yet
         var default_models = []
@@ -190,7 +196,7 @@ func get_model_list() -> Array:
     return available_models
 
 func update_available_models() -> void:
-    """Update list of available models"""
+    ## Update list of available models
     # In a real implementation, this would query the API
     # For now, just use the predefined models
     available_models = []
@@ -201,7 +207,7 @@ func update_available_models() -> void:
     model_list_updated.emit(available_models)
 
 func set_model(model_name_or_id) -> void:
-    """Set model by name or enum value"""
+    ## Set model by name or enum value
     var old_model = current_model
 
     # If it's a string, find the corresponding enum value
@@ -222,7 +228,7 @@ func set_model(model_name_or_id) -> void:
         config_changed.emit(MODEL_NAMES[current_model], get_configuration())
 
 func get_configuration() -> Dictionary:
-    """Get current configuration"""
+    ## Get current configuration
     return {
         "model": current_model,
         "temperature": temperature,
@@ -231,7 +237,7 @@ func get_configuration() -> Dictionary:
     }
 
 func save_configuration(key: String, model: int) -> void:
-    """Save configuration"""
+    ## Save configuration
     if key.strip_edges() != "":
         api_key = key.strip_edges()
     current_model = model as GeminiModel
@@ -242,7 +248,7 @@ func save_configuration(key: String, model: int) -> void:
     config_changed.emit(MODEL_NAMES[current_model], get_configuration())
 
 func set_safety_settings(settings: Dictionary) -> void:
-    """Update safety settings"""
+    ## Update safety settings
     for category in settings:
         if category in safety_settings:
             safety_settings[category] = settings[category]
@@ -251,11 +257,11 @@ func set_safety_settings(settings: Dictionary) -> void:
     config_changed.emit(MODEL_NAMES[current_model], get_configuration())
 
 func get_safety_settings() -> Dictionary:
-    """Get current safety settings"""
+    ## Get current safety settings
     return safety_settings
 
 func generate_content(prompt: String) -> String:
-    """Generate content with the specified prompt"""
+    ## Generate content with the specified prompt
     if not is_setup_complete:
         return "API not configured"
     # This is a simplified version - full implementation would use HTTP requests
@@ -266,7 +272,7 @@ func generate_content(prompt: String) -> String:
     return result
 
 func reset_settings():
-    """Clear API key and settings"""
+    ## Clear API key and settings
     api_key = ""
     is_setup_complete = false
     rate_limit_used = 0
@@ -284,7 +290,7 @@ func reset_settings():
     return needs_setup()
 
 func get_rate_limit_status() -> Dictionary:
-    """Get current rate limit status"""
+    ## Get current rate limit status
     return {
         "used": rate_limit_used,
         "limit": RATE_LIMIT_PER_MINUTE,
@@ -293,7 +299,7 @@ func get_rate_limit_status() -> Dictionary:
 
 # === PRIVATE METHODS ===
 func _build_prompt(question: String, context: Dictionary) -> String:
-    """Build prompt with educational context"""
+    ## Build prompt with educational context
     var prompt = "You are NeuroBot, an expert neuroanatomy tutor. "
     prompt += "Provide clear, educational explanations suitable for medical students. "
 
@@ -304,7 +310,8 @@ func _build_prompt(question: String, context: Dictionary) -> String:
     return prompt
 
 func _test_api_key() -> bool:
-    """Test if API key is valid"""
+    ## Test if API key is valid
+    print("[GeminiAI] Testing API key with Gemini API...")
     var test_prompt = "Respond with exactly: 'API key valid'"
     var headers = ["Content-Type: application/json"]
     var body = {
@@ -317,31 +324,49 @@ func _test_api_key() -> bool:
         }
     }
 
+    # Use gemini-1.5-flash-latest for testing
+    var test_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + api_key
+    print("[GeminiAI] Request URL: ", test_url.substr(0, 80), "...")
+    print("[GeminiAI] Request body: ", JSON.stringify(body))
+
     var error = http_request.request(
-        API_URL + "?key=" + api_key,
+        test_url,
         headers,
         HTTPClient.METHOD_POST,
         JSON.stringify(body)
     )
 
     if error != OK:
+        print("[GeminiAI] HTTP request failed with error: ", error)
         return false
 
+    print("[GeminiAI] Waiting for API response...")
     var result = await http_request.request_completed
+    print("[GeminiAI] Response received, parsing...")
     var response = await _parse_response(result)
+    print("[GeminiAI] Parsed response: ", response)
     return response != ""
 
 func _parse_response(result: Array) -> String:
-    """Parse Gemini API response"""
+    ## Parse Gemini API response
+    print("[GeminiAI] Parse response - result array size: ", result.size())
     var response_code = result[1]
+    var headers = result[2]
     var body = result[3]
+    
+    print("[GeminiAI] Response code: ", response_code)
+    print("[GeminiAI] Response headers: ", headers)
 
     if response_code != 200:
-        error_occurred.emit("API error: HTTP " + str(response_code))
+        var error_body = body.get_string_from_utf8()
+        print("[GeminiAI] Error response body: ", error_body)
+        error_occurred.emit("API error: HTTP " + str(response_code) + " - " + error_body)
         return ""
 
     var json = JSON.new()
-    var parse_result = json.parse(body.get_string_from_utf8())
+    var body_string = body.get_string_from_utf8()
+    print("[GeminiAI] Response body: ", body_string.substr(0, 200), "...")
+    var parse_result = json.parse(body_string)
 
     if parse_result != OK:
         error_occurred.emit("Failed to parse API response")
@@ -359,12 +384,12 @@ func _parse_response(result: Array) -> String:
     return ""
 
 func _on_request_completed(_result: int, _response_code: int, _headers: PackedStringArray, _body: PackedByteArray):
-    """Handle HTTP request completion"""
+    ## Handle HTTP request completion
     # Response is handled through await in the calling function
     pass
 
 func _save_settings():
-    """Save API key to encrypted file"""
+    ## Save API key to encrypted file
     var file = FileAccess.open_encrypted_with_pass(
         SETTINGS_PATH,
         FileAccess.WRITE,
@@ -376,7 +401,7 @@ func _save_settings():
         print("[GeminiAI] Settings saved")
 
 func _load_settings():
-    """Load API key from encrypted file"""
+    ## Load API key from encrypted file
     if not FileAccess.file_exists(SETTINGS_PATH):
         return
 

@@ -116,7 +116,7 @@ var _initialized: bool = false
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the selection visualizer"""
+	## Initialize the selection visualizer
 	_load_resources()
 	_initialized = true
 	print("[SelectionVisualizer] Initialized")
@@ -130,7 +130,7 @@ func _ready() -> void:
 ## @returns: bool indicating success
 func highlight_structure(mesh_instance: MeshInstance3D, structure_name: String, 
 		is_primary: bool = true, selection_index: int = 0) -> bool:
-	"""Highlight a structure with visual feedback"""
+	## Highlight a structure with visual feedback
 	if not _initialized or not mesh_instance or not mesh_instance.is_inside_tree():
 		return false
 	
@@ -173,7 +173,7 @@ func highlight_structure(mesh_instance: MeshInstance3D, structure_name: String,
 ## @param structure_name: String name of the structure to clear
 ## @returns: bool indicating success
 func clear_highlight(structure_name: String) -> bool:
-	"""Clear highlight from a structure"""
+	## Clear highlight from a structure
 	if not _highlighted_structures.has(structure_name):
 		return false
 	
@@ -225,7 +225,7 @@ func clear_highlight(structure_name: String) -> bool:
 ## Clear all highlights
 ## @returns: bool indicating success
 func clear_all_highlights() -> bool:
-	"""Clear all structure highlights"""
+	## Clear all structure highlights
 	var structure_names = _highlighted_structures.keys()
 	
 	for structure_name in structure_names:
@@ -237,7 +237,7 @@ func clear_all_highlights() -> bool:
 ## @param structure_name: String name of the structure
 ## @returns: bool indicating if structure is highlighted
 func is_structure_highlighted(structure_name: String) -> bool:
-	"""Check if a structure is currently highlighted"""
+	## Check if a structure is currently highlighted
 	return _highlighted_structures.has(structure_name)
 
 ## Create a custom highlight material
@@ -246,7 +246,7 @@ func is_structure_highlighted(structure_name: String) -> bool:
 ## @param with_pulse: bool whether to enable pulse animation
 ## @returns: Material configured with requested properties
 func create_highlight_material(color: Color, intensity: float = 1.0, with_pulse: bool = true) -> Material:
-	"""Create a custom highlight material for special cases"""
+	## Create a custom highlight material for special cases
 	if not _selection_shader:
 		push_warning("[SelectionVisualizer] Selection shader not loaded")
 		return null
@@ -268,7 +268,7 @@ func create_highlight_material(color: Color, intensity: float = 1.0, with_pulse:
 ## @param settings: Dictionary of settings to update
 ## @returns: bool indicating success
 func update_settings(settings: Dictionary) -> bool:
-	"""Update multiple visualization settings at once"""
+	## Update multiple visualization settings at once
 	if settings.has("primary_color"):
 		primary_color = settings.primary_color
 	
@@ -306,7 +306,7 @@ func update_settings(settings: Dictionary) -> bool:
 
 # === PRIVATE METHODS ===
 func _load_resources() -> void:
-	"""Load required shader and material resources"""
+	## Load required shader and material resources
 	# Load selection shader
 	_selection_shader = load(SELECTION_SHADER_PATH)
 	if not _selection_shader:
@@ -337,7 +337,7 @@ func _load_resources() -> void:
 
 func _highlight_with_shader(mesh_instance: MeshInstance3D, structure_name: String, 
 		is_primary: bool, selection_index: int) -> void:
-	"""Highlight a structure using a shader overlay approach"""
+	## Highlight a structure using a shader overlay approach
 	if not mesh_instance or not mesh_instance.is_inside_tree() or not mesh_instance.mesh:
 		return
 	
@@ -377,7 +377,7 @@ func _highlight_with_shader(mesh_instance: MeshInstance3D, structure_name: Strin
 
 func _highlight_with_material_swap(mesh_instance: MeshInstance3D, structure_name: String,
 		is_primary: bool, selection_index: int) -> void:
-	"""Highlight a structure by swapping its materials"""
+	## Highlight a structure by swapping its materials
 	if not mesh_instance or not mesh_instance.is_inside_tree() or not mesh_instance.mesh:
 		return
 	
@@ -410,7 +410,7 @@ func _highlight_with_material_swap(mesh_instance: MeshInstance3D, structure_name
 		mesh_instance.set_surface_override_material(i, highlight_material)
 
 func _add_outline_effect(mesh_instance: MeshInstance3D, structure_name: String) -> void:
-	"""Add outline effect to a highlighted structure"""
+	## Add outline effect to a highlighted structure
 	if not mesh_instance or not mesh_instance.is_inside_tree() or not mesh_instance.mesh:
 		return
 	
@@ -436,7 +436,7 @@ func _add_outline_effect(mesh_instance: MeshInstance3D, structure_name: String) 
 	_outline_meshes[structure_name] = outline
 
 func _get_highlight_color(is_primary: bool, selection_index: int) -> Color:
-	"""Get appropriate highlight color based on selection state"""
+	## Get appropriate highlight color based on selection state
 	if selection_index > 0:
 		return multi_select_color
 	elif is_primary:
@@ -445,13 +445,13 @@ func _get_highlight_color(is_primary: bool, selection_index: int) -> Color:
 		return secondary_color
 
 func _update_material_colors() -> void:
-	"""Update all highlight material colors"""
+	## Update all highlight material colors
 	for structure_name in _highlighted_structures:
 		var highlight_data = _highlighted_structures[structure_name]
 		_update_highlight_material(structure_name, highlight_data.is_primary, highlight_data.selection_index)
 
 func _update_highlight_material(structure_name: String, is_primary: bool, selection_index: int) -> void:
-	"""Update a specific highlight material"""
+	## Update a specific highlight material
 	if not _highlight_materials.has(structure_name):
 		return
 	
@@ -467,7 +467,7 @@ func _update_highlight_material(structure_name: String, is_primary: bool, select
 		material.emission = highlight_color
 
 func _update_all_materials() -> void:
-	"""Update all highlight materials with current settings"""
+	## Update all highlight materials with current settings
 	for structure_name in _highlight_materials:
 		var material = _highlight_materials[structure_name]
 		var highlight_data = _highlighted_structures.get(structure_name)
@@ -485,14 +485,14 @@ func _update_all_materials() -> void:
 			material.emission_energy_multiplier = highlight_intensity
 
 func _update_outline_visibility() -> void:
-	"""Update visibility of all outline effects"""
+	## Update visibility of all outline effects
 	for structure_name in _outline_meshes:
 		var outline_mesh = _outline_meshes[structure_name]
 		if outline_mesh and outline_mesh.is_inside_tree():
 			outline_mesh.visible = enable_outline
 
 func _recreate_highlighted_structures() -> void:
-	"""Recreate all highlighted structures after switching visualization method"""
+	## Recreate all highlighted structures after switching visualization method
 	var structures_to_recreate = {}
 	
 	# Store current highlight data

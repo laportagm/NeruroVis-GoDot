@@ -25,7 +25,7 @@ func _ready() -> void:
     _create_loading_ui()
 
 func _create_loading_ui() -> void:
-    """Create the modern loading interface with glass morphism"""
+    ## Create the modern loading interface with glass morphism
     
     # Semi-transparent background
     background = ColorRect.new()
@@ -113,7 +113,7 @@ func _create_loading_ui() -> void:
     content.add_child(progress_bar)
 
 func _create_modern_spinner() -> Control:
-    """Create a modern animated spinner"""
+    ## Create a modern animated spinner
     var spinner_container = Control.new()
     spinner_container.custom_minimum_size = Vector2(60, 60)
     spinner_container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -135,7 +135,7 @@ func _create_modern_spinner() -> Control:
     return spinner_container
 
 func show_loading(state: LoadingState, custom_message: String = "") -> void:
-    """Show loading overlay with specific state"""
+    ## Show loading overlay with specific state
     current_state = state
     visible = true
     
@@ -167,7 +167,7 @@ func show_loading(state: LoadingState, custom_message: String = "") -> void:
     tween.tween_property(self, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK)
 
 func update_progress(percentage: float, message: String = "") -> void:
-    """Update loading progress"""
+    ## Update loading progress
     progress_bar.value = percentage
     
     if not message.is_empty():
@@ -178,7 +178,7 @@ func update_progress(percentage: float, message: String = "") -> void:
         tween.tween_property(status_label, "modulate:a", 1.0, 0.1)
 
 func hide_loading() -> void:
-    """Hide loading overlay with smooth animation"""
+    ## Hide loading overlay with smooth animation
     var tween = create_tween()
     tween.set_parallel(true)
     tween.tween_property(self, "modulate:a", 0.0, 0.3)

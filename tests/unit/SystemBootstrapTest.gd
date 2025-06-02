@@ -13,7 +13,7 @@ func _ready():
 	test_name = "SystemBootstrap Component Tests"
 	
 func setup_test():
-	"""Setup for each test"""
+	## Setup for each test
 	test_bootstrap = SystemBootstrap.new()
 	mock_main_scene = Node3D.new()
 	mock_main_scene.name = "MockMainScene"
@@ -31,7 +31,7 @@ func setup_test():
 	add_child(mock_main_scene)
 
 func teardown_test():
-	"""Cleanup after each test"""
+	## Cleanup after each test
 	if test_bootstrap:
 		test_bootstrap.queue_free()
 		test_bootstrap = null
@@ -41,24 +41,24 @@ func teardown_test():
 		mock_main_scene = null
 
 func test_bootstrap_creation():
-	"""Test that SystemBootstrap can be created"""
+	## Test that SystemBootstrap can be created
 	assert_not_null(test_bootstrap, "SystemBootstrap should be created successfully")
 	assert_equal(test_bootstrap.initialization_complete, false, "Should start uninitialized")
 
 func test_system_initialization_tracking():
-	"""Test that system initialization is tracked correctly"""
+	## Test that system initialization is tracked correctly
 	# Should start with empty tracking
 	assert_equal(test_bootstrap.systems_initialized.size(), 0, "Should start with no systems initialized")
 	assert_false(test_bootstrap.is_initialization_complete(), "Should not be complete initially")
 
 func test_debug_system_initialization():
-	"""Test debug system initialization"""
+	## Test debug system initialization
 	var result = await test_bootstrap._initialize_debug_systems()
 	assert_true(result, "Debug system initialization should succeed")
 	assert_true(test_bootstrap.is_system_initialized("debug_systems"), "Debug systems should be marked as initialized")
 
 func test_knowledge_base_initialization():
-	"""Test knowledge base system initialization"""
+	## Test knowledge base system initialization
 	var result = await test_bootstrap._initialize_knowledge_base(mock_main_scene)
 	
 	if result:
@@ -69,7 +69,7 @@ func test_knowledge_base_initialization():
 		print("[TEST] Knowledge base initialization failed (expected in isolated test)")
 
 func test_neural_net_initialization():
-	"""Test neural net system initialization"""
+	## Test neural net system initialization
 	var result = await test_bootstrap._initialize_neural_net(mock_main_scene)
 	
 	if result:
@@ -79,7 +79,7 @@ func test_neural_net_initialization():
 		print("[TEST] Neural net initialization failed (expected in isolated test)")
 
 func test_selection_manager_initialization():
-	"""Test selection manager initialization"""
+	## Test selection manager initialization
 	var result = await test_bootstrap._initialize_selection_manager(mock_main_scene)
 	
 	if result:
@@ -89,7 +89,7 @@ func test_selection_manager_initialization():
 		print("[TEST] Selection manager initialization failed (expected in isolated test)")
 
 func test_camera_controller_initialization():
-	"""Test camera controller initialization"""
+	## Test camera controller initialization
 	var result = await test_bootstrap._initialize_camera_controller(mock_main_scene)
 	
 	if result:
@@ -99,7 +99,7 @@ func test_camera_controller_initialization():
 		print("[TEST] Camera controller initialization failed (expected in isolated test)")
 
 func test_signal_emission():
-	"""Test that signals are emitted correctly"""
+	## Test that signals are emitted correctly
 	var signal_received = false
 	var system_name = ""
 	
@@ -117,7 +117,7 @@ func test_signal_emission():
 	assert_equal(system_name, "debug_systems", "Signal should contain correct system name")
 
 func test_initialization_attempt_tracking():
-	"""Test that initialization attempts are tracked"""
+	## Test that initialization attempts are tracked
 	var initial_count = test_bootstrap.initialization_attempt_count
 	
 	# This should increment the attempt count
@@ -126,7 +126,7 @@ func test_initialization_attempt_tracking():
 	assert_greater(test_bootstrap.initialization_attempt_count, initial_count, "Attempt count should increase")
 
 func test_max_attempt_limit():
-	"""Test that maximum attempts are respected"""
+	## Test that maximum attempts are respected
 	test_bootstrap.initialization_attempt_count = test_bootstrap.max_initialization_attempts
 	
 	var result = await test_bootstrap.initialize_all_systems(mock_main_scene)
@@ -134,7 +134,7 @@ func test_max_attempt_limit():
 	assert_false(result, "Should fail when max attempts exceeded")
 
 func run_all_tests():
-	"""Run all bootstrap tests"""
+	## Run all bootstrap tests
 	var tests = [
 		"test_bootstrap_creation",
 		"test_system_initialization_tracking", 

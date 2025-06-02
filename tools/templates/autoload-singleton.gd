@@ -39,17 +39,17 @@ var _settings: Dictionary = {}
 
 # === LIFECYCLE METHODS ===
 func _ready() -> void:
-	"""Initialize the singleton on startup"""
+	## Initialize the singleton on startup
 	name = SINGLETON_NAME
 	_initialize_singleton()
 
 func _exit_tree() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 	_cleanup_singleton()
 
 # === INITIALIZATION ===
 func _initialize_singleton() -> void:
-	"""Initialize the singleton with default configuration"""
+	## Initialize the singleton with default configuration
 	
 	_log_debug("Initializing " + SINGLETON_NAME + " singleton...")
 	var start_time = Time.get_ticks_msec()
@@ -72,7 +72,7 @@ func _initialize_singleton() -> void:
 	_log_debug(SINGLETON_NAME + " initialized in " + str(_initialization_time) + "s")
 
 func _load_configuration() -> void:
-	"""Load singleton configuration from settings"""
+	## Load singleton configuration from settings
 	
 	# Default settings
 	_settings = {
@@ -89,7 +89,7 @@ func _load_configuration() -> void:
 	debug_mode = _settings.get("debug_mode", false)
 
 func _load_project_settings() -> void:
-	"""Load settings from project configuration"""
+	## Load settings from project configuration
 	
 	var setting_prefix = "{{SINGLETON_NAME_LOWER}}"
 	
@@ -99,7 +99,7 @@ func _load_project_settings() -> void:
 			_settings[key] = ProjectSettings.get_setting(setting_path)
 
 func _initialize_subsystems() -> void:
-	"""Initialize singleton subsystems"""
+	## Initialize singleton subsystems
 	
 	# Initialize data structures
 	_data.clear()
@@ -113,7 +113,7 @@ func _initialize_subsystems() -> void:
 		_initialize_cache()
 
 func _setup_default_data() -> void:
-	"""Setup default data structures"""
+	## Setup default data structures
 	
 	_data = {
 		"version": VERSION,
@@ -122,7 +122,7 @@ func _setup_default_data() -> void:
 	}
 
 func _initialize_cache() -> void:
-	"""Initialize caching system"""
+	## Initialize caching system
 	
 	_cache = {
 		"max_size": _settings.get("max_cache_size", 100),
@@ -131,7 +131,7 @@ func _initialize_cache() -> void:
 	}
 
 func _setup_performance_monitoring() -> void:
-	"""Setup performance monitoring if enabled"""
+	## Setup performance monitoring if enabled
 	
 	if not monitor_performance:
 		return
@@ -142,28 +142,28 @@ func _setup_performance_monitoring() -> void:
 # === PUBLIC API ===
 ## Check if singleton is initialized
 func is_initialized() -> bool:
-	"""Check if the singleton is fully initialized"""
+	## Check if the singleton is fully initialized
 	return _is_initialized
 
 ## Get singleton version
 func get_version() -> String:
-	"""Get the singleton version"""
+	## Get the singleton version
 	return VERSION
 
 ## Get initialization time
 func get_initialization_time() -> float:
-	"""Get the time taken to initialize in seconds"""
+	## Get the time taken to initialize in seconds
 	return _initialization_time
 
 ## Get error count
 func get_error_count() -> int:
-	"""Get the number of errors that have occurred"""
+	## Get the number of errors that have occurred
 	return _error_count
 
 # === DATA MANAGEMENT ===
 ## Store data with key
 func set_data(key: String, value: Variant) -> void:
-	"""Store data with the specified key"""
+	## Store data with the specified key
 	
 	if key.is_empty():
 		_handle_error("Data key cannot be empty")
@@ -174,7 +174,7 @@ func set_data(key: String, value: Variant) -> void:
 
 ## Retrieve data by key
 func get_data(key: String, default_value: Variant = null) -> Variant:
-	"""Retrieve data by key, return default if not found"""
+	## Retrieve data by key, return default if not found
 	
 	if key.is_empty():
 		_handle_error("Data key cannot be empty")
@@ -184,12 +184,12 @@ func get_data(key: String, default_value: Variant = null) -> Variant:
 
 ## Check if data exists
 func has_data(key: String) -> bool:
-	"""Check if data exists for the specified key"""
+	## Check if data exists for the specified key
 	return _data.has(key)
 
 ## Remove data by key
 func remove_data(key: String) -> bool:
-	"""Remove data by key, return true if existed"""
+	## Remove data by key, return true if existed
 	
 	if _data.has(key):
 		_data.erase(key)
@@ -200,14 +200,14 @@ func remove_data(key: String) -> bool:
 
 ## Clear all data
 func clear_data() -> void:
-	"""Clear all stored data"""
+	## Clear all stored data
 	_data.clear()
 	_log_debug("All data cleared")
 
 # === CACHE MANAGEMENT ===
 ## Store value in cache
 func cache_set(key: String, value: Variant, ttl: float = 0.0) -> void:
-	"""Store value in cache with optional time-to-live"""
+	## Store value in cache with optional time-to-live
 	
 	if not _settings.get("cache_enabled", true):
 		return
@@ -226,7 +226,7 @@ func cache_set(key: String, value: Variant, ttl: float = 0.0) -> void:
 
 ## Retrieve value from cache
 func cache_get(key: String, default_value: Variant = null) -> Variant:
-	"""Retrieve value from cache, return default if not found or expired"""
+	## Retrieve value from cache, return default if not found or expired
 	
 	if not _settings.get("cache_enabled", true):
 		return default_value
@@ -248,7 +248,7 @@ func cache_get(key: String, default_value: Variant = null) -> Variant:
 
 ## Clear cache
 func cache_clear() -> void:
-	"""Clear all cache entries"""
+	## Clear all cache entries
 	_cache.entries.clear()
 	_cache.current_size = 0
 	_log_debug("Cache cleared")
@@ -256,18 +256,18 @@ func cache_clear() -> void:
 # === SETTINGS MANAGEMENT ===
 ## Get setting value
 func get_setting(key: String, default_value: Variant = null) -> Variant:
-	"""Get setting value with fallback to default"""
+	## Get setting value with fallback to default
 	return _settings.get(key, default_value)
 
 ## Set setting value
 func set_setting(key: String, value: Variant) -> void:
-	"""Set setting value"""
+	## Set setting value
 	_settings[key] = value
 	_apply_setting_change(key, value)
 
 ## Apply setting change
 func _apply_setting_change(key: String, value: Variant) -> void:
-	"""Apply setting change to singleton behavior"""
+	## Apply setting change to singleton behavior
 	
 	match key:
 		"debug_mode":
@@ -280,11 +280,11 @@ func _apply_setting_change(key: String, value: Variant) -> void:
 
 # === UTILITY METHODS ===
 func _generate_session_id() -> String:
-	"""Generate unique session identifier"""
+	## Generate unique session identifier
 	return str(Time.get_unix_time_from_system()) + "_" + str(randi())
 
 func _enforce_cache_limits() -> void:
-	"""Enforce cache size limits"""
+	## Enforce cache size limits
 	
 	var max_size = _cache.get("max_size", 100)
 	
@@ -305,7 +305,7 @@ func _enforce_cache_limits() -> void:
 
 # === ERROR HANDLING ===
 func _handle_error(message: String) -> void:
-	"""Handle error with logging and signal emission"""
+	## Handle error with logging and signal emission
 	
 	_error_count += 1
 	var full_message = "[" + SINGLETON_NAME + "] " + message
@@ -315,21 +315,21 @@ func _handle_error(message: String) -> void:
 
 # === LOGGING ===
 func _log_debug(message: String) -> void:
-	"""Log debug message if debug mode is enabled"""
+	## Log debug message if debug mode is enabled
 	if debug_mode:
 		print("[" + SINGLETON_NAME + "] " + message)
 
 func _log_info(message: String) -> void:
-	"""Log info message"""
+	## Log info message
 	print("[" + SINGLETON_NAME + "] " + message)
 
 func _log_warning(message: String) -> void:
-	"""Log warning message"""
+	## Log warning message
 	push_warning("[" + SINGLETON_NAME + "] " + message)
 
 # === CLEANUP ===
 func _cleanup_singleton() -> void:
-	"""Clean up singleton resources"""
+	## Clean up singleton resources
 	
 	# Save data if auto-save is enabled
 	if _settings.get("auto_save", true):
@@ -346,14 +346,14 @@ func _cleanup_singleton() -> void:
 	_log_debug(SINGLETON_NAME + " cleaned up")
 
 func _save_persistent_data() -> void:
-	"""Save persistent data to storage"""
+	## Save persistent data to storage
 	
 	# Override in derived classes to implement specific persistence
 	_log_debug("Saving persistent data")
 
 # === DEBUG METHODS ===
 func get_debug_info() -> Dictionary:
-	"""Get debug information about the singleton"""
+	## Get debug information about the singleton
 	
 	return {
 		"name": SINGLETON_NAME,
@@ -367,7 +367,7 @@ func get_debug_info() -> Dictionary:
 	}
 
 func print_debug_info() -> void:
-	"""Print debug information to console"""
+	## Print debug information to console
 	
 	var info = get_debug_info()
 	print("=== " + SINGLETON_NAME + " DEBUG INFO ===")

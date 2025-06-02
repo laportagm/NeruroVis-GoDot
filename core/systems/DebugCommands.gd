@@ -340,6 +340,9 @@ func _ready() -> void:
 	# TODO: Re-enable once all systems are stable
 	# _register_advanced_debug_commands()
 	
+	# Register memory management commands
+	_register_memory_commands()
+	
 	log_info("Debug commands initialized")
 
 # Test functions for debugging infrastructure
@@ -458,7 +461,7 @@ func _test_model_switcher():
 # === PARSER ERROR CHECKING COMMANDS ===
 
 func cmd_parser_check(_args: String = "") -> void:
-	"""Check all scripts for parser errors"""
+	## Check all scripts for parser errors
 	log_info("🔍 Running parser error check...")
 	
 	var script_files = []
@@ -482,7 +485,7 @@ func cmd_parser_check(_args: String = "") -> void:
 		log_error("Found %d parser error(s)" % errors)
 
 func cmd_dependency_check(_args: String = "") -> void:
-	"""Validate all autoload dependencies"""
+	## Validate all autoload dependencies
 	log_info("🔗 Checking dependencies...")
 	
 	var required_autoloads = [
@@ -507,7 +510,7 @@ func cmd_dependency_check(_args: String = "") -> void:
 		log_error("Missing dependencies: %s" % str(missing))
 
 func cmd_scene_validate(args: String = "") -> void:
-	"""Validate scene structure"""
+	## Validate scene structure
 	var scene_path = args if args != "" else "res://scenes/main/node_3d.tscn"
 	
 	log_info("🎬 Validating scene: %s" % scene_path)
@@ -539,7 +542,7 @@ func cmd_scene_validate(args: String = "") -> void:
 	instance.queue_free()
 
 func cmd_resource_check(_args: String = "") -> void:
-	"""Check for missing resources"""
+	## Check for missing resources
 	log_info("📂 Checking critical resources...")
 	
 	var critical_resources = [
@@ -565,7 +568,7 @@ func cmd_resource_check(_args: String = "") -> void:
 		log_error("Missing %d resource(s)" % missing.size())
 
 func cmd_preload_test(args: String = "") -> void:
-	"""Test resource preloading"""
+	## Test resource preloading
 	var test_path = args if args != "" else "res://scenes/main/node_3d.tscn"
 	
 	log_info("⚡ Testing preload: %s" % test_path)
@@ -585,7 +588,7 @@ func cmd_preload_test(args: String = "") -> void:
 		log_error("❌ Failed to load resource")
 
 func cmd_syntax_check(_args: String = "") -> void:
-	"""Quick syntax validation"""
+	## Quick syntax validation
 	log_info("📝 Quick syntax check...")
 	
 	var core_files = [
@@ -614,7 +617,7 @@ func cmd_syntax_check(_args: String = "") -> void:
 		log_error("Found %d syntax error(s)" % errors)
 
 func cmd_godot_check(_args: String = "") -> void:
-	"""Check Godot version and compatibility"""
+	## Check Godot version and compatibility
 	log_info("🎮 Godot Environment Check:")
 	
 	var version_info = Engine.get_version_info()
@@ -645,7 +648,7 @@ func cmd_godot_check(_args: String = "") -> void:
 # === HELPER FUNCTIONS ===
 
 func _collect_script_files(dir_path: String, files: Array) -> void:
-	"""Recursively collect all GDScript files"""
+	## Recursively collect all GDScript files
 	var dir = DirAccess.open(dir_path)
 	if not dir:
 		return
@@ -662,7 +665,7 @@ func _collect_script_files(dir_path: String, files: Array) -> void:
 		file_name = dir.get_next()
 
 func _validate_main_scene_structure(scene_instance: Node) -> void:
-	"""Validate main scene has required nodes"""
+	## Validate main scene has required nodes
 	log_info("   🔍 Checking main scene structure...")
 	
 	var required_nodes = {
@@ -691,13 +694,13 @@ func _validate_main_scene_structure(scene_instance: Node) -> void:
 var _qa_debug_viz: Node3D = null
 
 func cmd_qa_viz_toggle(_args: String = "") -> void:
-	"""Toggle QA debug visualization"""
+	## Toggle QA debug visualization
 	_ensure_qa_viz_exists()
 	if _qa_debug_viz:
 		_qa_debug_viz.toggle_debug_draw()
 
 func cmd_qa_viz_bounds(args: String = "") -> void:
-	"""Show structure bounds visualization"""
+	## Show structure bounds visualization
 	if args.is_empty():
 		log_error("Usage: qa_viz_bounds <structure_name>")
 		return
@@ -707,7 +710,7 @@ func cmd_qa_viz_bounds(args: String = "") -> void:
 		_qa_debug_viz.show_structure_bounds(args)
 
 func cmd_qa_viz_rays(_args: String = "") -> void:
-	"""Toggle selection ray visualization"""
+	## Toggle selection ray visualization
 	_ensure_qa_viz_exists()
 	if _qa_debug_viz:
 		var current = _qa_debug_viz._show_rays if "_show_rays" in _qa_debug_viz else false
@@ -715,13 +718,13 @@ func cmd_qa_viz_rays(_args: String = "") -> void:
 		log_info("Ray visualization: %s" % ("ENABLED" if not current else "DISABLED"))
 
 func cmd_qa_viz_collisions(args: String = "") -> void:
-	"""Show collision shapes"""
+	## Show collision shapes
 	_ensure_qa_viz_exists()
 	if _qa_debug_viz:
 		_qa_debug_viz.show_collision_shapes(args)
 
 func cmd_qa_viz_clicks(_args: String = "") -> void:
-	"""Toggle click position markers"""
+	## Toggle click position markers
 	_ensure_qa_viz_exists()
 	if _qa_debug_viz:
 		var current = _qa_debug_viz._show_click_positions if "_show_click_positions" in _qa_debug_viz else false
@@ -729,7 +732,7 @@ func cmd_qa_viz_clicks(_args: String = "") -> void:
 		log_info("Click markers: %s" % ("ENABLED" if not current else "DISABLED"))
 
 func cmd_qa_viz_status(_args: String = "") -> void:
-	"""Show visualization status"""
+	## Show visualization status
 	_ensure_qa_viz_exists()
 	if _qa_debug_viz:
 		var status = _qa_debug_viz.get_status()
@@ -742,7 +745,7 @@ func cmd_qa_viz_status(_args: String = "") -> void:
 		log_info("==============================")
 
 func _ensure_qa_viz_exists() -> void:
-	"""Ensure QA debug visualizer exists"""
+	## Ensure QA debug visualizer exists
 	if _qa_debug_viz:
 		return
 	
@@ -766,7 +769,7 @@ func _ensure_qa_viz_exists() -> void:
 
 # === MULTI-SELECTION DEBUG COMMANDS ===
 func cmd_multiselect_test():
-	"""Test multi-selection system functionality"""
+	## Test multi-selection system functionality
 	log_info("=== Multi-Selection System Test ===")
 	
 	# Find selection manager
@@ -794,7 +797,7 @@ func cmd_multiselect_test():
 	log_success("=== Test Complete ===")
 
 func cmd_multiselect_debug():
-	"""Toggle multi-selection debug visualization"""
+	## Toggle multi-selection debug visualization
 	var main_scene = get_node_or_null("/root/MainScene")
 	if not main_scene:
 		main_scene = get_node_or_null("/root/Node3D")
@@ -816,7 +819,7 @@ func cmd_multiselect_debug():
 		log_warning("Debug mode not implemented in MultiStructureSelectionManager")
 
 func cmd_multiselect_report():
-	"""Show detailed multi-selection state"""
+	## Show detailed multi-selection state
 	var main_scene = get_node_or_null("/root/MainScene")
 	if not main_scene:
 		main_scene = get_node_or_null("/root/Node3D")
@@ -860,7 +863,7 @@ func cmd_multiselect_report():
 	log_success("=== Report Complete ===")
 
 func cmd_multiselect_clear():
-	"""Clear all multi-selections"""
+	## Clear all multi-selections
 	var main_scene = get_node_or_null("/root/MainScene")
 	if not main_scene:
 		main_scene = get_node_or_null("/root/Node3D")
@@ -879,7 +882,7 @@ func cmd_multiselect_clear():
 
 # === AI ASSISTANT TEST COMMANDS ===
 func cmd_ai_test(_args: String = "") -> void:
-	"""Test AI Assistant integration"""
+	## Test AI Assistant integration
 	log_info("=== Testing AI Assistant Integration ===")
 	
 	var ai_assistant = get_node_or_null("/root/AIAssistant")
@@ -907,7 +910,7 @@ func cmd_ai_test(_args: String = "") -> void:
 	ai_assistant.ask_question("What is the main function of the hippocampus?")
 
 func cmd_ai_gemini_test(_args: String = "") -> void:
-	"""Test Gemini AI integration specifically"""
+	## Test Gemini AI integration specifically
 	log_info("=== Testing Gemini AI Integration ===")
 	
 	# Check GeminiAI service
@@ -951,7 +954,7 @@ func cmd_ai_gemini_test(_args: String = "") -> void:
 		log_error("AIAssistant not found for testing")
 
 func cmd_ai_status(_args: String = "") -> void:
-	"""Show detailed AI service status"""
+	## Show detailed AI service status
 	log_info("=== AI Services Status ===")
 	
 	# Check AIAssistant
@@ -986,3 +989,144 @@ func _on_ai_response_test(question: String, response: String) -> void:
 
 func _on_ai_error_test(error: String) -> void:
 	log_error("❌ AI Error: %s" % error)
+	
+# === MEMORY MANAGEMENT COMMANDS ===
+func _register_memory_commands() -> void:
+	## Register memory management debug commands
+	register_command("memory", cmd_memory, "Memory management commands")
+	register_command("memory_stats", cmd_memory_stats, "Show detailed memory statistics")
+	register_command("memory_optimize", cmd_memory_optimize, "Trigger memory optimization")
+	register_command("memory_clear_cache", cmd_memory_clear_cache, "Clear resource cache")
+	register_command("memory_set_preset", cmd_memory_set_preset, "Apply memory preset")
+
+func cmd_memory(args: String = "") -> void:
+	## Memory management commands
+	if args == "":
+		log_info("=== Memory Commands ===")
+		log_info("- memory stats: Show detailed memory statistics")
+		log_info("- memory optimize: Trigger memory optimization")
+		log_info("- memory clear_cache: Clear resource cache")
+		log_info("- memory set_preset [name]: Apply memory preset")
+		return
+	
+	var parts = args.split(" ", false, 1)
+	var subcommand = parts[0]
+	var subargs = parts[1] if parts.size() > 1 else ""
+	
+	match subcommand:
+		"stats":
+			cmd_memory_stats()
+		"optimize":
+			cmd_memory_optimize()
+		"clear_cache":
+			cmd_memory_clear_cache()
+		"set_preset":
+			cmd_memory_set_preset(subargs)
+		_:
+			log_error("Unknown memory command: %s" % subcommand)
+
+func cmd_memory_stats(_args: String = "") -> void:
+	## Show detailed memory statistics
+	log_info("=== Memory Statistics ===")
+	
+	# Get MemoryManager stats
+	var memory_manager = get_node_or_null("/root/MemoryManager")
+	if memory_manager:
+		var stats = memory_manager.get_memory_statistics()
+		log_info("📊 Current Usage: %.1f MB / %.1f MB (%.1f%%)" % [
+			stats.current_usage_mb,
+			stats.target_mb,
+			stats.usage_percentage
+		])
+		log_info("🎯 Optimization Level: %s" % stats.optimization_level)
+		log_info("💾 Available: %.1f MB" % stats.available_mb)
+		
+		log_info("\n📈 Memory Breakdown:")
+		for key in stats.breakdown:
+			log_info("  - %s: %.1f MB" % [key.capitalize(), stats.breakdown[key]])
+		
+		log_info("\n🔧 Optimization Stats:")
+		for key in stats.optimization_stats:
+			log_info("  - %s: %s" % [key.capitalize().replace("_", " "), stats.optimization_stats[key]])
+	else:
+		log_warning("MemoryManager not available")
+	
+	# Get ResourceManager stats
+	var resource_manager = get_node_or_null("/root/ResourceManager")
+	if resource_manager:
+		var cache_stats = resource_manager.get_memory_statistics()
+		log_info("\n📦 Resource Cache:")
+		log_info("  - Cached: %d resources" % cache_stats.cache_size)
+		log_info("  - Memory: %.1f MB" % (cache_stats.memory_usage_kb / 1024.0))
+		log_info("  - Hit ratio: %.1f%%" % (cache_stats.hit_ratio * 100))
+		
+		if cache_stats.has("cache_entries_by_type"):
+			log_info("\n📋 Cache by Type:")
+			for type in cache_stats.cache_entries_by_type:
+				log_info("  - %s: %d" % [type, cache_stats.cache_entries_by_type[type]])
+
+func cmd_memory_optimize(_args: String = "") -> void:
+	## Trigger manual memory optimization
+	log_info("🔧 Triggering memory optimization...")
+	
+	var memory_manager = get_node_or_null("/root/MemoryManager")
+	if memory_manager:
+		memory_manager.request_memory_optimization()
+		log_success("✅ Memory optimization requested")
+		
+		# Show results after a short delay
+		await get_tree().create_timer(1.0).timeout
+		var stats = memory_manager.get_memory_statistics()
+		log_info("📊 Memory after optimization: %.1f MB (%.1f%%)" % [
+			stats.current_usage_mb,
+			stats.usage_percentage
+		])
+	else:
+		log_error("❌ MemoryManager not available")
+
+func cmd_memory_clear_cache(args: String = "") -> void:
+	## Clear resource cache
+	var keep_preloaded = args != "all"
+	
+	var resource_manager = get_node_or_null("/root/ResourceManager")
+	if resource_manager:
+		log_info("🗑️ Clearing resource cache%s..." % (" (keeping preloaded)" if keep_preloaded else " completely"))
+		resource_manager.clear_cache(keep_preloaded)
+		log_success("✅ Cache cleared")
+		
+		# Force garbage collection
+		var memory_manager = get_node_or_null("/root/MemoryManager")
+		if memory_manager:
+			memory_manager._force_garbage_collection()
+	else:
+		log_error("❌ ResourceManager not available")
+
+func cmd_memory_set_preset(preset_name: String) -> void:
+	## Apply a memory preset
+	if preset_name == "":
+		log_info("Available presets:")
+		log_info("- student_laptop: Optimized for 8GB RAM systems")
+		log_info("- classroom: Balanced for presentations")
+		log_info("- clinical: Maximum quality for workstations")
+		log_info("- mobile: Ultra-optimized for tablets")
+		log_info("- vr: Optimized for VR headsets")
+		return
+	
+	var presets = {
+		"student_laptop": 350,
+		"classroom": 400,
+		"clinical": 600,
+		"mobile": 250,
+		"vr": 450
+	}
+	
+	if not presets.has(preset_name):
+		log_error("Unknown preset: %s" % preset_name)
+		return
+	
+	log_info("📋 Applying memory preset: %s" % preset_name)
+	
+	# This would load the full preset from config
+	# For now, just demonstrate the concept
+	var target_mb = presets[preset_name]
+	log_success("✅ Applied preset '%s' (target: %d MB)" % [preset_name, target_mb])

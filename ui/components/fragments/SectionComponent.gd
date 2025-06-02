@@ -34,7 +34,7 @@ func _ready() -> void:
 	_apply_section_styling()
 
 func _setup_section_structure() -> void:
-	"""Setup the section layout"""
+	## Setup the section layout
 	
 	# Configure container
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -69,7 +69,7 @@ func _setup_section_structure() -> void:
 	content_label.meta_clicked.connect(_on_content_link_clicked)
 
 func _apply_section_styling() -> void:
-	"""Apply styling to section elements"""
+	## Apply styling to section elements
 	
 	# Add subtle spacing
 	add_theme_constant_override("margin_bottom", UIThemeManager.get_spacing("sm"))
@@ -91,7 +91,7 @@ func _apply_section_styling() -> void:
 
 # === PUBLIC API ===
 func configure_section(config: Dictionary) -> void:
-	"""Configure section with settings"""
+	## Configure section with settings
 	
 	# Set section properties
 	section_name = config.get("name", "section")
@@ -113,20 +113,20 @@ func configure_section(config: Dictionary) -> void:
 		set_content(config.content)
 
 func set_section_name(name: String) -> void:
-	"""Set section name"""
+	## Set section name
 	section_name = name
 	section_title = name.capitalize()
 	if header_button:
 		_update_header()
 
 func set_collapsible(collapsible: bool) -> void:
-	"""Set section collapsible state"""
+	## Set section collapsible state
 	is_collapsible = collapsible
 	if header_button:
 		_update_header()
 
 func set_expanded(expanded: bool) -> void:
-	"""Set section expanded state"""
+	## Set section expanded state
 	if not is_collapsible:
 		is_expanded = true
 		return
@@ -135,30 +135,30 @@ func set_expanded(expanded: bool) -> void:
 	_update_expanded_state()
 
 func get_expanded() -> bool:
-	"""Get current expanded state"""
+	## Get current expanded state
 	return is_expanded
 
 func set_content(content: String) -> void:
-	"""Set section content"""
+	## Set section content
 	section_content = content
 	_update_content_display()
 
 func get_content() -> String:
-	"""Get section content"""
+	## Get section content
 	return section_content
 
 func append_content(additional_content: String) -> void:
-	"""Append content to section"""
+	## Append content to section
 	section_content += "\n" + additional_content
 	_update_content_display()
 
 func clear_content() -> void:
-	"""Clear section content"""
+	## Clear section content
 	section_content = ""
 	_update_content_display()
 
 func update_responsive_config(config: Dictionary) -> void:
-	"""Update section for responsive layout"""
+	## Update section for responsive layout
 	is_mobile = config.get("is_mobile", false)
 	
 	if is_mobile:
@@ -173,7 +173,7 @@ func update_responsive_config(config: Dictionary) -> void:
 		UIThemeManager.apply_enhanced_typography(content_label, "body")
 
 func apply_theme(theme: String) -> void:
-	"""Apply theme to section"""
+	## Apply theme to section
 	current_theme = theme
 	
 	# Update header styling
@@ -184,7 +184,7 @@ func apply_theme(theme: String) -> void:
 
 # === SEARCH AND HIGHLIGHTING ===
 func highlight_text(search_term: String) -> int:
-	"""Highlight search term in content and return number of matches"""
+	## Highlight search term in content and return number of matches
 	if section_content.is_empty():
 		return 0
 	
@@ -208,12 +208,12 @@ func highlight_text(search_term: String) -> int:
 	return matches
 
 func clear_highlights() -> void:
-	"""Clear all text highlights"""
+	## Clear all text highlights
 	_update_content_display()
 
 # === PRIVATE METHODS ===
 func _update_header() -> void:
-	"""Update section header display"""
+	## Update section header display
 	# Safety check for header_button
 	if not header_button:
 		push_warning("[SectionComponent] header_button is null in _update_header")
@@ -230,7 +230,7 @@ func _update_header() -> void:
 		header_button.disabled = true
 
 func _update_expanded_state() -> void:
-	"""Update section expanded/collapsed state"""
+	## Update section expanded/collapsed state
 	if not content_container:
 		push_warning("[SectionComponent] content_container is null in _update_expanded_state")
 		return
@@ -246,7 +246,7 @@ func _update_expanded_state() -> void:
 			_animate_collapse()
 
 func _update_content_display() -> void:
-	"""Update content display based on type"""
+	## Update content display based on type
 	if not content_label:
 		push_warning("[SectionComponent] content_label is null in _update_content_display")
 		return
@@ -262,7 +262,7 @@ func _update_content_display() -> void:
 			content_label.text = section_content
 
 func _format_as_list(content: String) -> String:
-	"""Format content as bulleted list"""
+	## Format content as bulleted list
 	if content.is_empty():
 		return ""
 	
@@ -282,7 +282,7 @@ func _format_as_list(content: String) -> String:
 	return formatted.rstrip("\n")
 
 func _animate_expand() -> void:
-	"""Animate section expansion"""
+	## Animate section expansion
 	content_container.modulate = Color.TRANSPARENT
 	content_container.visible = true
 	
@@ -290,14 +290,14 @@ func _animate_expand() -> void:
 	tween.tween_property(content_container, "modulate", Color.WHITE, 0.2)
 
 func _animate_collapse() -> void:
-	"""Animate section collapse"""
+	## Animate section collapse
 	var tween = create_tween()
 	tween.tween_property(content_container, "modulate", Color.TRANSPARENT, 0.15)
 	tween.tween_callback(func(): content_container.visible = false)
 
 # === EVENT HANDLERS ===
 func _on_header_pressed() -> void:
-	"""Handle header button press"""
+	## Handle header button press
 	if not is_collapsible:
 		return
 	
@@ -310,7 +310,7 @@ func _on_header_pressed() -> void:
 	})
 
 func _on_content_link_clicked(meta: Variant) -> void:
-	"""Handle link clicks in content"""
+	## Handle link clicks in content
 	var link_data = {
 		"type": "content_link",
 		"url": str(meta),
@@ -326,7 +326,7 @@ func _on_content_link_clicked(meta: Variant) -> void:
 
 # === CONTENT TEMPLATES ===
 func apply_content_template(template_name: String, data: Dictionary) -> void:
-	"""Apply a content template with data"""
+	## Apply a content template with data
 	match template_name:
 		"description":
 			_apply_description_template(data)
@@ -338,7 +338,7 @@ func apply_content_template(template_name: String, data: Dictionary) -> void:
 			_apply_clinical_template(data)
 
 func _apply_description_template(data: Dictionary) -> void:
-	"""Apply description template"""
+	## Apply description template
 	var description = data.get("shortDescription", data.get("description", ""))
 	content_type = "rich"
 	
@@ -353,7 +353,7 @@ func _apply_description_template(data: Dictionary) -> void:
 		set_content(formatted)
 
 func _apply_functions_template(data: Dictionary) -> void:
-	"""Apply functions template"""
+	## Apply functions template
 	var functions = data.get("functions", [])
 	content_type = "list"
 	
@@ -366,7 +366,7 @@ func _apply_functions_template(data: Dictionary) -> void:
 		set_content(content.rstrip("\n"))
 
 func _apply_connections_template(data: Dictionary) -> void:
-	"""Apply connections template"""
+	## Apply connections template
 	var connections = data.get("connections", [])
 	content_type = "rich"
 	
@@ -379,7 +379,7 @@ func _apply_connections_template(data: Dictionary) -> void:
 		set_content(content.rstrip("\n"))
 
 func _apply_clinical_template(data: Dictionary) -> void:
-	"""Apply clinical template"""
+	## Apply clinical template
 	var clinical = data.get("clinicalNotes", data.get("clinicalRelevance", ""))
 	content_type = "rich"
 	
@@ -397,7 +397,7 @@ func _apply_clinical_template(data: Dictionary) -> void:
 
 # === FACTORY METHOD ===
 static func create_with_config(config: Dictionary) -> SectionComponent:
-	"""Factory method to create configured section"""
+	## Factory method to create configured section
 	var section = SectionComponent.new()
 	section.configure_section(config)
 	return section

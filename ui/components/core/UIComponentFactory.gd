@@ -128,7 +128,7 @@ const STYLE_PRESETS = {
 
 # === FACTORY METHODS ===
 static func create_component(type: ComponentType, config: Dictionary = {}) -> Control:
-	"""Create a UI component with configuration"""
+	## Create a UI component with configuration
 	var component_data = get_component_configs().get(type)
 	if not component_data:
 		push_error("Unknown component type: " + str(type))
@@ -151,7 +151,7 @@ static func create_component(type: ComponentType, config: Dictionary = {}) -> Co
 	return component
 
 static func create_panel(style: String = "default", config: Dictionary = {}) -> PanelContainer:
-	"""Create a styled panel"""
+	## Create a styled panel
 	var panel_config = {
 		"theme_variant": style
 	}
@@ -161,7 +161,7 @@ static func create_panel(style: String = "default", config: Dictionary = {}) -> 
 	return panel
 
 static func create_button(text: String, style: String = "primary", config: Dictionary = {}) -> Button:
-	"""Create a styled button"""
+	## Create a styled button
 	var button_config = {
 		"text": text,
 		"style": style
@@ -172,7 +172,7 @@ static func create_button(text: String, style: String = "primary", config: Dicti
 	return button
 
 static func create_label(text: String, style: String = "body", config: Dictionary = {}) -> Label:
-	"""Create a styled label"""
+	## Create a styled label
 	var label_config = {
 		"text": text,
 		"style": style
@@ -183,7 +183,7 @@ static func create_label(text: String, style: String = "body", config: Dictionar
 	return label
 
 static func create_text_input(placeholder: String = "", config: Dictionary = {}) -> LineEdit:
-	"""Create a styled text input"""
+	## Create a styled text input
 	var input_config = {
 		"placeholder": placeholder
 	}
@@ -193,7 +193,7 @@ static func create_text_input(placeholder: String = "", config: Dictionary = {})
 	return input
 
 static func create_dropdown(options: Array, config: Dictionary = {}) -> OptionButton:
-	"""Create a styled dropdown"""
+	## Create a styled dropdown
 	var dropdown_config = {
 		"options": options
 	}
@@ -203,7 +203,7 @@ static func create_dropdown(options: Array, config: Dictionary = {}) -> OptionBu
 	return dropdown
 
 static func create_slider(min_val: float, max_val: float, initial_val: float = 0.0, config: Dictionary = {}) -> HSlider:
-	"""Create a styled slider"""
+	## Create a styled slider
 	var slider_config = {
 		"min_value": min_val,
 		"max_value": max_val,
@@ -215,7 +215,7 @@ static func create_slider(min_val: float, max_val: float, initial_val: float = 0
 	return slider
 
 static func create_checkbox(text: String, checked: bool = false, config: Dictionary = {}) -> CheckBox:
-	"""Create a styled checkbox"""
+	## Create a styled checkbox
 	var checkbox_config = {
 		"text": text,
 		"checked": checked
@@ -226,7 +226,7 @@ static func create_checkbox(text: String, checked: bool = false, config: Diction
 	return checkbox
 
 static func create_progress_bar(max_val: float = 100.0, config: Dictionary = {}) -> ProgressBar:
-	"""Create a styled progress bar"""
+	## Create a styled progress bar
 	var progress_config = {
 		"max_value": max_val
 	}
@@ -237,7 +237,7 @@ static func create_progress_bar(max_val: float = 100.0, config: Dictionary = {})
 
 # === COMPLEX COMPONENT FACTORIES ===
 static func create_info_panel(config: Dictionary = {}) -> Control:
-	"""Create a complete information panel"""
+	## Create a complete information panel
 	var panel = create_panel("default", {"padding": 20})
 	
 	# Add title bar
@@ -275,7 +275,7 @@ static func create_info_panel(config: Dictionary = {}) -> Control:
 	return panel
 
 static func create_control_panel(config: Dictionary = {}) -> Control:
-	"""Create a control panel with sections"""
+	## Create a control panel with sections
 	var panel = create_panel("default")
 	var main_container = VBoxContainer.new()
 	
@@ -295,7 +295,7 @@ static func create_control_panel(config: Dictionary = {}) -> Control:
 	return panel
 
 static func create_form(fields: Array, config: Dictionary = {}) -> Control:
-	"""Create a form with specified fields"""
+	## Create a form with specified fields
 	var form_panel = create_panel("default")
 	var form_container = VBoxContainer.new()
 	
@@ -326,7 +326,7 @@ static func create_form(fields: Array, config: Dictionary = {}) -> Control:
 
 # === HELPER METHODS ===
 static func _apply_component_config(component: Control, config: Dictionary, type: ComponentType) -> void:
-	"""Apply configuration to component"""
+	## Apply configuration to component
 	match type:
 		ComponentType.BUTTON:
 			_configure_button(component as Button, config)
@@ -346,7 +346,7 @@ static func _apply_component_config(component: Control, config: Dictionary, type
 			_configure_progress_bar(component as ProgressBar, config)
 
 static func _configure_button(button: Button, config: Dictionary) -> void:
-	"""Configure button component safely"""
+	## Configure button component safely
 	if not button:
 		return
 	
@@ -365,11 +365,11 @@ static func _configure_button(button: Button, config: Dictionary) -> void:
 
 # === LOGGING HELPER ===
 static func _log_factory_warning(message: String) -> void:
-	"""Log factory warnings"""
+	## Log factory warnings
 	print("[UIComponentFactory] Warning: " + message)
 
 static func _configure_label(label: Label, config: Dictionary) -> void:
-	"""Configure label component safely"""
+	## Configure label component safely
 	if not label:
 		return
 	
@@ -384,7 +384,7 @@ static func _configure_label(label: Label, config: Dictionary) -> void:
 		_log_factory_warning("Label theming unavailable, using fallback for: " + label.text)
 
 static func _configure_panel(panel: PanelContainer, config: Dictionary) -> void:
-	"""Configure panel component safely"""
+	## Configure panel component safely
 	if not panel:
 		return
 	
@@ -396,7 +396,7 @@ static func _configure_panel(panel: PanelContainer, config: Dictionary) -> void:
 		_log_factory_warning("Panel theming unavailable, using fallback")
 
 static func _configure_text_input(input: LineEdit, config: Dictionary) -> void:
-	"""Configure text input component"""
+	## Configure text input component
 	if config.has("placeholder"):
 		input.placeholder_text = config.placeholder
 	
@@ -412,7 +412,7 @@ static func _configure_text_input(input: LineEdit, config: Dictionary) -> void:
 		_log_factory_warning("Text input theming unavailable, using fallback")
 
 static func _configure_dropdown(dropdown: OptionButton, config: Dictionary) -> void:
-	"""Configure dropdown component"""
+	## Configure dropdown component
 	if config.has("options"):
 		dropdown.clear()
 		for option in config.options:
@@ -425,21 +425,21 @@ static func _configure_dropdown(dropdown: OptionButton, config: Dictionary) -> v
 		dropdown.selected = config.selected
 
 static func _configure_slider(slider: HSlider, config: Dictionary) -> void:
-	"""Configure slider component"""
+	## Configure slider component
 	slider.min_value = config.get("min_value", 0.0)
 	slider.max_value = config.get("max_value", 1.0)
 	slider.step = config.get("step", 0.1)
 	slider.value = config.get("value", 0.5)
 
 static func _configure_checkbox(checkbox: CheckBox, config: Dictionary) -> void:
-	"""Configure checkbox component"""
+	## Configure checkbox component
 	if config.has("text"):
 		checkbox.text = config.text
 	
 	checkbox.button_pressed = config.get("checked", false)
 
 static func _configure_progress_bar(progress: ProgressBar, config: Dictionary) -> void:
-	"""Configure progress bar component safely"""
+	## Configure progress bar component safely
 	if not progress:
 		return
 	
@@ -453,7 +453,7 @@ static func _configure_progress_bar(progress: ProgressBar, config: Dictionary) -
 		_log_factory_warning("Progress bar theming unavailable, using fallback")
 
 static func _create_control_section(section_config: Dictionary) -> Control:
-	"""Create a control section"""
+	## Create a control section
 	var section = VBoxContainer.new()
 	
 	# Section title
@@ -470,7 +470,7 @@ static func _create_control_section(section_config: Dictionary) -> Control:
 	return section
 
 static func _create_control_item(item_config: Dictionary) -> Control:
-	"""Create a control item"""
+	## Create a control item
 	var item_type = item_config.get("type", "button")
 	var item_data = item_config.get("config", {})
 	
@@ -490,7 +490,7 @@ static func _create_control_item(item_config: Dictionary) -> Control:
 			return create_label("Unknown control type: " + item_type)
 
 static func _create_form_field(field_config: Dictionary) -> Control:
-	"""Create a form field"""
+	## Create a form field
 	var field_container = VBoxContainer.new()
 	
 	# Field label
@@ -527,15 +527,15 @@ static func _create_form_field(field_config: Dictionary) -> Control:
 
 # === UTILITY METHODS ===
 static func get_component_types() -> Array:
-	"""Get all available component types"""
+	## Get all available component types
 	return ComponentType.values()
 
 static func get_style_presets(component_type: String) -> Dictionary:
-	"""Get style presets for component type"""
+	## Get style presets for component type
 	return STYLE_PRESETS.get(component_type, {})
 
 static func create_responsive_component(type: ComponentType, config: Dictionary = {}) -> Control:
-	"""Create a responsive component - temporarily simplified"""
+	## Create a responsive component - temporarily simplified
 	# TODO: Re-enable ResponsiveComponent once parsing issues are resolved
 	# For now, just return the base component
 	var base_component = create_component(type, config)

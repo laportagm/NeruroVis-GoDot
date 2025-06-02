@@ -27,7 +27,7 @@ func _ready() -> void:
     visible = false
 
 func _create_ui() -> void:
-    """Create streamlined UI structure"""
+    ## Create streamlined UI structure
     # Main panel setup
     custom_minimum_size = Vector2(350, 200)
     size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -82,7 +82,7 @@ func _create_ui() -> void:
     content.add_child(functions_container)
 
 func _setup_styling() -> void:
-    """Apply modern styling"""
+    ## Apply modern styling
     # Panel background
     var style = StyleBoxFlat.new()
     style.bg_color = Color(0.1, 0.1, 0.15, 0.9)
@@ -109,7 +109,7 @@ func _setup_styling() -> void:
 
 # Public interface
 func display_structure_data(structure_data: Dictionary) -> void:
-    """Display structure information"""
+    ## Display structure information
     if structure_data.is_empty():
         hide_panel()
         return
@@ -131,7 +131,7 @@ func display_structure_data(structure_data: Dictionary) -> void:
     show_panel()
 
 func show_panel() -> void:
-    """Show the panel with animation"""
+    ## Show the panel with animation
     if panel_visible:
         return
     
@@ -144,7 +144,7 @@ func show_panel() -> void:
     tween.tween_property(self, "modulate:a", 1.0, 0.3)
 
 func hide_panel() -> void:
-    """Hide the panel with animation"""
+    ## Hide the panel with animation
     if not panel_visible:
         return
     
@@ -160,7 +160,7 @@ func hide_panel() -> void:
     )
 
 func _update_functions(functions_array: Array) -> void:
-    """Update the functions list"""
+    ## Update the functions list
     # Clear existing functions
     for child in functions_container.get_children():
         child.queue_free()
@@ -179,7 +179,7 @@ func _update_functions(functions_array: Array) -> void:
         functions_container.add_child(item)
 
 func _create_function_item(text: String, index: int) -> Control:
-    """Create a function list item"""
+    ## Create a function list item
     var container = HBoxContainer.new()
     
     # Bullet
@@ -203,10 +203,10 @@ func _create_function_item(text: String, index: int) -> Control:
     return container
 
 func _on_close_pressed() -> void:
-    """Handle close button press"""
+    ## Handle close button press
     hide_panel()
 
 func dispose() -> void:
-    """Clean up resources"""
+    ## Clean up resources
     current_structure.clear()
     hide_panel()

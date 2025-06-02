@@ -63,7 +63,7 @@ func _ready() -> void:
 		add_child(timer)
 
 func _initialize_default_state() -> void:
-	"""Initialize default application state"""
+	## Initialize default application state
 	# Educational session defaults
 	_register_state_group(EDUCATIONAL_SESSION_GROUP, [
 		"current_structure",
@@ -148,7 +148,7 @@ func _initialize_default_state() -> void:
 ## @param default_value: Value to return if key not found
 ## @returns: The state value or default_value if not found
 func get_state(key: String, default_value = null):
-	"""Get an educational state value with fallback"""
+	## Get an educational state value with fallback
 	return _state.get(key, default_value)
 
 ## Set a state value
@@ -156,7 +156,7 @@ func get_state(key: String, default_value = null):
 ## @param value: New value to store
 ## @param persist: Whether to persist this change immediately
 func set_state(key: String, value, persist: bool = false) -> void:
-	"""Set an educational state value with optional persistence"""
+	## Set an educational state value with optional persistence
 	# Get current value for comparison
 	var old_value = _state.get(key)
 	
@@ -186,7 +186,7 @@ func set_state(key: String, value, persist: bool = false) -> void:
 ## @param group_name: Name of the state group
 ## @returns: Dictionary with group state values
 func get_state_group(group_name: String) -> Dictionary:
-	"""Get a group of related educational state values"""
+	## Get a group of related educational state values
 	var result = {}
 	
 	if _groups.has(group_name):
@@ -201,7 +201,7 @@ func get_state_group(group_name: String) -> Dictionary:
 ## @param values: Dictionary of key/value pairs to update
 ## @param persist: Whether to persist these changes immediately
 func update_state_group(group_name: String, values: Dictionary, persist: bool = false) -> void:
-	"""Update a group of related educational state values"""
+	## Update a group of related educational state values
 	if not _groups.has(group_name):
 		push_warning("[AppState] Unknown state group: %s" % group_name)
 		return
@@ -228,7 +228,7 @@ func update_state_group(group_name: String, values: Dictionary, persist: bool = 
 ## @param key: State key to listen for
 ## @param callback: Callable to invoke when state changes
 func register_listener(key: String, callback: Callable) -> void:
-	"""Register listener for educational state changes"""
+	## Register listener for educational state changes
 	if not _listeners.has(key):
 		_listeners[key] = []
 	
@@ -239,14 +239,14 @@ func register_listener(key: String, callback: Callable) -> void:
 ## @param key: State key the listener was registered for
 ## @param callback: Callable to remove
 func unregister_listener(key: String, callback: Callable) -> void:
-	"""Unregister listener for educational state changes"""
+	## Unregister listener for educational state changes
 	if _listeners.has(key):
 		_listeners[key].erase(callback)
 
 ## Save state to disk
 ## @returns: true if save successful, false otherwise
 func save_state() -> bool:
-	"""Save educational state to persistent storage"""
+	## Save educational state to persistent storage
 	var config = ConfigFile.new()
 	
 	# Save each group to its own section
@@ -280,7 +280,7 @@ func save_state() -> bool:
 ## Load state from disk
 ## @returns: true if load successful, false otherwise
 func load_state() -> bool:
-	"""Load educational state from persistent storage"""
+	## Load educational state from persistent storage
 	var config = ConfigFile.new()
 	var error = config.load(STATE_FILE_PATH)
 	
@@ -324,7 +324,7 @@ func load_state() -> bool:
 ## @param group_name: Optional group to reset (or all if not specified)
 ## @param persist: Whether to persist these changes immediately
 func reset_state(group_name: String = "", persist: bool = true) -> void:
-	"""Reset educational state to defaults"""
+	## Reset educational state to defaults
 	# Initialize a clean state
 	var default_state = {}
 	_initialize_default_state()
@@ -358,19 +358,19 @@ func reset_state(group_name: String = "", persist: bool = true) -> void:
 ## Check if state has unsaved changes
 ## @returns: true if state has unsaved changes, false otherwise
 func has_unsaved_changes() -> bool:
-	"""Check if educational state has unsaved changes"""
+	## Check if educational state has unsaved changes
 	return _state_dirty
 
 ## Enable or disable auto-save
 ## @param enabled: Whether auto-save should be enabled
 func set_auto_save(enabled: bool) -> void:
-	"""Configure educational state auto-save feature"""
+	## Configure educational state auto-save feature
 	_auto_save_enabled = enabled
 	print("[AppState] Auto-save %s" % ("enabled" if enabled else "disabled"))
 
 ## Start tracking a new educational session
 func start_educational_session() -> void:
-	"""Start tracking a new educational learning session"""
+	## Start tracking a new educational learning session
 	update_state_group(EDUCATIONAL_SESSION_GROUP, {
 		"session_start_time": Time.get_unix_time_from_system(),
 		"session_duration": 0,
@@ -383,7 +383,7 @@ func start_educational_session() -> void:
 ## Update session with structure view
 ## @param structure_name: Name of the structure viewed
 func record_structure_view(structure_name: String) -> void:
-	"""Record educational structure view for learning analytics"""
+	## Record educational structure view for learning analytics
 	var viewed = get_state("viewed_structures", []).duplicate()
 	
 	# Only add if not already viewed
@@ -401,7 +401,7 @@ func record_structure_view(structure_name: String) -> void:
 ## Get educational session statistics
 ## @returns: Dictionary with session statistics
 func get_session_statistics() -> Dictionary:
-	"""Get educational session statistics for learning analytics"""
+	## Get educational session statistics for learning analytics
 	var start_time = get_state("session_start_time", 0)
 	var current_time = Time.get_unix_time_from_system()
 	var duration = current_time - start_time
@@ -424,7 +424,7 @@ func get_session_statistics() -> Dictionary:
 # === DEBUGGING ===
 ## Print current state for debugging
 func print_state() -> void:
-	"""Print educational state for debugging"""
+	## Print educational state for debugging
 	print("\n=== EDUCATIONAL APP STATE ===")
 	
 	for group_name in _groups:
@@ -438,11 +438,11 @@ func print_state() -> void:
 
 # === PRIVATE METHODS ===
 func _register_state_group(group_name: String, keys: Array) -> void:
-	"""Register a group of related state keys"""
+	## Register a group of related state keys
 	_groups[group_name] = keys
 
 func _notify_listeners(key: String, old_value, new_value) -> void:
-	"""Notify all listeners of state change"""
+	## Notify all listeners of state change
 	# Emit general signal
 	state_changed.emit(key, old_value, new_value)
 	
@@ -453,14 +453,14 @@ func _notify_listeners(key: String, old_value, new_value) -> void:
 				callback.call(key, old_value, new_value)
 
 func _get_group_for_key(key: String) -> String:
-	"""Find which group a key belongs to"""
+	## Find which group a key belongs to
 	for group_name in _groups:
 		if _groups[group_name].has(key):
 			return group_name
 	return ""
 
 func _format_duration(seconds: float) -> String:
-	"""Format duration in seconds to human-readable string"""
+	## Format duration in seconds to human-readable string
 	var hours = int(seconds) / 3600
 	var minutes = (int(seconds) % 3600) / 60
 	var secs = int(seconds) % 60
@@ -471,6 +471,6 @@ func _format_duration(seconds: float) -> String:
 		return "%d:%02d" % [minutes, secs]
 
 func _on_auto_save_timer() -> void:
-	"""Auto-save timer callback"""
+	## Auto-save timer callback
 	if _auto_save_enabled and _state_dirty:
 		save_state()

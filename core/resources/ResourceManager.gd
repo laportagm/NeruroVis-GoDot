@@ -2,10 +2,11 @@
 ## Centralized resource management system for NeuroVis educational platform
 ##
 ## This system handles loading, caching, and efficient resource management
-## for educational 3D models, textures, and other assets.
+## for educational 3D models, textures, and other assets with enhanced memory
+## optimization for medical education workloads.
 ##
 ## @tutorial: Resource optimization for educational platform
-## @version: 1.0
+## @version: 2.0
 
 class_name ResourceManager
 extends Node
@@ -13,6 +14,10 @@ extends Node
 # === CONSTANTS ===
 const DEFAULT_GROUP = "default"
 const PRELOAD_CONFIG_PATH = "res://config/preload_resources.cfg"
+const MAX_CACHE_SIZE_MB = 400  # Target <500MB total app memory
+const MAX_TEXTURE_SIZE = 2048  # Max texture dimension for educational models
+const MODEL_CACHE_LIMIT = 25   # Reduced from 50 for memory optimization
+const MEMORY_CHECK_INTERVAL = 5.0  # Seconds between memory checks
 
 # === SIGNALS ===
 ## Emitted when a resource is loaded successfully
@@ -40,13 +45,26 @@ var _cache_misses: int = 0
 var _memory_usage: int = 0
 var _preloaded_count: int = 0
 
+# Memory management
+var _memory_check_timer: float = 0.0
+var _cache_access_times: Dictionary = {}  # Track LRU for cache eviction
+var _educational_priority_resources: Array = []  # Resources that should stay cached
+var _texture_compression_enabled: bool = true
+var _aggressive_memory_mode: bool = false
+
 # === INITIALIZATION ===
 func _ready() -> void:
 	print("[ResourceManager] Initializing educational resource manager")
 	_load_preload_configuration()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_update_async_loads()
+	
+	# Periodic memory checks
+	_memory_check_timer += delta
+	if _memory_check_timer >= MEMORY_CHECK_INTERVAL:
+		_memory_check_timer = 0.0
+		_check_memory_usage()
 
 # === PUBLIC API ===
 ## Get a resource, loading it if not already cached
@@ -54,15 +72,17 @@ func _process(_delta: float) -> void:
 ## @param use_sub_threads: Whether to use sub-threads for loading (when supported)
 ## @returns: The loaded resource or null if loading failed
 func get_resource(resource_path: String, use_sub_threads: bool = false):
-	"""Get educational resource with caching"""
+	## Get educational resource with caching
 	# Check cache first
 	if _resource_cache.has(resource_path):
 		_cache_hits += 1
+		_cache_access_times[resource_path] = Time.get_ticks_msec()
 		return _resource_cache[resource_path]
 	
 	# Check preloaded resources
 	if _preloaded_resources.has(resource_path):
 		_cache_hits += 1
+		_cache_access_times[resource_path] = Time.get_ticks_msec()
 		return _preloaded_resources[resource_path]
 	
 	# Cache miss, load resource
@@ -92,7 +112,7 @@ func get_resource(resource_path: String, use_sub_threads: bool = false):
 ## @param resource_paths: Array of resource paths to preload
 ## @param group_name: Optional group name for bulk operations
 func preload_resources(resource_paths: Array, group_name: String = DEFAULT_GROUP) -> void:
-	"""Preload educational resources for faster access"""
+	## Preload educational resources for faster access
 	if resource_paths.is_empty():
 		return
 	
@@ -136,7 +156,7 @@ func preload_resources(resource_paths: Array, group_name: String = DEFAULT_GROUP
 ## @param callback: Optional callback when resource is loaded
 ## @returns: true if async load was started, false otherwise
 func load_resource_async(resource_path: String, callback: Callable = Callable()) -> bool:
-	"""Load educational resource asynchronously for smoother experience"""
+	## Load educational resource asynchronously for smoother experience
 	# Check cache first
 	if _resource_cache.has(resource_path):
 		_cache_hits += 1
@@ -178,7 +198,7 @@ func load_resource_async(resource_path: String, callback: Callable = Callable())
 ## Unload resources by group to free memory
 ## @param group_name: Name of the group to unload
 func unload_group(group_name: String) -> void:
-	"""Unload a group of educational resources to free memory"""
+	## Unload a group of educational resources to free memory
 	if not _group_resources.has(group_name):
 		push_warning("[ResourceManager] No resource group found: %s" % group_name)
 		return
@@ -213,7 +233,7 @@ func unload_group(group_name: String) -> void:
 ## Clear all cached resources to free memory
 ## @param keep_preloaded: Whether to keep preloaded resources
 func clear_cache(keep_preloaded: bool = true) -> void:
-	"""Clear educational resource cache to free memory"""
+	## Clear educational resource cache to free memory
 	var cache_count = _resource_cache.size()
 	_resource_cache.clear()
 	
@@ -238,7 +258,7 @@ func clear_cache(keep_preloaded: bool = true) -> void:
 ## Get resource cache statistics
 ## @returns: Dictionary with cache stats
 func get_cache_statistics() -> Dictionary:
-	"""Get educational resource usage statistics"""
+	## Get educational resource usage statistics
 	return {
 		"cache_size": _resource_cache.size(),
 		"preloaded_count": _preloaded_count,
@@ -252,7 +272,7 @@ func get_cache_statistics() -> Dictionary:
 
 ## Print resource cache statistics
 func print_cache_statistics() -> void:
-	"""Print educational resource statistics for debugging"""
+	## Print educational resource statistics for debugging
 	var stats = get_cache_statistics()
 	
 	print("\n=== RESOURCE MANAGER STATISTICS ===")
@@ -275,7 +295,7 @@ func print_cache_statistics() -> void:
 
 # === PRIVATE METHODS ===
 func _update_async_loads() -> void:
-	"""Update async loading tasks"""
+	## Update async loading tasks
 	if _loading_tasks.is_empty():
 		return
 	
@@ -328,13 +348,14 @@ func _update_async_loads() -> void:
 		_loading_tasks.erase(resource_path)
 
 func _cache_resource(resource_path: String, resource) -> void:
-	"""Add resource to cache and update stats"""
+	## Add resource to cache and update stats
 	_resource_cache[resource_path] = resource
+	_cache_access_times[resource_path] = Time.get_ticks_msec()
 	_update_memory_usage(resource)
 	resource_loaded.emit(resource_path, resource)
 
 func _update_memory_usage(resource) -> void:
-	"""Update memory usage estimate based on resource type"""
+	## Update memory usage estimate based on resource type
 	# These are rough estimates since GDScript doesn't expose actual memory usage
 	var size_estimate = 0
 	
@@ -364,14 +385,14 @@ func _update_memory_usage(resource) -> void:
 	_memory_usage += size_estimate
 
 func _calculate_hit_ratio() -> float:
-	"""Calculate cache hit ratio"""
+	## Calculate cache hit ratio
 	var total = _cache_hits + _cache_misses
 	if total == 0:
 		return 0.0
 	return float(_cache_hits) / float(total)
 
 func _load_preload_configuration() -> void:
-	"""Load resource preload configuration"""
+	## Load resource preload configuration
 	var config = ConfigFile.new()
 	if config.load(PRELOAD_CONFIG_PATH) != OK:
 		print("[ResourceManager] No preload configuration found at: %s" % PRELOAD_CONFIG_PATH)

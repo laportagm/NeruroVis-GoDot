@@ -91,11 +91,11 @@ var mock_responses = {
 var gemini_service: GeminiAIServiceClass
 
 func _ready() -> void:
-    """Initialize the AI Assistant Service"""
+    ## Initialize the AI Assistant Service
     _initialize_ai_service()
 
 func _initialize_ai_service() -> void:
-    """Setup the AI service based on selected provider"""
+    ## Setup the AI service based on selected provider
     print("[AI] Initializing AI Assistant Service...")
 
     # Create HTTP request node for API calls
@@ -120,7 +120,7 @@ func _initialize_ai_service() -> void:
     print("[AI] AI Assistant initialized with provider: %s" % AIProvider.keys()[ai_provider])
 
 func _initialize_gemini_service() -> void:
-    """Initialize Gemini AI service for integration"""
+    ## Initialize Gemini AI service for integration
     # Check if GeminiAI is already available as autoload
     gemini_service = get_node_or_null("/root/GeminiAI")
 
@@ -131,7 +131,7 @@ func _initialize_gemini_service() -> void:
         add_child(gemini_service)
 
 func _initialize_user_gemini_service() -> void:
-    """Initialize user's own Gemini AI service"""
+    ## Initialize user's own Gemini AI service
     # Get reference to the GeminiAI autoload
     user_gemini_service = get_node_or_null("/root/GeminiAI")
 
@@ -145,7 +145,7 @@ func _initialize_user_gemini_service() -> void:
         print("[AI] User's GeminiAI service not found")
 
 func _load_api_configuration() -> void:
-    """Load API configuration from environment or config file"""
+    ## Load API configuration from environment or config file
     # Try to load from environment variables first
     var env_api_key = OS.get_environment("NEUROVIS_AI_API_KEY")
     if env_api_key != "":
@@ -157,13 +157,13 @@ func _load_api_configuration() -> void:
 
 # === PUBLIC API ===
 func set_current_structure(structure_name: String) -> void:
-    """Set the current brain structure for context"""
+    ## Set the current brain structure for context
     current_structure = structure_name
     context_updated.emit(structure_name)
     print("[AI] Context updated to: %s" % structure_name)
 
 func ask_question(question: String) -> void:
-    """Ask a question to the AI assistant"""
+    ## Ask a question to the AI assistant
     if not is_initialized:
         error_occurred.emit("AI Assistant not initialized")
         return
@@ -188,7 +188,7 @@ func ask_question(question: String) -> void:
             error_occurred.emit("Unsupported AI provider")
 
 func ask_about_current_structure(question_type: String = "function") -> void:
-    """Ask a specific question about the currently selected structure"""
+    ## Ask a specific question about the currently selected structure
     if current_structure.is_empty():
         error_occurred.emit("No structure currently selected")
         return
@@ -211,11 +211,11 @@ func ask_about_current_structure(question_type: String = "function") -> void:
     ask_question(question)
 
 func get_conversation_history() -> Array:
-    """Get the current conversation history"""
+    ## Get the current conversation history
     return conversation_history.duplicate()
 
 func clear_conversation() -> void:
-    """Clear the conversation history"""
+    ## Clear the conversation history
     conversation_history.clear()
     conversation_ended.emit()
     conversation_started.emit()
@@ -223,7 +223,7 @@ func clear_conversation() -> void:
 
 # === MOCK RESPONSE HANDLER ===
 func _handle_mock_response(question: String) -> void:
-    """Handle mock responses for testing without API"""
+    ## Handle mock responses for testing without API
     await get_tree().create_timer(1.0).timeout # Simulate API delay
 
     var response = ""
@@ -261,7 +261,7 @@ func _handle_mock_response(question: String) -> void:
 
 # === API REQUEST HANDLERS ===
 func _send_user_gemini_request(question: String) -> void:
-    """Send request to user's Gemini AI service"""
+    ## Send request to user's Gemini AI service
     if not user_gemini_service:
         error_occurred.emit("User's Gemini AI service not available")
         _handle_mock_response(question) # Fallback to mock
@@ -284,7 +284,7 @@ func _send_user_gemini_request(question: String) -> void:
     user_gemini_service.ask_question(question, context)
 
 func _send_openai_request(question: String) -> void:
-    """Send request to OpenAI GPT API"""
+    ## Send request to OpenAI GPT API
     if api_key.is_empty():
         _handle_mock_response(question) # Fallback to mock
         return
@@ -309,7 +309,7 @@ func _send_openai_request(question: String) -> void:
     http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 
 func _send_claude_request(question: String) -> void:
-    """Send request to Anthropic Claude API"""
+    ## Send request to Anthropic Claude API
     if api_key.is_empty():
         _handle_mock_response(question) # Fallback to mock
         return
@@ -334,7 +334,7 @@ func _send_claude_request(question: String) -> void:
     http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 
 func _send_gemini_request(question: String) -> void:
-    """Send request to Google Gemini API"""
+    ## Send request to Google Gemini API
     if not gemini_service or not gemini_service.is_api_key_valid():
         if api_key.is_empty():
             _handle_mock_response(question) # Fallback to mock
@@ -368,7 +368,7 @@ func _send_gemini_request(question: String) -> void:
 
 # === RESPONSE PROCESSING ===
 func _on_api_response_received(result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
-    """Handle API response"""
+    ## Handle API response
     if result != HTTPRequest.RESULT_SUCCESS:
         error_occurred.emit("API request failed")
         return
@@ -401,19 +401,19 @@ func _on_api_response_received(result: int, _response_code: int, _headers: Packe
     response_received.emit(last_question, response_text)
 
 func _parse_openai_response(data: Dictionary) -> String:
-    """Parse OpenAI API response"""
+    ## Parse OpenAI API response
     if data.has("choices") and data.choices.size() > 0:
         return data.choices[0].message.content
     return ""
 
 func _parse_claude_response(data: Dictionary) -> String:
-    """Parse Claude API response"""
+    ## Parse Claude API response
     if data.has("content") and data.content.size() > 0:
         return data.content[0].text
     return ""
 
 func _parse_gemini_response(data: Dictionary) -> String:
-    """Parse Gemini API response"""
+    ## Parse Gemini API response
     if data.has("candidates") and data.candidates.size() > 0:
         var candidate = data.candidates[0]
         if candidate.has("content") and candidate.content.has("parts"):
@@ -421,7 +421,7 @@ func _parse_gemini_response(data: Dictionary) -> String:
     return ""
 
 func _on_gemini_response_received(response_text: String) -> void:
-    """Handle response from GeminiAIService"""
+    ## Handle response from GeminiAIService
     if response_text.is_empty():
         error_occurred.emit("Empty response from Gemini AI")
         return
@@ -431,7 +431,7 @@ func _on_gemini_response_received(response_text: String) -> void:
     response_received.emit(last_question, response_text)
 
 func _on_user_gemini_response(response_text: String) -> void:
-    """Handle response from user's GeminiAI service"""
+    ## Handle response from user's GeminiAI service
     if response_text.is_empty():
         error_occurred.emit("Empty response from user's Gemini AI")
         return
@@ -441,12 +441,12 @@ func _on_user_gemini_response(response_text: String) -> void:
     response_received.emit(last_question, response_text)
 
 func _on_user_gemini_error(error_message: String) -> void:
-    """Handle error from user's GeminiAI service"""
+    ## Handle error from user's GeminiAI service
     error_occurred.emit("Gemini API error: " + error_message)
 
 # === CONVERSATION MANAGEMENT ===
 func _add_to_history(role: String, content: String) -> void:
-    """Add message to conversation history"""
+    ## Add message to conversation history
     conversation_history.append({
         "role": role,
         "content": content,
@@ -458,7 +458,7 @@ func _add_to_history(role: String, content: String) -> void:
         conversation_history = conversation_history.slice(-max_conversation_history)
 
 func _build_conversation_context() -> Array:
-    """Build conversation context for API calls"""
+    ## Build conversation context for API calls
     var messages = []
 
     # Add system prompt
@@ -477,7 +477,7 @@ func _build_conversation_context() -> Array:
     return messages
 
 func _build_gemini_prompt(question: String) -> String:
-    """Build prompt for Gemini API"""
+    ## Build prompt for Gemini API
     var prompt = educational_prompts.system_prompt
 
     if not current_structure.is_empty():
@@ -488,20 +488,20 @@ func _build_gemini_prompt(question: String) -> String:
 
 # === UTILITY METHODS ===
 func get_available_providers() -> Array:
-    """Get list of available AI providers"""
+    ## Get list of available AI providers
     return AIProvider.keys()
 
 func set_provider(provider: AIProvider) -> void:
-    """Change AI provider"""
+    ## Change AI provider
     ai_provider = provider
     print("[AI] Provider changed to: %s" % AIProvider.keys()[provider])
 
 func is_api_key_configured() -> bool:
-    """Check if API key is configured for current provider"""
+    ## Check if API key is configured for current provider
     return not api_key.is_empty() or ai_provider == AIProvider.MOCK_RESPONSES
 
 func get_service_status() -> Dictionary:
-    """Get current service status"""
+    ## Get current service status
     var status = {
         "initialized": is_initialized,
         "provider": AIProvider.keys()[ai_provider],

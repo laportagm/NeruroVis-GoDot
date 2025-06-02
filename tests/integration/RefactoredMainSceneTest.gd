@@ -12,7 +12,7 @@ func _ready():
 	test_name = "Refactored Main Scene Integration Tests"
 
 func setup_test():
-	"""Setup for each test"""
+	## Setup for each test
 	test_scene = MainSceneRefactored.new()
 	test_scene.name = "TestMainScene"
 	
@@ -40,29 +40,29 @@ func setup_test():
 	add_child(test_scene)
 
 func teardown_test():
-	"""Cleanup after each test"""
+	## Cleanup after each test
 	if test_scene:
 		test_scene.queue_free()
 		test_scene = null
 
 func test_scene_creation():
-	"""Test that refactored scene can be created"""
+	## Test that refactored scene can be created
 	assert_not_null(test_scene, "Refactored scene should be created successfully")
 	assert_false(test_scene.initialization_complete, "Should start uninitialized")
 
 func test_node_validation():
-	"""Test that core nodes are validated correctly"""
+	## Test that core nodes are validated correctly
 	var validation_result = await test_scene._validate_core_nodes()
 	assert_true(validation_result, "Core node validation should succeed with proper scene structure")
 
 func test_system_bootstrap_creation():
-	"""Test that system bootstrap is created during initialization"""
+	## Test that system bootstrap is created during initialization
 	var bootstrap_created = await test_scene._initialize_system_bootstrap()
 	assert_true(bootstrap_created, "System bootstrap should be created successfully")
 	assert_not_null(test_scene.system_bootstrap, "System bootstrap reference should be set")
 
 func test_input_router_creation():
-	"""Test that input router is created after bootstrap"""
+	## Test that input router is created after bootstrap
 	# First create bootstrap
 	await test_scene._initialize_system_bootstrap()
 	
@@ -72,7 +72,7 @@ func test_input_router_creation():
 	assert_not_null(test_scene.input_router, "Input router reference should be set")
 
 func test_initialization_signals():
-	"""Test that initialization signals are emitted correctly"""
+	## Test that initialization signals are emitted correctly
 	var initialization_completed = false
 	var initialization_failed = false
 	
@@ -93,7 +93,7 @@ func test_initialization_signals():
 	assert_true(initialization_completed or initialization_failed, "Either success or failure signal should be emitted")
 
 func test_performance_monitoring():
-	"""Test that performance monitoring works"""
+	## Test that performance monitoring works
 	test_scene.initialization_complete = true  # Bypass initialization for performance test
 	
 	var initial_frame_count = test_scene.frame_count
@@ -105,7 +105,7 @@ func test_performance_monitoring():
 	assert_greater(test_scene.frame_count, initial_frame_count, "Frame count should increase")
 
 func test_signal_connections():
-	"""Test that signals are properly connected between components"""
+	## Test that signals are properly connected between components
 	# Setup scene with bootstrap
 	await test_scene._initialize_system_bootstrap()
 	await test_scene._initialize_input_router()
@@ -118,7 +118,7 @@ func test_signal_connections():
 		"Input router signals should be connected")
 
 func test_debug_command_registration():
-	"""Test that debug commands are registered correctly"""
+	## Test that debug commands are registered correctly
 	if OS.is_debug_build() and DebugCmd:
 		# Initialize scene components
 		await test_scene._initialize_system_bootstrap()
@@ -129,7 +129,7 @@ func test_debug_command_registration():
 		assert_true(true, "Debug command registration should not crash")
 
 func test_cleanup():
-	"""Test that cleanup works correctly"""
+	## Test that cleanup works correctly
 	await test_scene._initialize_system_bootstrap()
 	await test_scene._initialize_input_router()
 	
@@ -144,7 +144,7 @@ func test_cleanup():
 	assert_false(test_scene.initialization_complete, "Initialization should be marked incomplete after cleanup")
 
 func run_all_tests():
-	"""Run all refactored main scene tests"""
+	## Run all refactored main scene tests
 	var tests = [
 		"test_scene_creation",
 		"test_node_validation",

@@ -18,14 +18,14 @@ var gemini_service: GeminiAIService
 var ai_assistant: AIAssistantService
 
 func _ready() -> void:
-    """Initialize the model selector"""
+    ## Initialize the model selector
     _create_component()
     _setup_signals()
     _load_service_references()
     _update_model_list()
 
 func _create_component() -> void:
-    """Create the component UI"""
+    ## Create the component UI
     add_theme_constant_override("separation", UIThemeManager.get_spacing("sm"))
     size_flags_horizontal = SIZE_EXPAND_FILL
     
@@ -56,12 +56,12 @@ func _create_component() -> void:
     _set_status("unknown")
 
 func _setup_signals() -> void:
-    """Connect component signals"""
+    ## Connect component signals
     model_dropdown.item_selected.connect(_on_model_selected)
     settings_button.pressed.connect(_on_settings_pressed)
 
 func _load_service_references() -> void:
-    """Load references to required services"""
+    ## Load references to required services
     # Try to get references to services
     gemini_service = get_node_or_null("/root/GeminiAI")
     ai_assistant = get_node_or_null("/root/AIAssistant")
@@ -82,7 +82,7 @@ func _load_service_references() -> void:
         model_dropdown.disabled = true
 
 func _update_model_list() -> void:
-    """Update the model dropdown list"""
+    ## Update the model dropdown list
     model_dropdown.clear()
     
     if gemini_service:
@@ -109,7 +109,7 @@ func _update_model_list() -> void:
         model_dropdown.add_item("gemini-flash")
 
 func _set_status(status: String) -> void:
-    """Set the status indicator"""
+    ## Set the status indicator
     var color = Color.WHITE
     var tooltip = ""
     
@@ -147,7 +147,7 @@ func _set_status(status: String) -> void:
 
 # === SIGNAL HANDLERS ===
 func _on_model_selected(index: int) -> void:
-    """Handle model selection"""
+    ## Handle model selection
     if index < 0 or not model_dropdown.has_focus():
         return
         
@@ -160,15 +160,15 @@ func _on_model_selected(index: int) -> void:
     print("[GeminiSelector] Model changed to:", current_model)
 
 func _on_settings_pressed() -> void:
-    """Open settings dialog"""
+    ## Open settings dialog
     settings_requested.emit()
     
 func _on_model_list_updated(models: Array) -> void:
-    """Update model list when service updates available models"""
+    ## Update model list when service updates available models
     _update_model_list()
 
 func _on_config_changed(model_name: String, _settings: Dictionary) -> void:
-    """Handle configuration changes"""
+    ## Handle configuration changes
     if model_name != current_model:
         current_model = model_name
         
@@ -180,11 +180,11 @@ func _on_config_changed(model_name: String, _settings: Dictionary) -> void:
 
 # === PUBLIC API ===
 func get_current_model() -> String:
-    """Get currently selected model name"""
+    ## Get currently selected model name
     return current_model
 
 func set_model(model_name: String) -> bool:
-    """Set model by name"""
+    ## Set model by name
     for i in range(model_dropdown.item_count):
         if model_dropdown.get_item_text(i) == model_name:
             model_dropdown.select(i)
@@ -194,7 +194,7 @@ func set_model(model_name: String) -> bool:
     return false
 
 func refresh_status() -> void:
-    """Refresh the status indicator"""
+    ## Refresh the status indicator
     if not gemini_service:
         _set_status("unavailable")
         return
