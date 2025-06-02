@@ -137,9 +137,8 @@ func _setup_dialog() -> void:
 	dialog_panel.set_meta("_accessible_description", "Gemini AI setup dialog")
 	
 	# Apply NeuroVis theme styling using UIThemeManager
-	var theme_manager = load("res://ui/panels/UIThemeManager.gd")
-	if theme_manager:
-		theme_manager.apply_enhanced_panel_style(dialog_panel, "elevated")
+	if UIThemeManager:
+		UIThemeManager.apply_enhanced_panel_style(dialog_panel, "elevated")
 	
 	add_child(dialog_panel)
 	
@@ -227,8 +226,7 @@ func _create_initial_state_ui(container: Control) -> void:
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	
 	# Ensure font size meets accessibility standards (minimum 16px)
-	var theme_manager = load("res://ui/panels/UIThemeManager.gd")
-	if theme_manager:
+	if UIThemeManager:
 		var min_font_size = 16
 		var current_size = description.get_theme_font_size("font_size")
 		if current_size < min_font_size:
@@ -356,12 +354,11 @@ func _create_return_with_key_state_ui(container: Control) -> void:
 	# Enable keyboard navigation
 	api_key_input.focus_mode = Control.FOCUS_ALL
 	
-	var theme_manager = load("res://ui/panels/UIThemeManager.gd")
-	if theme_manager:
-		theme_manager.apply_search_field_styling(api_key_input)
+	if UIThemeManager:
+		UIThemeManager.apply_search_field_styling(api_key_input)
 		
 		# Ensure contrast meets WCAG AA standard (4.5:1 ratio)
-		var contrast_color = theme_manager.get_color("text_primary")
+		var contrast_color = UIThemeManager.get_color("text_primary")
 		if contrast_color.get_luminance() < 0.5:
 			# If dark text on light background, darken text further
 			api_key_input.add_theme_color_override("font_color", contrast_color.darkened(0.2))
