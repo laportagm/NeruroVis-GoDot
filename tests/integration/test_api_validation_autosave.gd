@@ -117,11 +117,11 @@ func _ready() -> void:
 	queue_free()
 
 func _on_setup_completed(success: bool, api_key: String) -> void:
-	## Handle setup completion
+	"""Handle setup completion"""
 	print("[TEST] SIGNAL: setup_completed received")
 	print("[TEST] - Success: ", success)
 	print("[TEST] - Key configured: ", api_key.length() > 0)
 
 func _on_setup_cancelled() -> void:
-	## Handle setup cancellation
+	"""Handle setup cancellation"""
 	print("[TEST] SIGNAL: setup_cancelled received")

@@ -1,4 +1,4 @@
-# NeuroVis Current Project State - Sun Jun  1 22:26:05 EDT 2025
+# NeuroVis Current Project State - Mon Jun  2 10:49:32 EDT 2025
 ## ALWAYS REFERENCE THIS FOR MAXIMUM CLAUDE EFFECTIVENESS
 
 ## 🎯 PROJECT OVERVIEW
@@ -9,10 +9,10 @@
 
 ## 📊 CURRENT CODEBASE ANALYSIS
 ### File Statistics:
-- GDScript files: 270
-- Scene files: 53
+- GDScript files: 286
+- Scene files: 41
 - Educational components: 0
-- Total lines of code: 85269
+- Total lines of code: 82161
 
 ## 🏗️ ARCHITECTURE OVERVIEW
 ### Directory Structure:
@@ -22,16 +22,17 @@
 - .github
 - .godot
 - .vscode
+- archive
 - assets
 - config
 - core
 - data
 - docs
+- Godot
 - logs
 - patches
 - path_fix_backup
 - scenes
-- scenes_backup_20250601_204409
 - scripts
 - shaders
 - specs
@@ -61,23 +62,23 @@
 - ui/integration/FoundationDemo.gd
 - ui/panels/BrainAnalysisPanel.gd
 - ui/panels/AccessibilitySettingsPanel.gd
-- ui/panels/minimal_info_panel.gd
 - ui/panels/UIThemeManager.gd
 - ui/panels/LoadingOverlay.gd
-- ui/panels/ModernInfoDisplay.gd
+- ui/panels/ThemeToggle.gd
+- ui/panels/EducationalNotificationSystem.gd
 
 ## 📈 RECENT DEVELOPMENT
 ### Git History (Last 10 commits):
+- 4f0bb69 fix: Remove duplicate BrainStructureSelectionManager class_name to resolve parser error
+- ac05ec5 Merge remote-tracking branch 'origin/Branch-1-NeuroVis4' and resolve conflicts
+- b6c21e4 refactor: project-wide reorganization and file consolidation
+- 516636d fix(ui): resolve parser errors and memory access issues in GeminiSetupDialog
 - 9fa8b08 feat(ui): comprehensive UI transformation and code quality improvements
 - 39ff7c1 fix: Remove duplicate BrainStructureSelectionManager class_name to resolve conflict
 - 5b5c3a2 fix(ai): Fix Gemini integration service references and type issues
 - 0bf0f0b feat(ai): Implement Gemini integration for enhanced educational AI
 - 0928340 fix(ai): Add GeminiService to core_development autoload config
 - bbbacb0 fix(ai): Add missing generate_content method to GeminiAIService
-- d9f0e61 fix(ai): Add missing GeminiModel enum and API methods
-- 078812c feat(ai): Implement Gemini integration for enhanced educational AI
-- 87c0dbe feat(core): Complete migration to component-based architecture
-- 2eed3df docs: Document rapid development success with template framework
 
 ## 🔧 ACTIVE FEATURES
 ### Educational Components:
@@ -97,7 +98,7 @@
 - BenchmarkRunner
 - BrainAnalysisPanel
 - BrainStructureInfoPanel
-- BrainStructureSelectionManager
+- BrainVisualization
 - BrainVisualizationCore
 - BrainVisualizer
 - CameraBehaviorController
@@ -116,15 +117,18 @@
 - DebugController
 - DebugVisualizer
 - DesignSystem
+- EducationalCoordinator
 - EducationalNotificationSystem
 - EducationalTooltipManager
 - EducationalTutor
+- EducationalUI
 - EducationalVisualFeedback
 - EndToEndWorkflowTest
 - EnhancedAIAssistant
 - EnhancedInfoPanel
 - EnhancedInformationPanel
 - EnhancedLoadingOverlay
+- EnhancedMainSceneStyling
 - EnhancedModelControlPanel
 - EnhancedModelControlPanelCore
 - EnhancedStructureInfoPanel
@@ -136,6 +140,7 @@
 - GeminiAIService
 - GeminiModelSelector
 - GeminiSetupDialog
+- GeminiSetupDialogEnhanced
 - GodotDebugRunner
 - GodotEngineDebugTest
 - GodotErrorDetectionTest
@@ -186,6 +191,7 @@
 - NavItem
 - NeuroVisDarkTheme
 - NeuroVisEnhancedScene
+- NeuroVisMainEnhanced
 - NeuroVisMainScene
 - NeuroVisMainSceneCore
 - OnboardingManager
@@ -256,8 +262,8 @@
 ## 📊 PERFORMANCE INDICATORS
 ### Code Quality Metrics:
 - Classes with educational documentation: 0
-- Functions with type hints: 3843
-- Signal declarations: 524
+- Functions with type hints: 3719
+- Signal declarations: 500
 
 ## 🛡️ CLAUDE OPTIMIZATION NOTES
 ### For Maximum Effectiveness:

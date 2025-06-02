@@ -133,7 +133,7 @@ func _ready() -> void:
 	queue_free()
 
 func _check_validation_state(dialog: GeminiSetupDialog, should_be_valid: bool, expected_message: String) -> void:
-	## Helper function to check validation state
+	"""Helper function to check validation state"""
 	var button_state = not dialog.next_button.disabled
 	var status_text = dialog.status_label.text
 	
@@ -153,12 +153,12 @@ func _check_validation_state(dialog: GeminiSetupDialog, should_be_valid: bool, e
 		print("[TEST] ✗ Status message incorrect!")
 
 func _on_setup_completed(success: bool, api_key: String) -> void:
-	## Handle setup completion signal
+	"""Handle setup completion signal"""
 	print("[TEST] SIGNAL: setup_completed emitted")
 	print("[TEST] - Success: ", success)
 	print("[TEST] - API Key length: ", api_key.length())
 	print("[TEST] - Key starts with 'AIza': ", api_key.begins_with("AIza"))
 
 func _on_setup_cancelled() -> void:
-	## Handle setup cancellation signal
+	"""Handle setup cancellation signal"""
 	print("[TEST] SIGNAL: setup_cancelled emitted")
