@@ -11,9 +11,9 @@ enum GeminiModel {
 }
 
 const MODEL_NAMES = {
-    GeminiModel.GEMINI_PRO: "gemini-pro",
-    GeminiModel.GEMINI_PRO_VISION: "gemini-pro-vision",
-    GeminiModel.GEMINI_FLASH: "gemini-flash"
+    GeminiModel.GEMINI_PRO: "gemini-1.5-pro",
+    GeminiModel.GEMINI_PRO_VISION: "gemini-1.5-pro-vision",
+    GeminiModel.GEMINI_FLASH: "gemini-1.5-flash"
 }
 
 # Signals
@@ -27,7 +27,7 @@ signal config_changed(model_name: String, settings: Dictionary)
 
 # Configuration
 const SETTINGS_PATH = "user://gemini_settings.dat"
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 const RATE_LIMIT_PER_MINUTE = 60
 
 # State
@@ -53,6 +53,8 @@ func _ready():
     add_child(http_request)
     http_request.request_completed.connect(_on_request_completed)
     http_request.timeout = 30.0
+    # Ensure SSL certificates are properly validated
+    http_request.set_tls_options(TLSOptions.client())
 
     # Load saved settings
     _load_settings()
@@ -60,7 +62,7 @@ func _ready():
     # Start rate limit timer
     set_process(true)
 
-    print("[GeminiAI] Service initialized")
+    print("[GeminiAI] Service initialized with TLS enabled")
 
 func _process(_delta):
     # Reset rate limit every minute
@@ -163,15 +165,19 @@ func get_api_key() -> String:
 
 func validate_api_key(key: String) -> void:
     """Validate API key and emit result signal"""
+    print("[GeminiAI] Validating API key: ", key.substr(0, 10), "...")
     api_key = key.strip_edges()
 
     # Basic validation
     if api_key.length() < 30:
+        print("[GeminiAI] API key too short: ", api_key.length(), " characters")
         api_key_validated.emit(false, "Invalid API key format")
         return
 
+    print("[GeminiAI] API key format looks valid, testing with API...")
     # Do the validation test
     var test_successful = await _test_api_key()
+    print("[GeminiAI] API test result: ", test_successful)
     api_key_validated.emit(test_successful, "API key validation " + ("succeeded" if test_successful else "failed"))
 
 func get_model_name() -> String:
@@ -305,6 +311,7 @@ func _build_prompt(question: String, context: Dictionary) -> String:
 
 func _test_api_key() -> bool:
     """Test if API key is valid"""
+    print("[GeminiAI] Testing API key with Gemini API...")
     var test_prompt = "Respond with exactly: 'API key valid'"
     var headers = ["Content-Type: application/json"]
     var body = {
@@ -317,31 +324,49 @@ func _test_api_key() -> bool:
         }
     }
 
+    # Use gemini-1.5-flash-latest for testing
+    var test_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + api_key
+    print("[GeminiAI] Request URL: ", test_url.substr(0, 80), "...")
+    print("[GeminiAI] Request body: ", JSON.stringify(body))
+
     var error = http_request.request(
-        API_URL + "?key=" + api_key,
+        test_url,
         headers,
         HTTPClient.METHOD_POST,
         JSON.stringify(body)
     )
 
     if error != OK:
+        print("[GeminiAI] HTTP request failed with error: ", error)
         return false
 
+    print("[GeminiAI] Waiting for API response...")
     var result = await http_request.request_completed
+    print("[GeminiAI] Response received, parsing...")
     var response = await _parse_response(result)
+    print("[GeminiAI] Parsed response: ", response)
     return response != ""
 
 func _parse_response(result: Array) -> String:
     """Parse Gemini API response"""
+    print("[GeminiAI] Parse response - result array size: ", result.size())
     var response_code = result[1]
+    var headers = result[2]
     var body = result[3]
+    
+    print("[GeminiAI] Response code: ", response_code)
+    print("[GeminiAI] Response headers: ", headers)
 
     if response_code != 200:
-        error_occurred.emit("API error: HTTP " + str(response_code))
+        var error_body = body.get_string_from_utf8()
+        print("[GeminiAI] Error response body: ", error_body)
+        error_occurred.emit("API error: HTTP " + str(response_code) + " - " + error_body)
         return ""
 
     var json = JSON.new()
-    var parse_result = json.parse(body.get_string_from_utf8())
+    var body_string = body.get_string_from_utf8()
+    print("[GeminiAI] Response body: ", body_string.substr(0, 200), "...")
+    var parse_result = json.parse(body_string)
 
     if parse_result != OK:
         error_occurred.emit("Failed to parse API response")
